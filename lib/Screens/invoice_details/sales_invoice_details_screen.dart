@@ -284,7 +284,7 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                             children: [
                               Container(
                                 decoration: const BoxDecoration(
-                                  color: Color(0xffC52127),
+                                  color: Color(0xffF18A23),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -294,7 +294,7 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                                 ),
                               ),
                               Container(
-                                color: const Color(0xffC52127),
+                                color: const Color(0xffF18A23),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   _lang.item,
@@ -353,7 +353,7 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                                         color: Colors.white,
                                       ) // Odd row color
                                     : BoxDecoration(
-                                        color: const Color(0xffC52127).withValues(alpha: 0.07),
+                                        color: const Color(0xffF18A23).withValues(alpha: 0.07),
                                       ),
                                 children: [
                                   Container(
@@ -558,7 +558,7 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                             TableRow(
                               children: [
                                 Container(
-                                  decoration: const BoxDecoration(color: Color(0xffC52127)),
+                                  decoration: const BoxDecoration(color: Color(0xffF18A23)),
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     _lang.sl,
@@ -567,7 +567,7 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                                   ),
                                 ),
                                 Container(
-                                  decoration: const BoxDecoration(color: Color(0xffC52127)),
+                                  decoration: const BoxDecoration(color: Color(0xffF18A23)),
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     _lang.returnedDate,
@@ -621,7 +621,7 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                                           color: Colors.white,
                                         ) // Odd row color
                                       : BoxDecoration(
-                                          color: const Color(0xffC52127).withValues(alpha: 0.07),
+                                          color: const Color(0xffF18A23).withValues(alpha: 0.07),
                                         ),
                                   children: [
                                     Container(

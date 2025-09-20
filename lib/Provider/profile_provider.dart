@@ -7,8 +7,15 @@ import '../Repository/API/business_info_repo.dart';
 import '../model/todays_summary_model.dart';
 
 BusinessRepository businessRepository = BusinessRepository();
-final businessInfoProvider = FutureProvider<BusinessInformation>((ref) => businessRepository.fetchBusinessData());
-final getExpireDateProvider = FutureProvider.family<void, WidgetRef>((ref, widgetRef) => businessRepository.fetchSubscriptionExpireDate(ref: widgetRef));
-final businessSettingProvider = FutureProvider<BusinessSettingModel>((ref) => businessRepository.businessSettingData());
-final summaryInfoProvider = FutureProvider<TodaysSummaryModel>((ref) => businessRepository.fetchTodaySummaryData());
-final dashboardInfoProvider = FutureProvider.family.autoDispose<DashboardOverviewModel, String>((ref, type) => businessRepository.dashboardData(type));
+final businessInfoProvider = FutureProvider<BusinessInformation>(
+    (ref) => businessRepository.fetchBusinessData());
+final getExpireDateProvider = FutureProvider.family<void, WidgetRef>(
+    (ref, widgetRef) =>
+        businessRepository.fetchSubscriptionExpireDate(ref: widgetRef));
+final businessSettingProvider = FutureProvider<BusinessSettingModel>(
+    (ref) => businessRepository.businessSettingData());
+final summaryInfoProvider = FutureProvider<TodaysSummaryModel>(
+    (ref) => businessRepository.fetchTodaySummaryData());
+final dashboardInfoProvider = FutureProvider.family
+    .autoDispose<DashboardOverviewModel, String>(
+        (ref, type) => businessRepository.dashboardData(type));

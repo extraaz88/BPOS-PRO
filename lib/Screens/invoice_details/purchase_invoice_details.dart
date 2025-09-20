@@ -308,7 +308,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                             children: [
                               Container(
                                 decoration: const BoxDecoration(
-                                  color: Color(0xffC52127),
+                                  color: Color(0xffF18A23),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -318,7 +318,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                                 ),
                               ),
                               Container(
-                                color: const Color(0xffC52127),
+                                color: const Color(0xffF18A23),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   _lang.item,
@@ -377,7 +377,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                                       color: Colors.white,
                                     )
                                   : BoxDecoration(
-                                      color: const Color(0xffC52127).withOpacity(0.07),
+                                      color: const Color(0xffF18A23).withOpacity(0.07),
                                     ),
                               children: [
                                 Container(
@@ -536,7 +536,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                             TableRow(
                               children: [
                                 Container(
-                                  decoration: const BoxDecoration(color: Color(0xffC52127)),
+                                  decoration: const BoxDecoration(color: Color(0xffF18A23)),
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     _lang.sl,
@@ -545,7 +545,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                                   ),
                                 ),
                                 Container(
-                                  decoration: const BoxDecoration(color: Color(0xffC52127)),
+                                  decoration: const BoxDecoration(color: Color(0xffF18A23)),
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     _lang.returnedDate,
@@ -599,7 +599,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                                           color: Colors.white,
                                         ) // Odd row color
                                       : BoxDecoration(
-                                          color: const Color(0xffC52127).withValues(alpha: 0.07),
+                                          color: const Color(0xffF18A23).withValues(alpha: 0.07),
                                         ),
                                   children: [
                                     Container(

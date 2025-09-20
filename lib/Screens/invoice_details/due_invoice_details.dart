@@ -17,7 +17,11 @@ import '../../thermal priting invoices/provider/print_thermal_invoice_provider.d
 import '../Due Calculation/Model/due_collection_model.dart';
 
 class DueInvoiceDetails extends StatefulWidget {
-  const DueInvoiceDetails({super.key, required this.dueCollection, required this.personalInformationModel, this.isFromDue});
+  const DueInvoiceDetails(
+      {super.key,
+      required this.dueCollection,
+      required this.personalInformationModel,
+      this.isFromDue});
 
   final DueCollection dueCollection;
   final BusinessInformation personalInformationModel;
@@ -52,12 +56,16 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                       leading: businessSettingData.when(
                         data: (business) {
                           final isSvg = business.pictureUrl?.endsWith('.svg');
-                          final imageUrl = '${APIConfig.domain}${business.pictureUrl}';
+                          final imageUrl =
+                              '${APIConfig.domain}${business.pictureUrl}';
                           const placeholder = AssetImage(mainConstant.logo);
                           return business.pictureUrl.isEmptyOrNull
                               ? _buildInvoiceLogo(image: placeholder)
                               : (isSvg ?? false)
-                                  ? SvgPicture.network(imageUrl, height: 54.12, width: 52, fit: BoxFit.cover)
+                                  ? SvgPicture.network(imageUrl,
+                                      height: 54.12,
+                                      width: 52,
+                                      fit: BoxFit.cover)
                                   : _buildInvoiceLogo(
                                       image: NetworkImage(imageUrl),
                                     );
@@ -78,7 +86,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                           text: '${_lang.mobiles} : ',
                           children: [
                             TextSpan(
-                              text: '${widget.personalInformationModel.phoneNumber}',
+                              text:
+                                  '${widget.personalInformationModel.phoneNumber}',
                             )
                           ],
                         ),
@@ -146,7 +155,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                   text: '${lang.S.of(context).billTO} : ',
                                   children: [
                                     TextSpan(
-                                      text: widget.dueCollection.party?.name ?? '',
+                                      text: widget.dueCollection.party?.name ??
+                                          '',
                                     )
                                   ],
                                 ),
@@ -156,7 +166,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                   text: '${_lang.mobiles} : ',
                                   children: [
                                     TextSpan(
-                                      text: widget.dueCollection.party?.phone ?? '',
+                                      text: widget.dueCollection.party?.phone ??
+                                          '',
                                     )
                                   ],
                                 ),
@@ -175,7 +186,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                   text: '${_lang.receipt} : ',
                                   children: [
                                     TextSpan(
-                                      text: '#${widget.dueCollection.invoiceNumber}',
+                                      text:
+                                          '#${widget.dueCollection.invoiceNumber}',
                                     )
                                   ],
                                 ),
@@ -186,7 +198,10 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                   text: '${lang.S.of(context).date} : ',
                                   children: [
                                     TextSpan(
-                                      text: DateFormat.yMMMd().format(DateTime.parse(widget.dueCollection.paymentDate ?? '')),
+                                      text: DateFormat.yMMMd().format(
+                                          DateTime.parse(widget
+                                                  .dueCollection.paymentDate ??
+                                              '')),
                                     ),
                                   ],
                                 ),
@@ -197,7 +212,11 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                   text: '${_lang.collectedBys} : ',
                                   children: [
                                     TextSpan(
-                                      text: widget.dueCollection.user?.role == "shop-owner" ? 'Admin' : widget.dueCollection.user?.name ?? '',
+                                      text: widget.dueCollection.user?.role ==
+                                              "shop-owner"
+                                          ? 'Admin'
+                                          : widget.dueCollection.user?.name ??
+                                              '',
                                     ),
                                   ],
                                 ),
@@ -205,15 +224,20 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                               ),
                               Text.rich(
                                 TextSpan(
-                                  text: '${widget.personalInformationModel.vatName ?? 'VAT Number'} : ',
+                                  text:
+                                      '${widget.personalInformationModel.vatName ?? 'VAT Number'} : ',
                                   children: [
                                     TextSpan(
-                                      text: widget.personalInformationModel.vatNumber ?? '',
+                                      text: widget.personalInformationModel
+                                              .vatNumber ??
+                                          '',
                                     )
                                   ],
                                 ),
                                 textAlign: TextAlign.end,
-                              ).visible(widget.personalInformationModel.vatNumber != null),
+                              ).visible(
+                                  widget.personalInformationModel.vatNumber !=
+                                      null),
                             ],
                           ),
                         ),
@@ -245,7 +269,7 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                             children: [
                               Container(
                                 decoration: const BoxDecoration(
-                                  color: Color(0xffC52127), // Red background
+                                  color: Color(0xffF18A23), // Red background
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -258,7 +282,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                 ),
                               ),
                               Container(
-                                color: const Color(0xffC52127), // Red background
+                                color:
+                                    const Color(0xffF18A23), // Red background
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   _lang.totalDue,
@@ -272,7 +297,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                 ),
                               ),
                               Container(
-                                color: const Color(0xff000000), // Black background
+                                color:
+                                    const Color(0xff000000), // Black background
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   _lang.paymentsAmount,
@@ -286,7 +312,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                                 ),
                               ),
                               Container(
-                                color: const Color(0xff000000), // Black background
+                                color:
+                                    const Color(0xff000000), // Black background
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   _lang.remainingDue,
@@ -377,7 +404,8 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                       child: Text(
                         lang.S.of(context).thankYouForYourDuePayment,
                         maxLines: 1,
-                        style: theme.textTheme.titleMedium?.copyWith(color: kTitleColor, fontWeight: FontWeight.w600),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            color: kTitleColor, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -427,8 +455,12 @@ class _DueInvoiceDetailsState extends State<DueInvoiceDetails> {
                   padding: const EdgeInsets.all(15.0),
                   child: GestureDetector(
                     onTap: () async {
-                      PrintDueTransactionModel model = PrintDueTransactionModel(dueTransactionModel: widget.dueCollection, personalInformationModel: widget.personalInformationModel);
-                      await printerData.printDueThermalInvoiceNow(transaction: model, context: context);
+                      PrintDueTransactionModel model = PrintDueTransactionModel(
+                          dueTransactionModel: widget.dueCollection,
+                          personalInformationModel:
+                              widget.personalInformationModel);
+                      await printerData.printDueThermalInvoiceNow(
+                          transaction: model, context: context);
                     },
                     child: Container(
                       height: 60,

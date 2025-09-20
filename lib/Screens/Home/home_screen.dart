@@ -407,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               });
                         },
                         child: Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kWhite, boxShadow: [BoxShadow(color: const Color(0xffC52127).withOpacity(0.04), blurRadius: 15, offset: const Offset(0, 10))]),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kWhite, boxShadow: [BoxShadow(color: const Color(0xffF18A23).withOpacity(0.04), blurRadius: 15, offset: const Offset(0, 10))]),
                           child: ListTile(
                             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                             horizontalTitleGap: 20,

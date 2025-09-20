@@ -2,7 +2,7 @@ import 'package:bijoy_helper/bijoy_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-const kMainColor = Color(0xffC52127);
+const kMainColor = Color(0xffF18A23);
 const kGreyTextColor = Color(0xFF828282);
 const kBackgroundColor = Color(0xffF5F3F3);
 const kBorderColorTextField = Color(0xFFC2C2C2);
@@ -175,7 +175,8 @@ extension ColorExt on Color {
   }
 }
 
-pw.Widget getLocalizedPdfText(String text, pw.TextStyle textStyle, {pw.TextAlign? textAlignment}) {
+pw.Widget getLocalizedPdfText(String text, pw.TextStyle textStyle,
+    {pw.TextAlign? textAlignment}) {
   print('Current Language: $selectedLanguage, Text: $text');
   return pw.Text(
     selectedLanguage == "bn" ? unicodeToBijoy(text) : text,
@@ -184,7 +185,8 @@ pw.Widget getLocalizedPdfText(String text, pw.TextStyle textStyle, {pw.TextAlign
   );
 }
 
-pw.Widget getLocalizedPdfTextWithLanguage(String text, pw.TextStyle textStyle, {pw.TextAlign? textAlignment}) {
+pw.Widget getLocalizedPdfTextWithLanguage(String text, pw.TextStyle textStyle,
+    {pw.TextAlign? textAlignment}) {
   print('Current Language: $selectedLanguage, Text: $text');
   String detectedLanguage = detectLanguageEnhanced(text);
   return pw.Text(
@@ -202,7 +204,9 @@ String detectLanguageEnhanced(String text, {double threshold = 0.7}) {
   final Map<String, int> counts = {
     'bn': RegExp(r'[\u0980-\u09FF]').allMatches(cleanedText).length,
     'hi': RegExp(r'[\u0900-\u097F]').allMatches(cleanedText).length,
-    'ar': RegExp(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]').allMatches(cleanedText).length,
+    'ar': RegExp(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]')
+        .allMatches(cleanedText)
+        .length,
     'fr': RegExp(r'[a-zA-Zéèêëàâîïôùûç]').allMatches(cleanedText).length,
   };
 

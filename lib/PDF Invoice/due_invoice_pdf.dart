@@ -361,7 +361,7 @@ class DueInvoicePDF {
             ),
             pw.Container(
               width: double.infinity,
-              color: const PdfColor.fromInt(0xffC52127),
+              color: const PdfColor.fromInt(0xffF18A23),
               padding: const pw.EdgeInsets.all(10.0),
               child: pw.Center(child: pw.Text('Powered by $companyName', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold))),
             ),
@@ -390,7 +390,7 @@ class DueInvoicePDF {
                         children: [
                           pw.Container(
                             decoration: const pw.BoxDecoration(
-                              color: PdfColor.fromInt(0xffC52127),
+                              color: PdfColor.fromInt(0xffF18A23),
                             ), // Red background
                             padding: const pw.EdgeInsets.all(8.0),
                             child: getLocalizedPdfText(
@@ -400,7 +400,7 @@ class DueInvoicePDF {
                             ),
                           ),
                           pw.Container(
-                            color: const PdfColor.fromInt(0xffC52127), // Red background
+                            color: const PdfColor.fromInt(0xffF18A23), // Red background
                             padding: const pw.EdgeInsets.all(8.0),
                             child: getLocalizedPdfText(
                               _lang.totalDue,

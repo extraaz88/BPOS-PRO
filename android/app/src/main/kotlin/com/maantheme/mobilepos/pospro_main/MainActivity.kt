@@ -1,4 +1,4 @@
-package com.acnoo.pospro
+package com.extrazz.bpospro
 
 import io.flutter.embedding.android.FlutterActivity
 

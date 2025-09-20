@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 abstract class DAppColors {
-  static const kPrimary = Color(0xffC52127);
+  static const kPrimary = Color(0xffF18A23);
   static const kOnPrimary = Color(0xffFFFFFF);
 
   static const kSecondary = Color(0xff808191);
