@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_pos/Screens/DashBoard/dashboard.dart';
 import 'package:mobile_pos/Screens/Home/home_screen.dart';
 import 'package:mobile_pos/Screens/Report/reports.dart';
 import 'package:mobile_pos/Screens/Settings/settings_screen.dart';
-import 'package:mobile_pos/constant.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
+import 'package:mobile_pos/widgets/custom_bottom_nav.dart';
 
 import '../../GlobalComponents/glonal_popup.dart';
 import '../../Provider/profile_provider.dart';
@@ -73,7 +72,8 @@ class _HomeState extends State<Home> {
             ],
           ),
         );
-        return shouldPop ?? false; // Allow default back button behavior if dialog is dismissed
+        return shouldPop ??
+            false; // Allow default back button behavior if dialog is dismissed
       },
       child: Consumer(builder: (context, ref, __) {
         final profile = ref.watch(businessInfoProvider);
@@ -85,91 +85,24 @@ class _HomeState extends State<Home> {
               onPageChanged: (v) {
                 tabIndex = v;
               },
-              children: (profile.value?.user?.visibility?.dashboardPermission ?? true)
-                  ? const [HomeScreen(), DashboardScreen(), Reports(), SettingScreen()]
-                  : const [HomeScreen(), Reports(), SettingScreen()],
+              children:
+                  (profile.value?.user?.visibility?.dashboardPermission ?? true)
+                      ? const [
+                          HomeScreen(),
+                          DashboardScreen(),
+                          Reports(),
+                          SettingScreen()
+                        ]
+                      : const [HomeScreen(), Reports(), SettingScreen()],
             ),
-            bottomNavigationBar: BottomNavigationBar(
+            bottomNavigationBar: CustomBottomNavBar(
               currentIndex: _tabIndex,
-              backgroundColor: Colors.white,
               onTap: (index) {
                 setState(() {
                   _tabIndex = index;
                   pageController.jumpToPage(index);
                 });
               },
-              items: [
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 0
-                      ? SvgPicture.asset(
-                          'assets/cHome.svg',
-                          fit: BoxFit.scaleDown,
-                          height: 28,
-                          width: 28,
-                        )
-                      : SvgPicture.asset(
-                          'assets/home.svg',
-                          colorFilter: const ColorFilter.mode(kGreyTextColor, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                        ),
-                  label: lang.S.of(context).home,
-                ),
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 1
-                      ? SvgPicture.asset(
-                          'assets/dashbord1.svg',
-                          height: 28,
-                          width: 28,
-                          fit: BoxFit.scaleDown,
-                        )
-                      : SvgPicture.asset(
-                          'assets/dashbord.svg',
-                          height: 24,
-                          colorFilter: const ColorFilter.mode(kGreyTextColor, BlendMode.srcIn),
-                          width: 24,
-                        ),
-                  label: lang.S.of(context).dashboard,
-                ),
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 2
-                      ? SvgPicture.asset(
-                          'assets/cFile.svg',
-                          height: 28,
-                          width: 28,
-                          fit: BoxFit.scaleDown,
-                        )
-                      : SvgPicture.asset(
-                          'assets/file.svg',
-                          colorFilter: const ColorFilter.mode(kGreyTextColor, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                        ),
-                  label: lang.S.of(context).reports,
-                ),
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 3
-                      ? SvgPicture.asset(
-                          'assets/cSetting.svg',
-                          height: 28,
-                          width: 28,
-                          fit: BoxFit.scaleDown,
-                        )
-                      : SvgPicture.asset(
-                          'assets/setting.svg',
-                          colorFilter: const ColorFilter.mode(kGreyTextColor, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                          color: kGreyTextColor,
-                        ),
-                  label: lang.S.of(context).setting,
-                ),
-              ],
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: kMainColor,
-              unselectedItemColor: kGreyTextColor,
-              selectedLabelStyle: const TextStyle(fontSize: 14),
-              unselectedLabelStyle: const TextStyle(fontSize: 14),
             ),
             // bottomNavigationBar: (profile.value?.user?.visibility?.dashboardPermission ?? true)
             //     ? Directionality(
