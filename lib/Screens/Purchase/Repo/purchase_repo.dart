@@ -21,7 +21,7 @@ class PurchaseRepo {
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': await getAuthToken(),
+      'Authorization': 'Bearer ${await getAuthToken()}',
     });
 
     if (response.statusCode == 200) {

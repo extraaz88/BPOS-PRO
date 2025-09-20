@@ -41,7 +41,7 @@ class CustomHttpClient {
         headers: (headers == null)
             ? {
                 'Accept': 'application/json',
-                'Authorization': await getAuthToken(), // Assuming Bearer token format
+                'Authorization': 'Bearer ${await getAuthToken()}',
                 if (addContentTypeInHeader ?? false) 'Content-Type': 'application/json',
               }
             : headers,
@@ -74,7 +74,7 @@ class CustomHttpClient {
         headers: headers ??
             {
               'Accept': 'application/json',
-              'Authorization': await getAuthToken(), // Assuming Bearer token format
+              'Authorization': 'Bearer ${await getAuthToken()}',
             },
       );
     }
@@ -100,7 +100,7 @@ class CustomHttpClient {
     }
 
     var request = http.MultipartRequest('POST', url);
-    request.headers['Authorization'] = await getAuthToken();
+    request.headers['Authorization'] = 'Bearer ${await getAuthToken()}';
     request.headers['Accept'] = 'application/json';
     if (countentType != null) request.headers['Content-Type'] = countentType;
     request.fields.addAll(fields ?? {}); // Extra form data (optional)

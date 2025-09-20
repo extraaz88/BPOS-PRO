@@ -21,7 +21,7 @@ class SaleRepo {
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': await getAuthToken(),
+      'Authorization': 'Bearer ${await getAuthToken()}',
     });
 
     if (response.statusCode == 200) {
@@ -68,7 +68,7 @@ class SaleRepo {
       CustomHttpClient customHttpClient = CustomHttpClient(client: http.Client(), ref: ref, context: context);
       request.headers.addAll({
         "Accept": 'application/json',
-        'Authorization': await getAuthToken(),
+        'Authorization': 'Bearer ${await getAuthToken()}',
         'Content-Type': 'multipart/form-data',
       });
 
