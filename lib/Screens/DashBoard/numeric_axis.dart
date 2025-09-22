@@ -202,12 +202,20 @@ class _DashboardChartState extends State<DashboardChart> {
 
   void getData(DashboardOverviewModel model) {
     chartData = [];
-    for (int i = 0; i < model.data!.sales!.length; i++) {
-      chartData.add(ChartData(
-        model.data!.sales![i].date!,
-        model.data!.sales![i].amount!.toDouble(),
-        model.data!.purchases![i].amount!.toDouble(),
-      ));
+    
+    // Add null safety checks
+    if (model.data?.sales != null && model.data?.purchases != null) {
+      int salesLength = model.data!.sales!.length;
+      int purchasesLength = model.data!.purchases!.length;
+      int maxLength = salesLength < purchasesLength ? salesLength : purchasesLength;
+      
+      for (int i = 0; i < maxLength; i++) {
+        chartData.add(ChartData(
+          model.data!.sales![i].date ?? '',
+          (model.data!.sales![i].amount ?? 0).toDouble(),
+          (model.data!.purchases![i].amount ?? 0).toDouble(),
+        ));
+      }
     }
   }
 
@@ -369,6 +377,11 @@ class _DashboardChartState extends State<DashboardChart> {
       fontSize: 12,
     );
 
+    // Add null safety check
+    if (chartData.isEmpty || value.toInt() >= chartData.length) {
+      return const SizedBox.shrink();
+    }
+    
     String text = chartData[value.toInt()].x;
 
     return SideTitleWidget(

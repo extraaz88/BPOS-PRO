@@ -88,6 +88,12 @@ class AddProductState extends State<AddProduct> {
       productStockController = TextEditingController(text: widget.productModel?.productStock?.toString() ?? '');
       salePriceController = TextEditingController(text: widget.productModel?.productSalePrice?.toString() ?? '');
       selectedTaxType = widget.productModel?.vatType ?? "Exclusive";
+      // Ensure the value matches the dropdown items exactly
+      if (selectedTaxType.toLowerCase() == 'exclusive') {
+        selectedTaxType = 'Exclusive';
+      } else if (selectedTaxType.toLowerCase() == 'inclusive') {
+        selectedTaxType = 'Inclusive';
+      }
       if (widget.productModel?.vatType?.toLowerCase() == 'exclusive') {
         purchaseExclusivePriceController = TextEditingController(text: widget.productModel?.productPurchasePrice?.toStringAsFixed(2));
         purchaseInclusivePriceController =
@@ -602,7 +608,9 @@ class AddProductState extends State<AddProduct> {
                             child: DropdownButtonFormField<String?>(
                               hint: const Text('Select Type'),
                               decoration: kInputDecoration.copyWith(labelText: "Vat Type"),
-                              value: selectedTaxType,
+                              value: selectedTaxType == 'exclusive' ? 'Exclusive' : 
+                                     selectedTaxType == 'inclusive' ? 'Inclusive' : 
+                                     selectedTaxType,
                               icon: const Icon(Icons.keyboard_arrow_down_outlined),
                               items: ["Inclusive", "Exclusive"]
                                   .map((type) => DropdownMenuItem<String?>(

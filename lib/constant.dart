@@ -25,14 +25,14 @@ String purchaseCode = 'Enter your purchase code';
 
 ///---------update information---------------
 
-const String splashLogo = 'images/splashLogo.png';
+const String splashLogo = 'images/BharatBill.png';
 const String onboard1 = 'images/onbord1.png';
 const String onboard2 = 'images/onbord2.png';
 const String onboard3 = 'images/onbord3.png';
-const String logo = 'images/logo.png';
-const String appsName = 'POSpro';
-const String companyWebsite = 'https://acnoo.com';
-const String companyName = 'Acnoo';
+const String logo = 'images/Bharat Bill ( White  BG ) 1.png';
+const String appsName = 'BharatBill';
+const String companyWebsite = 'https://extraaaz.com/';
+const String companyName = 'Extraaaz';
 
 bool connected = false;
 

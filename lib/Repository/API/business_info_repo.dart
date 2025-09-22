@@ -15,11 +15,11 @@ import '../constant_functions.dart';
 class BusinessRepository {
   Future<BusinessInformation> fetchBusinessData() async {
     final uri = Uri.parse('${APIConfig.url}/business');
-    final token = await getAuthToken(); // Replace with your token retrieval logic
+    final token = await getAuthToken();
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token', // Assuming Bearer token format
+      'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body);
@@ -33,11 +33,11 @@ class BusinessRepository {
 
   Future<void> fetchSubscriptionExpireDate({required WidgetRef ref}) async {
     final uri = Uri.parse('${APIConfig.url}/business');
-    final token = await getAuthToken(); // Replace with your token retrieval logic
+    final token = await getAuthToken();
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token', // Assuming Bearer token format
+      'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body);
@@ -69,11 +69,11 @@ class BusinessRepository {
 
   Future<BusinessInformation?> checkBusinessData() async {
     final uri = Uri.parse('${APIConfig.url}/business');
-    final token = await getAuthToken(); // Replace with your token retrieval logic
+    final token = await getAuthToken();
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token', // Assuming Bearer token format
+      'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body);
@@ -86,11 +86,11 @@ class BusinessRepository {
   Future<TodaysSummaryModel> fetchTodaySummaryData() async {
     String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final uri = Uri.parse('${APIConfig.url}/summary?date=$date');
-    final token = await getAuthToken(); // Replace with your token retrieval logic
+    final token = await getAuthToken();
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token', // Assuming Bearer token format
+      'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
       print(response.body);
@@ -102,21 +102,102 @@ class BusinessRepository {
     }
   }
 
-  Future<DashboardOverviewModel> dashboardData(String type) async {
-    final uri = Uri.parse('${APIConfig.url}/dashboard?duration=$type');
-    final token = await getAuthToken(); // Replace with your token retrieval logic
+  Future<DashboardOverviewModel> dashboardData(String type, {DateTime? fromDate, DateTime? toDate}) async {
+    // Map the duration type to the correct API format
+    String durationParam;
+    switch (type.toLowerCase()) {
+      case 'today':
+        durationParam = 'today';
+        break;
+      case 'yesterday':
+        durationParam = 'yesterday';
+        break;
+      case 'last 7 days':
+        durationParam = 'last_seven_days';
+        break;
+      case 'last 30 days':
+        durationParam = 'last_thirty_days';
+        break;
+      case 'current month':
+        durationParam = 'current_month';
+        break;
+      case 'last month':
+        durationParam = 'last_month';
+        break;
+      case 'current year':
+        durationParam = 'current_year';
+        break;
+      case 'custom date':
+        durationParam = 'custom_date';
+        break;
+      case 'weekly':
+        durationParam = 'week';
+        break;
+      case 'monthly':
+        durationParam = 'month';
+        break;
+      case 'yearly':
+        durationParam = 'year';
+        break;
+      default:
+        durationParam = type;
+    }
+    
+    // Build URI with custom date parameters if needed
+    String url = '${APIConfig.url}/dashboard?duration=$durationParam';
+    if (type.toLowerCase() == 'custom date' && fromDate != null && toDate != null) {
+      String fromDateStr = '${fromDate.year}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}';
+      String toDateStr = '${toDate.year}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}';
+      url += '&from_date=$fromDateStr&to_date=$toDateStr';
+    }
+    
+    final uri = Uri.parse(url);
+    final token = await getAuthToken();
+    
+    print('Dashboard API URL: $uri');
+    print('Dashboard API Token: Bearer $token');
+    print('Original type: $type, Mapped duration: $durationParam');
+    if (type.toLowerCase() == 'custom date' && fromDate != null && toDate != null) {
+      print('Custom Date Range: ${fromDate.year}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')} to ${toDate.year}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}');
+    }
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token', // Assuming Bearer token format
+      'Authorization': 'Bearer $token',
     });
+    print('Dashboard API Response Status: ${response.statusCode}');
+    print('Dashboard API Response Body: ${response.body}');
+    
     if (response.statusCode == 200) {
-      print(response.body);
-      return DashboardOverviewModel.fromJson(jsonDecode(response.body)); // Extract the "data" object from the response
+      try {
+        final responseData = jsonDecode(response.body);
+        print('Dashboard API Response Data: $responseData');
+        
+        // Check if the response has a 'data' wrapper like other endpoints
+        if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
+          return DashboardOverviewModel.fromJson(responseData['data']);
+        } else {
+          return DashboardOverviewModel.fromJson(responseData);
+        }
+      } catch (e) {
+        print('JSON Parsing Error: $e');
+        throw Exception('Failed to parse dashboard data: $e');
+      }
     } else {
       // await LogOutRepo().signOut();
-
-      throw Exception('Failed to fetch business data ${response.statusCode}');
+      print('Dashboard API Error: ${response.statusCode} - ${response.body}');
+      
+      if (response.statusCode == 400) {
+        throw Exception('Bad Request: Invalid date parameters. Please check your date range.');
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized: Please check your authentication token.');
+      } else if (response.statusCode == 404) {
+        throw Exception('Not Found: Dashboard endpoint not found.');
+      } else if (response.statusCode == 500) {
+        throw Exception('Server Error: Please try again later.');
+      } else {
+        throw Exception('Failed to fetch dashboard data. Status: ${response.statusCode}');
+      }
     }
   }
 }

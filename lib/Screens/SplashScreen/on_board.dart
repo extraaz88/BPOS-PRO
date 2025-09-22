@@ -24,18 +24,18 @@ class _OnBoardState extends State<OnBoard> {
     List<Map<String, dynamic>> sliderList = [
       {
         "icon": onboard1,
-        "title": lang.S.of(context).easyToUseThePos,
-        "description": lang.S.of(context).easytheusedesciption,
+        "title": "Smart Billing Made Simple",
+        "description": "Say goodbye to messy registers. Manage sales, stock, and payments in just a few taps."
       },
       {
         "icon": onboard2,
-        "title": lang.S.of(context).choseYourFeature,
-        "description": lang.S.of(context).choseyourfeatureDesciption,
+        "title": "Stay on Top of Your Business",
+        "description": "From stock alerts to daily sales reports—get everything you need to grow your business, anytime, anywhere.",
       },
       {
         "icon": onboard3,
-        "title": lang.S.of(context).allBusinessSolutions,
-        "description": lang.S.of(context).allBusinessolutionDescrip,
+        "title": "Fast, Secure Payments",
+        "description": "Accept UPI, card, and cash with ease. Keep your business trusted and customers happy.",
       },
     ];
     return sliderList;

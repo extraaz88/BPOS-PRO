@@ -3,11 +3,13 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:mobile_pos/Screens/Authentication/Sign%20Up/repo/sign_up_repo.dart';
 import 'package:mobile_pos/Screens/Authentication/Sign%20Up/verify_email.dart';
+import 'package:mobile_pos/Screens/Authentication/phone_otp_verification_screen.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
 
 import '../../../GlobalComponents/button_global.dart';
 import '../../../GlobalComponents/glonal_popup.dart';
 import '../../../constant.dart';
+import '../../../services/firebase_phone_auth_service.dart';
 import '../Wedgets/check_email_for_otp_popup.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   ///__________Variables________________________________
   bool showPassword = true;
   bool isClicked = false;
+  String verificationMethod = 'email'; // 'email' or 'phone'
 
   ///________Key_______________________________________
   GlobalKey<FormState> key = GlobalKey<FormState>();
@@ -29,6 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
   TextEditingController emailTextController = TextEditingController();
+  TextEditingController phoneTextController = TextEditingController();
 
   ///________Dispose____________________________________
   @override
@@ -37,6 +41,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
     nameTextController.dispose();
     passwordTextController.dispose();
     emailTextController.dispose();
+    phoneTextController.dispose();
+  }
+
+  ///________Firebase Phone OTP Method___________________
+  Future<void> _registerWithFirebasePhone() async {
+    try {
+      EasyLoading.show(status: 'Sending OTP...');
+      
+      // Send OTP to phone number
+      String? result = await FirebasePhoneAuthService.sendOTPToPhone(phoneTextController.text);
+      
+      EasyLoading.dismiss();
+
+      if (result != null && result.contains('OTP sent')) {
+        // Navigate to phone OTP verification screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PhoneOTPVerificationScreen(
+              phoneNumber: '+91${phoneTextController.text}',
+              isLogin: false,
+            ),
+          ),
+        );
+      } else {
+        // Error toast is already shown in the service
+        isClicked = false;
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+      
+      // Error toast is already shown in the service
+      print('Registration failed: $e');
+      isClicked = false;
+    }
   }
 
   @override
@@ -67,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 24,
                   ),
-                  const NameWithLogo(),
+                  const NameWithoutLogo(),
                   const SizedBox(
                     height: 24,
                   ),
@@ -127,6 +166,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 20.0),
 
+                  ///__________Phone Number______________________________________________
+                  TextFormField(
+                    controller: phoneTextController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      hintText: 'Enter your phone number',
+                      prefixText: '+91 ',
+                      prefixIcon: const Icon(Icons.phone_outlined),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Phone number cannot be empty';
+                      } else if (value.length != 10) {
+                        return 'Please enter a valid 10-digit phone number';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+
                   ///___________Password_____________________________________________
                   TextFormField(
                     controller: passwordTextController,
@@ -163,6 +223,61 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 24.0),
 
+                  ///________Verification Method Selection_____________________________
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: kGreyTextColor.withOpacity(0.3)),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Verification Method:',
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: kMainColor,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: RadioListTile<String>(
+                                title: const Text('Email'),
+                                value: 'email',
+                                groupValue: verificationMethod,
+                                onChanged: (value) {
+                                  setState(() {
+                                    verificationMethod = value!;
+                                  });
+                                },
+                                activeColor: kMainColor,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioListTile<String>(
+                                title: const Text('Phone'),
+                                value: 'phone',
+                                groupValue: verificationMethod,
+                                onChanged: (value) {
+                                  setState(() {
+                                    verificationMethod = value!;
+                                  });
+                                },
+                                activeColor: kMainColor,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24.0),
+
                   ///________Button___________________________________________________
                   ElevatedButton(
                     style: OutlinedButton.styleFrom(
@@ -176,22 +291,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                       if (key.currentState?.validate() ?? false) {
                         isClicked = true;
-                        EasyLoading.show();
-                        SignUpRepo repo = SignUpRepo();
-                        if (await repo.signUp(name: nameTextController.text, email: emailTextController.text, password: passwordTextController.text, context: context)) {
-                          if (await checkEmailForCodePupUp(email: emailTextController.text, context: context, textTheme: textTheme)) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VerifyEmail(
-                                  email: emailTextController.text,
-                                  isFormForgotPass: false,
-                                ),
-                              ),
-                            );
-                          }
+                        
+                        if (verificationMethod == 'phone') {
+                          // Use Firebase phone verification
+                          await _registerWithFirebasePhone();
                         } else {
-                          isClicked = false;
+                          // Use existing email verification
+                          EasyLoading.show();
+                          SignUpRepo repo = SignUpRepo();
+                          if (await repo.signUp(name: nameTextController.text, email: emailTextController.text, password: passwordTextController.text, context: context)) {
+                            if (await checkEmailForCodePupUp(email: emailTextController.text, context: context, textTheme: textTheme)) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VerifyEmail(
+                                    email: emailTextController.text,
+                                    isFormForgotPass: false,
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            isClicked = false;
+                          }
                         }
                       }
                     },

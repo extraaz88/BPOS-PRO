@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:mobile_pos/Screens/Authentication/forgot_password.dart';
 import 'package:mobile_pos/Screens/Authentication/login_form.dart';
 import 'package:mobile_pos/Screens/Authentication/register_screen.dart';
@@ -19,6 +21,7 @@ import 'package:mobile_pos/Screens/SplashScreen/on_board.dart';
 import 'package:mobile_pos/Screens/SplashScreen/splash_screen.dart';
 import 'package:mobile_pos/Screens/vat_&_tax/tax_report.dart';
 import 'package:provider/provider.dart' as pro;
+import 'firebase_options.dart';
 
 import 'Screens/Due Calculation/due_list_screen.dart';
 import 'Screens/Income/income_list.dart';
@@ -34,6 +37,27 @@ import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    // Initialize Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Firebase initialized successfully');
+    
+    // Test Firebase Auth
+    try {
+      final auth = FirebaseAuth.instance;
+      print('Firebase Auth instance created successfully');
+    } catch (e) {
+      print('Firebase Auth error: $e');
+    }
+  } catch (e) {
+    print('Firebase initialization error: $e');
+    // Continue running the app even if Firebase fails to initialize
+    // This allows the app to work without Firebase features
+  }
+  
   runApp(
     const ProviderScope(
       child: MyApp(),

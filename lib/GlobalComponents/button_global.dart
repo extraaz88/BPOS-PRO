@@ -13,7 +13,12 @@ class ButtonGlobal extends StatelessWidget {
   var onPressed;
 
   // ignore: use_key_in_widget_constructors
-  ButtonGlobal({required this.iconWidget, required this.buttontext, required this.iconColor, this.buttonDecoration, required this.onPressed});
+  ButtonGlobal(
+      {required this.iconWidget,
+      required this.buttontext,
+      required this.iconColor,
+      this.buttonDecoration,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +27,18 @@ class ButtonGlobal extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-        decoration: buttonDecoration ?? BoxDecoration(borderRadius: BorderRadius.circular(8), color: kMainColor),
+        decoration: buttonDecoration ??
+            BoxDecoration(
+                borderRadius: BorderRadius.circular(8), color: kMainColor),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               buttontext,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: Colors.white),
             ),
             const SizedBox(
               width: 2,
@@ -54,7 +64,11 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
   final Color buttonTextColor;
 
   // ignore: use_key_in_widget_constructors
-  ButtonGlobalWithoutIcon({required this.buttontext, required this.buttonDecoration, required this.onPressed, required this.buttonTextColor});
+  ButtonGlobalWithoutIcon(
+      {required this.buttontext,
+      required this.buttonDecoration,
+      required this.onPressed,
+      required this.buttonTextColor});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +84,10 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
           buttontext,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: buttonTextColor),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(color: buttonTextColor),
         ),
       ),
     );
@@ -88,13 +105,28 @@ class NameWithLogo extends StatelessWidget {
         Container(
           height: 75,
           width: 66,
-          decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(logo))),
+          decoration: const BoxDecoration(
+              image: DecorationImage(image: AssetImage(logo))),
         ),
         const Text(
           appsName,
-          style: TextStyle(color: kTitleColor, fontWeight: FontWeight.bold, fontSize: 28),
+          style: TextStyle(
+              color: kTitleColor, fontWeight: FontWeight.bold, fontSize: 28),
         ),
       ],
+    );
+  }
+}
+class NameWithoutLogo extends StatelessWidget {
+  const NameWithoutLogo({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 75,
+      width: 200,
+      decoration:
+          const BoxDecoration(image: DecorationImage(image: AssetImage(logo))),
     );
   }
 }
@@ -102,7 +134,8 @@ class NameWithLogo extends StatelessWidget {
 ///-------------------update button--------------------------------
 
 class UpdateButton extends StatelessWidget {
-  const UpdateButton({Key? key, required this.text, required this.onpressed}) : super(key: key);
+  const UpdateButton({Key? key, required this.text, required this.onpressed})
+      : super(key: key);
   final String text;
   final VoidCallback onpressed;
 

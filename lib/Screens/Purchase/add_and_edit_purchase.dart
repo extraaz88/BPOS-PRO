@@ -15,6 +15,7 @@ import '../../constant.dart';
 import '../../currency.dart';
 import '../../widgets/payment_type/_payment_type_dropdown.dart';
 import '../Customers/Model/parties_model.dart' as party;
+import '../Customers/Provider/customer_provider.dart';
 import '../Home/home.dart';
 import '../Purchase List/purchase_list_screen.dart';
 import '../invoice_details/purchase_invoice_details.dart';
@@ -23,7 +24,8 @@ import '../vat_&_tax/provider/text_repo.dart';
 import 'Repo/purchase_repo.dart';
 
 class AddAndUpdatePurchaseScreen extends ConsumerStatefulWidget {
-  AddAndUpdatePurchaseScreen({super.key, required this.customerModel, this.transitionModel});
+  AddAndUpdatePurchaseScreen(
+      {super.key, required this.customerModel, this.transitionModel});
 
   party.Party? customerModel;
   final PurchaseTransaction? transitionModel;
@@ -39,9 +41,13 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
 
   DateTime selectedDate = DateTime.now();
 
-  TextEditingController dateController = TextEditingController(text: DateTime.now().toString().substring(0, 10));
+  TextEditingController dateController =
+      TextEditingController(text: DateTime.now().toString().substring(0, 10));
   TextEditingController phoneController = TextEditingController();
   TextEditingController recevedAmountController = TextEditingController();
+
+  // Variables for customer dropdown
+  party.Party? selectedCustomer;
 
   @override
   void initState() {
@@ -96,15 +102,21 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
 
     cart.discountAmount = widget.transitionModel?.discountAmount ?? 0;
     if (widget.transitionModel?.discountType == 'flat') {
-      cart.discountTextControllerFlat.text = widget.transitionModel?.discountAmount.toString() ?? '';
+      cart.discountTextControllerFlat.text =
+          widget.transitionModel?.discountAmount.toString() ?? '';
     } else {
-      cart.discountTextControllerFlat.text = widget.transitionModel?.discountPercent?.toString() ?? '';
+      cart.discountTextControllerFlat.text =
+          widget.transitionModel?.discountPercent?.toString() ?? '';
     }
     cart.finalShippingCharge = widget.transitionModel?.shippingCharge ?? 0;
-    cart.shippingChargeController.text = widget.transitionModel?.shippingCharge.toString() ?? '';
+    cart.shippingChargeController.text =
+        widget.transitionModel?.shippingCharge.toString() ?? '';
     // cart.discountTextControllerFlat.text = widget.transitionModel?.discountAmount.toString() ?? '';
-    cart.vatAmountController.text = widget.transitionModel?.vatAmount.toString() ?? '';
-    cart.calculatePrice(receivedAmount: widget.transitionModel?.paidAmount.toString(), stopRebuild: true);
+    cart.vatAmountController.text =
+        widget.transitionModel?.vatAmount.toString() ?? '';
+    cart.calculatePrice(
+        receivedAmount: widget.transitionModel?.paidAmount.toString(),
+        stopRebuild: true);
   }
 
   bool hasPreselected = false; // Flag to ensure preselection happens only once
@@ -140,7 +152,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                     children: [
                       widget.transitionModel == null
                           ? FutureBuilder(
-                              future: FutureInvoice().getFutureInvoice(tag: 'purchases'),
+                              future: FutureInvoice()
+                                  .getFutureInvoice(tag: 'purchases'),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Expanded(
@@ -149,7 +162,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                       initialValue: snapshot.data.toString(),
                                       readOnly: true,
                                       decoration: InputDecoration(
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.always,
                                         labelText: lang.S.of(context).inv,
                                         border: const OutlineInputBorder(),
                                       ),
@@ -160,7 +174,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                     child: TextFormField(
                                       readOnly: true,
                                       decoration: InputDecoration(
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.always,
                                         labelText: lang.S.of(context).inv,
                                         border: const OutlineInputBorder(),
                                       ),
@@ -172,10 +187,12 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                           : Expanded(
                               child: AppTextField(
                                 textFieldType: TextFieldType.NAME,
-                                initialValue: widget.transitionModel?.invoiceNumber,
+                                initialValue:
+                                    widget.transitionModel?.invoiceNumber,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
                                   labelText: lang.S.of(context).inv,
                                   border: const OutlineInputBorder(),
                                 ),
@@ -200,7 +217,9 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 if (picked != null && picked != selectedDate) {
                                   setState(() {
                                     selectedDate = picked;
-                                    dateController.text = selectedDate.toString().substring(0, 10);
+                                    dateController.text = selectedDate
+                                        .toString()
+                                        .substring(0, 10);
                                   });
                                 }
                               },
@@ -222,7 +241,9 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                         children: [
                           Text(lang.S.of(context).dueAmount),
                           Text(
-                            widget.customerModel?.due == null ? '$currency 0' : '$currency${widget.customerModel?.due}',
+                            widget.customerModel?.due == null
+                                ? '$currency 0'
+                                : '$currency${widget.customerModel?.due}',
                             style: const TextStyle(color: Color(0xFFFF8C34)),
                           ),
                         ],
@@ -230,30 +251,57 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      AppTextField(
-                        textFieldType: TextFieldType.NAME,
-                        readOnly: true,
-                        initialValue: widget.customerModel?.name ?? 'Guest',
-                        decoration: InputDecoration(
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: lang.S.of(context).customerName,
-                          border: const OutlineInputBorder(),
-                        ),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final partiesAsync = ref.watch(partiesProvider);
+                          return partiesAsync.when(
+                            data: (parties) {
+                              return DropdownButtonFormField<party.Party>(
+                                value: selectedCustomer,
+                                decoration: InputDecoration(
+                                  labelText: lang.S.of(context).customerName,
+                                  border: const OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                ),
+                                hint: Text('Select Customer'),
+                                items: parties.map((party.Party partyItem) {
+                                  return DropdownMenuItem<party.Party>(
+                                    value: partyItem,
+                                    child: Text(partyItem.name ?? 'Unknown'),
+                                  );
+                                }).toList(),
+                                onChanged: (party.Party? newValue) {
+                                  setState(() {
+                                    selectedCustomer = newValue;
+                                    // Auto-fill phone number
+                                    if (newValue?.phone != null) {
+                                      phoneController.text = newValue!.phone!;
+                                    } else {
+                                      phoneController.clear();
+                                    }
+                                  });
+                                },
+                                isExpanded: true,
+                              );
+                            },
+                            loading: () => const CircularProgressIndicator(),
+                            error: (error, stack) => Text('Error: $error'),
+                          );
+                        },
                       ),
-                      Visibility(
-                        visible: widget.customerModel == null,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: AppTextField(
-                            controller: phoneController,
-                            textFieldType: TextFieldType.PHONE,
-                            decoration: kInputDecoration.copyWith(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                              //labelText: 'Customer Phone Number',
-                              labelText: lang.S.of(context).customerPhoneNumber,
-                              //hintText: 'Enter customer phone number',
-                              hintText: lang.S.of(context).enterCustomerPhoneNumber,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: AppTextField(
+                          controller: phoneController,
+                          textFieldType: TextFieldType.PHONE,
+                          decoration: kInputDecoration.copyWith(
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            //labelText: 'Customer Phone Number',
+                            labelText: lang.S.of(context).customerPhoneNumber,
+                            //hintText: 'Enter customer phone number',
+                            hintText:
+                                lang.S.of(context).enterCustomerPhoneNumber,
                           ),
                         ),
                       ),
@@ -266,8 +314,11 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                          border: Border.all(width: 1, color: const Color(0xffEAEFFA)),
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
+                          border: Border.all(
+                              width: 1, color: const Color(0xffEAEFFA)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,14 +327,17 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 width: double.infinity,
                                 decoration: const BoxDecoration(
                                   color: Color(0xffEAEFFA),
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: SizedBox(
                                     width: context.width() / 1.35,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           lang.S.of(context).itemAdded,
@@ -303,39 +357,59 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 itemCount: providerData.cartItemList.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
-                                    padding: const EdgeInsets.only(left: 10, right: 10),
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10),
                                     child: ListTile(
                                       onTap: () => showDialog(
                                           context: context,
                                           builder: (_) {
-                                            return purchaseProductAddBottomSheet(context: context, product: providerData.cartItemList[index], ref: ref, fromUpdate: true);
+                                            return purchaseProductAddBottomSheet(
+                                                context: context,
+                                                product: providerData
+                                                    .cartItemList[index],
+                                                ref: ref,
+                                                fromUpdate: true);
                                           }),
                                       contentPadding: const EdgeInsets.all(0),
-                                      title: Text(providerData.cartItemList[index].productName.toString()),
-                                      subtitle: Text('${providerData.cartItemList[index].quantities} X ${providerData.cartItemList[index].productPurchasePrice} = ${formatPointNumber((providerData.cartItemList[index].quantities ?? 0) * (providerData.cartItemList[index].productPurchasePrice ?? 0))}'),
+                                      title: Text(providerData
+                                          .cartItemList[index].productName
+                                          .toString()),
+                                      subtitle: Text(
+                                          '${providerData.cartItemList[index].quantities} X ${providerData.cartItemList[index].productPurchasePrice} = ${formatPointNumber((providerData.cartItemList[index].quantities ?? 0) * (providerData.cartItemList[index].productPurchasePrice ?? 0))}'),
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           SizedBox(
                                             width: 80,
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 GestureDetector(
                                                   onTap: () {
-                                                    providerData.quantityDecrease(index);
+                                                    providerData
+                                                        .quantityDecrease(
+                                                            index);
                                                   },
                                                   child: Container(
                                                     height: 20,
                                                     width: 20,
-                                                    decoration: const BoxDecoration(
+                                                    decoration:
+                                                        const BoxDecoration(
                                                       color: kMainColor,
-                                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                     ),
                                                     child: const Center(
                                                       child: Text(
                                                         '-',
-                                                        style: TextStyle(fontSize: 14, color: Colors.white),
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                Colors.white),
                                                       ),
                                                     ),
                                                   ),
@@ -345,26 +419,37 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                                   width: 30,
                                                   child: Center(
                                                     child: Text(
-                                                      providerData.cartItemList[index].quantities.toString(),
+                                                      providerData
+                                                          .cartItemList[index]
+                                                          .quantities
+                                                          .toString(),
                                                     ),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 5),
                                                 GestureDetector(
                                                   onTap: () {
-                                                    providerData.quantityIncrease(index);
+                                                    providerData
+                                                        .quantityIncrease(
+                                                            index);
                                                   },
                                                   child: Container(
                                                     height: 20,
                                                     width: 20,
-                                                    decoration: const BoxDecoration(
+                                                    decoration:
+                                                        const BoxDecoration(
                                                       color: kMainColor,
-                                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                     ),
                                                     child: const Center(
                                                         child: Text(
                                                       '+',
-                                                      style: TextStyle(fontSize: 14, color: Colors.white),
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.white),
                                                     )),
                                                   ),
                                                 ),
@@ -378,7 +463,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                             },
                                             child: Container(
                                               padding: const EdgeInsets.all(4),
-                                              color: Colors.red.withOpacity(0.1),
+                                              color:
+                                                  Colors.red.withOpacity(0.1),
                                               child: const Icon(
                                                 Icons.delete,
                                                 size: 20,
@@ -405,11 +491,15 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                     child: Container(
                       height: 50,
                       width: double.infinity,
-                      decoration: BoxDecoration(color: kMainColor.withOpacity(0.1), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                      decoration: BoxDecoration(
+                          color: kMainColor.withOpacity(0.1),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
                       child: Center(
                         child: Text(
                           lang.S.of(context).addItems,
-                          style: const TextStyle(color: kMainColor, fontSize: 20),
+                          style:
+                              const TextStyle(color: kMainColor, fontSize: 20),
                         ),
                       ),
                     ),
@@ -418,13 +508,21 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
 
                   ///_____Total_Section_____________________________
                   Container(
-                    decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(10)), border: Border.all(color: Colors.grey.shade300, width: 1)),
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        border:
+                            Border.all(color: Colors.grey.shade300, width: 1)),
                     child: Column(
                       children: [
                         ///________Total_title_reader_________________________
                         Container(
                           padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(color: Color(0xffFEF0F1), borderRadius: BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10))),
+                          decoration: const BoxDecoration(
+                              color: Color(0xffFEF0F1),
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  topLeft: Radius.circular(10))),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -456,17 +554,21 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 height: 30,
                                 child: Container(
                                   decoration: const BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: kBorder, width: 1)),
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: kBorder, width: 1)),
                                   ),
                                   child: DropdownButton<String?>(
                                     dropdownColor: Colors.white,
                                     isExpanded: true,
                                     isDense: true,
                                     padding: EdgeInsets.zero,
-                                    icon: const Icon(Icons.keyboard_arrow_down, color: kGreyTextColor),
+                                    icon: const Icon(Icons.keyboard_arrow_down,
+                                        color: kGreyTextColor),
                                     hint: Text(
                                       'Select',
-                                      style: _theme.textTheme.bodyMedium?.copyWith(
+                                      style:
+                                          _theme.textTheme.bodyMedium?.copyWith(
                                         color: kGreyTextColor,
                                       ),
                                     ),
@@ -475,11 +577,15 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                       "Flat",
                                       "Percent",
                                     ]
-                                        .map((type) => DropdownMenuItem<String?>(
+                                        .map((type) =>
+                                            DropdownMenuItem<String?>(
                                               value: type,
                                               child: Text(
                                                 type,
-                                                style: _theme.textTheme.bodyMedium?.copyWith(color: kNeutralColor),
+                                                style: _theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                        color: kNeutralColor),
                                               ),
                                             ))
                                         .toList(),
@@ -487,7 +593,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                       setState(() {
                                         discountType = value!;
                                         providerData.calculateDiscount(
-                                          value: providerData.discountTextControllerFlat.text,
+                                          value: providerData
+                                              .discountTextControllerFlat.text,
                                           selectedTaxType: discountType,
                                         );
                                         print(providerData.discountPercent);
@@ -502,7 +609,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 width: context.width() / 4,
                                 height: 30,
                                 child: TextField(
-                                  controller: providerData.discountTextControllerFlat,
+                                  controller:
+                                      providerData.discountTextControllerFlat,
                                   onChanged: (value) {
                                     setState(() {
                                       providerData.calculateDiscount(
@@ -516,10 +624,13 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   decoration: const InputDecoration(
                                     hintText: '0',
                                     hintStyle: TextStyle(color: kNeutralColor),
-                                    border: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
-                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
                                     focusedBorder: UnderlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 0, vertical: 8),
                                   ),
                                   keyboardType: TextInputType.number,
                                 ),
@@ -543,10 +654,16 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                               const Spacer(),
                               taxesData.when(
                                 data: (data) {
-                                  List<VatModel> dataList = data.where((tax) => tax.status == true).toList();
-                                  if (widget.transitionModel != null && widget.transitionModel?.vatId != null && !hasPreselected) {
+                                  List<VatModel> dataList = data
+                                      .where((tax) => tax.status == true)
+                                      .toList();
+                                  if (widget.transitionModel != null &&
+                                      widget.transitionModel?.vatId != null &&
+                                      !hasPreselected) {
                                     VatModel matched = dataList.firstWhere(
-                                      (element) => element.id == widget.transitionModel?.vatId,
+                                      (element) =>
+                                          element.id ==
+                                          widget.transitionModel?.vatId,
                                       orElse: () => VatModel(),
                                     );
                                     if (matched.id != null) {
@@ -560,26 +677,33 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                     height: 30,
                                     child: Container(
                                       decoration: const BoxDecoration(
-                                        border: Border(bottom: BorderSide(color: kBorder, width: 1)),
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: kBorder, width: 1)),
                                       ),
                                       child: DropdownButton<VatModel?>(
                                         icon: providerData.selectedVat != null
                                             ? GestureDetector(
-                                                onTap: () => providerData.changeSelectedVat(data: null),
+                                                onTap: () => providerData
+                                                    .changeSelectedVat(
+                                                        data: null),
                                                 child: const Icon(
                                                   Icons.close,
                                                   color: Colors.red,
                                                   size: 16,
                                                 ),
                                               )
-                                            : const Icon(Icons.keyboard_arrow_down, color: kGreyTextColor),
+                                            : const Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: kGreyTextColor),
                                         dropdownColor: Colors.white,
                                         isExpanded: true,
                                         isDense: true,
                                         padding: EdgeInsets.zero,
                                         hint: Text(
                                           'Select',
-                                          style: _theme.textTheme.bodyMedium?.copyWith(
+                                          style: _theme.textTheme.bodyMedium
+                                              ?.copyWith(
                                             color: kGreyTextColor,
                                           ),
                                         ),
@@ -591,14 +715,16 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                               tax.name ?? '',
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: _theme.textTheme.bodyMedium?.copyWith(
+                                              style: _theme.textTheme.bodyMedium
+                                                  ?.copyWith(
                                                 color: kGreyTextColor,
                                               ),
                                             ),
                                           );
                                         }).toList(),
                                         onChanged: (VatModel? newValue) {
-                                          providerData.changeSelectedVat(data: newValue);
+                                          providerData.changeSelectedVat(
+                                              data: newValue);
                                         },
                                       ),
                                     ),
@@ -618,15 +744,22 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 child: TextFormField(
                                   controller: providerData.vatAmountController,
                                   readOnly: true,
-                                  onChanged: (value) => providerData.calculateDiscount(value: value, selectedTaxType: discountType.toString()),
+                                  onChanged: (value) =>
+                                      providerData.calculateDiscount(
+                                          value: value,
+                                          selectedTaxType:
+                                              discountType.toString()),
                                   textAlign: TextAlign.right,
                                   decoration: const InputDecoration(
                                     hintText: '0',
                                     hintStyle: TextStyle(color: kNeutralColor),
-                                    border: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
-                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
                                     focusedBorder: UnderlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 0, vertical: 8),
                                   ),
                                   keyboardType: TextInputType.number,
                                 ),
@@ -636,7 +769,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
+                          padding: const EdgeInsets.only(
+                              right: 10, left: 10, top: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -648,17 +782,24 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 width: context.width() / 4,
                                 height: 30,
                                 child: TextFormField(
-                                  controller: providerData.shippingChargeController,
+                                  controller:
+                                      providerData.shippingChargeController,
                                   keyboardType: TextInputType.number,
-                                  onChanged: (value) => providerData.calculatePrice(shippingCharge: value.isEmpty ? '0' : value),
+                                  onChanged: (value) =>
+                                      providerData.calculatePrice(
+                                          shippingCharge:
+                                              value.isEmpty ? '0' : value),
                                   textAlign: TextAlign.right,
                                   decoration: const InputDecoration(
                                     hintText: '0',
                                     hintStyle: TextStyle(color: kNeutralColor),
-                                    border: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
-                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
                                     focusedBorder: UnderlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 0, vertical: 8),
                                   ),
                                 ),
                               ),
@@ -668,7 +809,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
 
                         ///________Total_______________________________________
                         Padding(
-                          padding: const EdgeInsets.only(right: 10, left: 10, top: 7),
+                          padding: const EdgeInsets.only(
+                              right: 10, left: 10, top: 7),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -677,7 +819,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 style: const TextStyle(fontSize: 16),
                               ),
                               Text(
-                                formatPointNumber(providerData.totalPayableAmount),
+                                formatPointNumber(
+                                    providerData.totalPayableAmount),
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ],
@@ -686,7 +829,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
 
                         ///________paid_Amount__________________________________
                         Padding(
-                          padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
+                          padding: const EdgeInsets.only(
+                              right: 10, left: 10, top: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -700,15 +844,19 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 child: TextField(
                                   controller: recevedAmountController,
                                   keyboardType: TextInputType.number,
-                                  onChanged: (value) => providerData.calculatePrice(receivedAmount: value),
+                                  onChanged: (value) => providerData
+                                      .calculatePrice(receivedAmount: value),
                                   textAlign: TextAlign.right,
                                   decoration: const InputDecoration(
                                     hintText: '0',
                                     hintStyle: TextStyle(color: kNeutralColor),
-                                    border: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
-                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: kBorder)),
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: kBorder)),
                                     focusedBorder: UnderlineInputBorder(),
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 0, vertical: 8),
                                   ),
                                 ),
                               ),
@@ -720,7 +868,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                         Visibility(
                           visible: providerData.changeAmount > 0,
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 10, top: 13, bottom: 13),
+                            padding: const EdgeInsets.only(
+                                right: 10, left: 10, top: 13, bottom: 13),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -739,9 +888,12 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
 
                         ///_______Due_amount_____________________________________
                         Visibility(
-                          visible: providerData.dueAmount > 0 || (providerData.changeAmount == 0 && providerData.dueAmount == 0),
+                          visible: providerData.dueAmount > 0 ||
+                              (providerData.changeAmount == 0 &&
+                                  providerData.dueAmount == 0),
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 10, top: 13, bottom: 13),
+                            padding: const EdgeInsets.only(
+                                right: 10, left: 10, top: 13, bottom: 13),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -783,7 +935,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                           style: OutlinedButton.styleFrom(
                             maximumSize: const Size(double.infinity, 48),
                             minimumSize: const Size(double.infinity, 48),
-                            disabledBackgroundColor: _theme.colorScheme.primary.withValues(alpha: 0.15),
+                            disabledBackgroundColor: _theme.colorScheme.primary
+                                .withValues(alpha: 0.15),
                           ),
                           onPressed: () async {
                             const Home().launch(context, isNewTask: true);
@@ -806,19 +959,24 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                           style: OutlinedButton.styleFrom(
                             maximumSize: const Size(double.infinity, 48),
                             minimumSize: const Size(double.infinity, 48),
-                            disabledBackgroundColor: _theme.colorScheme.primary.withValues(alpha: 0.15),
+                            disabledBackgroundColor: _theme.colorScheme.primary
+                                .withValues(alpha: 0.15),
                           ),
                           onPressed: () async {
                             if (providerData.cartItemList.isEmpty) {
-                              EasyLoading.showError(lang.S.of(context).addProductFirst);
+                              EasyLoading.showError(
+                                  lang.S.of(context).addProductFirst);
                               return;
                             }
-                            if (widget.customerModel == null && providerData.dueAmount > 0) {
-                              EasyLoading.showError('Sales on due are not allowed for walk-in customers.');
+                            if (selectedCustomer == null &&
+                                providerData.dueAmount > 0) {
+                              EasyLoading.showError(
+                                  'Sales on due are not allowed for walk-in customers.');
                               return;
                             }
                             if (paymentType == null) {
-                              EasyLoading.showError('Please select a payment type');
+                              EasyLoading.showError(
+                                  'Please select a payment type');
                               return;
                             }
 
@@ -826,11 +984,14 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                             if (isProcessing) return;
 
                             setState(() {
-                              isProcessing = true; // Disable button while processing
+                              isProcessing =
+                                  true; // Disable button while processing
                             });
 
                             try {
-                              EasyLoading.show(status: lang.S.of(context).loading, dismissOnTap: false);
+                              EasyLoading.show(
+                                  status: lang.S.of(context).loading,
+                                  dismissOnTap: false);
                               if (widget.transitionModel == null) {
                                 PurchaseRepo repo = PurchaseRepo();
                                 PurchaseTransaction? purchaseData;
@@ -842,16 +1003,23 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   purchaseDate: selectedDate.toString(),
                                   products: providerData.cartItemList,
                                   vatAmount: providerData.vatAmount,
-                                  vatPercent: providerData.selectedVat?.rate ?? 0,
+                                  vatPercent:
+                                      providerData.selectedVat?.rate ?? 0,
                                   paymentType: paymentType?.toString() ?? '',
-                                  partyId: widget.customerModel?.id ?? 0,
-                                  isPaid: providerData.dueAmount <= 0 ? true : false,
-                                  dueAmount: providerData.dueAmount <= 0 ? 0 : providerData.dueAmount,
+                                  partyId: selectedCustomer?.id ?? 0,
+                                  isPaid: providerData.dueAmount <= 0
+                                      ? true
+                                      : false,
+                                  dueAmount: providerData.dueAmount <= 0
+                                      ? 0
+                                      : providerData.dueAmount,
                                   discountAmount: providerData.discountAmount,
                                   changeAmount: providerData.changeAmount,
-                                  shippingCharge: providerData.finalShippingCharge,
+                                  shippingCharge:
+                                      providerData.finalShippingCharge,
                                   discountPercent: providerData.discountPercent,
-                                  discountType: discountType.toLowerCase() ?? '',
+                                  discountType:
+                                      discountType.toLowerCase() ?? '',
                                 );
 
                                 if (purchaseData != null) {
@@ -873,12 +1041,18 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   purchaseDate: selectedDate.toString(),
                                   products: providerData.cartItemList,
                                   vatAmount: providerData.vatAmount,
-                                  vatPercent: providerData.selectedVat?.rate ?? 0,
+                                  vatPercent:
+                                      providerData.selectedVat?.rate ?? 0,
                                   paymentType: paymentType?.toString() ?? '',
                                   changeAmount: providerData.changeAmount,
-                                  partyId: widget.transitionModel?.party?.id ?? 0,
-                                  isPaid: providerData.dueAmount <= 0 ? true : false,
-                                  dueAmount: providerData.dueAmount <= 0 ? 0 : providerData.dueAmount,
+                                  partyId:
+                                      widget.transitionModel?.party?.id ?? 0,
+                                  isPaid: providerData.dueAmount <= 0
+                                      ? true
+                                      : false,
+                                  dueAmount: providerData.dueAmount <= 0
+                                      ? 0
+                                      : providerData.dueAmount,
                                   discountAmount: providerData.discountAmount,
                                 );
 
@@ -887,11 +1061,13 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 }
                               }
                             } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())));
                             } finally {
                               EasyLoading.dismiss();
                               setState(() {
-                                isProcessing = false; // Re-enable button after processing
+                                isProcessing =
+                                    false; // Re-enable button after processing
                               });
                             }
                           },

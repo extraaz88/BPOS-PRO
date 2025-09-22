@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "672209606331",
+    "project_id": "bpospro-b1305",
+    "storage_bucket": "bpospro-b1305.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672209606331:android:a8d53544e84162d9ab3b9e",
+        "android_client_info": {
+          "package_name": "com.extrazz.bpospro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4c3pRDdfqJah0pBMoZTaLKpbzeg3sYJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

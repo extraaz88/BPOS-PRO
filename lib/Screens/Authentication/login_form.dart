@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_pos/Screens/Authentication/register_screen.dart';
+import 'package:mobile_pos/Screens/Authentication/phone_otp_verification_screen.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
+import 'package:mobile_pos/services/firebase_phone_auth_service.dart';
 
 import '../../constant.dart';
 import 'forgot_password.dart';
@@ -18,7 +20,7 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool showPassword = true;
-  late String email, password;
+  late String phoneNumber, password;
   GlobalKey<FormState> globalKey = GlobalKey<FormState>();
 
   bool validateAndSave() {
@@ -28,6 +30,59 @@ class _LoginFormState extends State<LoginForm> {
       return true;
     }
     return false;
+  }
+
+  Future<void> _loginWithFirebase() async {
+    try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      // Send OTP to phone number
+      String? result = await FirebasePhoneAuthService.sendOTPToPhone(phoneNumber);
+      
+      // Close loading dialog
+      Navigator.pop(context);
+
+      if (result != null && result.contains('OTP sent')) {
+        // Navigate to phone OTP verification screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PhoneOTPVerificationScreen(
+              phoneNumber: '+91$phoneNumber',
+              isLogin: true,
+            ),
+          ),
+        );
+      } else {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result ?? 'Failed to send OTP'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if still open
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -53,24 +108,23 @@ class _LoginFormState extends State<LoginForm> {
                         children: [
                           const SizedBox(height: 20),
                           TextFormField(
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              labelText: lang.S.of(context).emailText,
-                              hintText: lang.S.of(context).enterYourEmailAddress,
+                              labelText: 'Phone Number',
+                              hintText: 'Enter your phone number',
+                              prefixText: '+91 ',
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                //return 'Email can\'n be empty';
-                                return lang.S.of(context).emailCannotBeEmpty;
-                              } else if (!value.contains('@')) {
-                                //return 'Please enter a valid email';
-                                return lang.S.of(context).pleaseEnterAValidEmail;
+                                return 'Phone number cannot be empty';
+                              } else if (value.length != 10) {
+                                return 'Please enter a valid 10-digit phone number';
                               }
                               return null;
                             },
                             onSaved: (value) {
-                              // loginProvider.email = value!;
+                              phoneNumber = value!;
                             },
                           ),
                           const SizedBox(height: 20),
@@ -129,12 +183,26 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                   ElevatedButton(
-                    child: Text(lang.S.of(context).logIn),
-                    onPressed: () {
+                    onPressed: () async {
                       if (validateAndSave()) {
-                        // loginProvider.signIn(context);
+                        await _loginWithFirebase();
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kMainColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      lang.S.of(context).logIn,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                   Visibility(
                     visible: widget.isEmailLogin,

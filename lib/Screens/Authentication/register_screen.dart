@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_pos/Screens/Authentication/Phone%20Auth/phone_auth_screen.dart';
-import 'package:mobile_pos/Screens/Authentication/profile_setup_screen.dart';
+import 'package:mobile_pos/Screens/Authentication/phone_otp_verification_screen.dart';
+import 'package:mobile_pos/Screens/Authentication/otp_verification_screen.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
 import 'package:nb_utils/nb_utils.dart';
 
-import '../../Repository/API/register_repo.dart';
+import '../../services/firebase_phone_auth_service.dart';
+import '../../services/firebase_auth_service.dart';
 import '../../constant.dart';
 import 'login_form.dart';
 
@@ -27,8 +29,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? givenPassword2;
 
   late String email;
+  late String phoneNumber;
   late String password;
   late String passwordConfirmation;
+  String verificationMethod = 'both'; // 'email', 'phone', or 'both'
 
   bool validateAndSave() {
     final form = globalKey.currentState;
@@ -43,6 +47,138 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+  }
+
+  Future<void> _registerWithFirebase() async {
+    try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      String? emailResult;
+      String? phoneResult;
+
+      // Send OTP based on selected verification method
+      if (verificationMethod == 'email' || verificationMethod == 'both') {
+        emailResult = await FirebaseAuthService.sendOTPToEmail(email);
+      }
+      
+      if (verificationMethod == 'phone' || verificationMethod == 'both') {
+        phoneResult = await FirebasePhoneAuthService.sendOTPToPhone(phoneNumber);
+      }
+      
+      // Close loading dialog
+      Navigator.pop(context);
+
+      // Handle results based on verification method
+      if (verificationMethod == 'email') {
+        if (emailResult != null && emailResult.contains('OTP sent')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OTPVerificationScreen(
+                email: email,
+                password: password,
+              ),
+            ),
+          );
+        } else {
+          _showErrorMessage('Email OTP failed: ${emailResult ?? 'Unknown error'}');
+        }
+      } else if (verificationMethod == 'phone') {
+        if (phoneResult != null && phoneResult.contains('OTP sent')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PhoneOTPVerificationScreen(
+                phoneNumber: '+91$phoneNumber',
+                isLogin: false,
+              ),
+            ),
+          );
+        } else {
+          _showErrorMessage('Phone OTP failed: ${phoneResult ?? 'Unknown error'}');
+        }
+      } else if (verificationMethod == 'both') {
+        if ((emailResult != null && emailResult.contains('OTP sent')) && 
+            (phoneResult != null && phoneResult.contains('OTP sent'))) {
+          _showVerificationMethodDialog();
+        } else {
+          String errorMessage = 'Failed to send OTP';
+          if (emailResult != null && !emailResult.contains('OTP sent')) {
+            errorMessage = 'Email OTP failed: $emailResult';
+          } else if (phoneResult != null && !phoneResult.contains('OTP sent')) {
+            errorMessage = 'Phone OTP failed: $phoneResult';
+          }
+          _showErrorMessage(errorMessage);
+        }
+      }
+    } catch (e) {
+      // Close loading dialog if still open
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      _showErrorMessage('Registration failed: $e');
+    }
+  }
+
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _showVerificationMethodDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Choose Verification Method'),
+        content: const Text('We have sent OTP to both your email and phone. Choose which method you want to use for verification:'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigate to email OTP verification
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OTPVerificationScreen(
+                    email: email,
+                    password: password,
+                  ),
+                ),
+              );
+            },
+            child: const Text('Verify via Email'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigate to phone OTP verification
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PhoneOTPVerificationScreen(
+                    phoneNumber: '+91$phoneNumber',
+                    isLogin: false,
+                  ),
+                ),
+              );
+            },
+            child: const Text('Verify via Phone'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -67,25 +203,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
+                          // Email Field
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              labelText: lang.S.of(context).emailText,
-                              hintText: lang.S.of(context).enterYourEmailAddress,
+                              labelText: 'Email Address',
+                              hintText: 'Enter your email address',
+                              prefixIcon: const Icon(Icons.email_outlined),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                // return 'Email can\'n be empty';
-                                return lang.S.of(context).emailCannotBeEmpty;
+                                return 'Email cannot be empty';
                               } else if (!value.contains('@')) {
-                                //return 'Please enter a valid email';
-                                return lang.S.of(context).pleaseEnterAValidEmail;
+                                return 'Please enter a valid email address';
                               }
                               return null;
                             },
                             onSaved: (value) {
                               email = value!;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          // Phone Number Field
+                          TextFormField(
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: 'Phone Number',
+                              hintText: 'Enter your phone number',
+                              prefixIcon: const Icon(Icons.phone_outlined),
+                              prefixText: '+91 ',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Phone number cannot be empty';
+                              } else if (value.length != 10) {
+                                return 'Please enter a valid 10-digit phone number';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              phoneNumber = value!;
                             },
                           ),
                           const SizedBox(height: 20),
@@ -163,20 +322,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
+                  
+                  // Verification Method Selection
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        Text(
+                          'Verification Method:',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: kMainColor,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: RadioListTile<String>(
+                                title: const Text('Email Only'),
+                                value: 'email',
+                                groupValue: verificationMethod,
+                                onChanged: (value) {
+                                  setState(() {
+                                    verificationMethod = value!;
+                                  });
+                                },
+                                activeColor: kMainColor,
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioListTile<String>(
+                                title: const Text('Phone Only'),
+                                value: 'phone',
+                                groupValue: verificationMethod,
+                                onChanged: (value) {
+                                  setState(() {
+                                    verificationMethod = value!;
+                                  });
+                                },
+                                activeColor: kMainColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        RadioListTile<String>(
+                          title: const Text('Both Email & Phone'),
+                          value: 'both',
+                          groupValue: verificationMethod,
+                          onChanged: (value) {
+                            setState(() {
+                              verificationMethod = value!;
+                            });
+                          },
+                          activeColor: kMainColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  
                   ElevatedButton(
                     onPressed: () async {
                       if (validateAndSave()) {
-                        RegisterRepo reg = RegisterRepo();
-                        if (await reg.registerRepo(email: email, context: context, password: password, confirmPassword: password))
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ProfileSetup(),
-                              ));
-                        // auth.signUp(context);
+                        await _registerWithFirebase();
                       }
                     },
-                    child: Text(lang.S.of(context).register),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kMainColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      lang.S.of(context).register,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
