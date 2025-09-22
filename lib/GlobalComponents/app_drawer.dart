@@ -522,20 +522,20 @@ class AppDrawer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Hero(
-                  tag: "extraazLogo",
-                  child: Container(
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Image.asset(
-                      "images/extraaaz-logo-white-DIqhPNzv.webp",
-                      height: 18,
-                    ),
-                  ),
-                ),
+                // Hero(
+                //   tag: "extraazLogo",
+                //   child: Container(
+                //     padding: EdgeInsets.all(3),
+                //     decoration: BoxDecoration(
+                //       color: Colors.white.withOpacity(0.2),
+                //       borderRadius: BorderRadius.circular(6),
+                //     ),
+                //     child: Image.asset(
+                //       "images/extraaaz-logo-white-DIqhPNzv.webp",
+                //       height: 18,
+                //     ),
+                //   ),
+                // ),
                 const SizedBox(width: 8),
                 Text(
                   "Powered by Extraaaz",

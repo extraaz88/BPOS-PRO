@@ -16,33 +16,19 @@ import '../Model/product_model.dart';
 class ProductRepo {
   Future<List<ProductModel>> fetchAllProducts() async {
     final uri = Uri.parse('${APIConfig.url}/products');
-    final token = await getAuthToken();
-
-    print('=== PRODUCTS API CALL ===');
-    print('Products API URL: $uri');
-    print('Products API Token: Bearer $token');
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
+      'Authorization': await getAuthToken(),
     });
-
-    print('Products API Response Status: ${response.statusCode}');
-    print('Products API Response Headers: ${response.headers}');
-    print('Products API Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body) as Map<String, dynamic>;
-      print('Products API Parsed Data: $parsedData');
 
       final partyList = parsedData['data'] as List<dynamic>;
-      print('Products Count: ${partyList.length}');
-      
-      final products = partyList.map((category) => ProductModel.fromJson(category)).toList();
-      print('Products Successfully Fetched: ${products.length} items');
-      return products;
+      return partyList.map((category) => ProductModel.fromJson(category)).toList();
+      // Parse into Party objects
     } else {
-      print('Products API Error: ${response.statusCode} - ${response.body}');
       throw Exception('Failed to fetch Products');
     }
   }
@@ -76,23 +62,12 @@ class ProductRepo {
     String? expDate,
   }) async {
     final uri = Uri.parse('${APIConfig.url}/products');
-    final token = await getAuthToken();
-
-    print('=== ADD PRODUCT API CALL ===');
-    print('Add Product API URL: $uri');
-    print('Add Product API Token: Bearer $token');
-    print('Product Name: $productName');
-    print('Category ID: $categoryId');
-    print('Product Code: $productCode');
-    print('Product Stock: $productStock');
-    print('Sale Price: $productSalePrice');
-    print('Purchase Price: $productPurchasePrice');
 
     CustomHttpClient customHttpClient = CustomHttpClient(client: http.Client(), context: context, ref: ref);
 
     var request = http.MultipartRequest('POST', uri)
       ..headers['Accept'] = 'application/json'
-      ..headers['Authorization'] = 'Bearer $token';
+      ..headers['Authorization'] = await getAuthToken();
     request.fields.addAll({
       "productName": productName,
       "category_id": categoryId,
@@ -126,22 +101,14 @@ class ProductRepo {
     final response = await customHttpClient.uploadFile(url: uri, file: image, fileFieldName: 'productPicture', fields: request.fields);
     final responseData = await response.stream.bytesToString();
     final parsedData = jsonDecode(responseData);
-    
-    print('Add Product API Response Status: ${response.statusCode}');
-    print('Add Product API Response Headers: ${response.headers}');
-    print('Add Product API Response Body: $responseData');
-    print('Add Product API Parsed Data: $parsedData');
-    
     EasyLoading.dismiss();
 
     if (response.statusCode == 200) {
-      print('Product Added Successfully!');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added successful!')));
       var data1 = ref.refresh(productProvider);
 
       Navigator.pop(context);
     } else {
-      print('Product Creation Failed: ${parsedData['message']}');
       EasyLoading.dismiss();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product creation failed: ${parsedData['message']}')));
     }
@@ -211,12 +178,6 @@ class ProductRepo {
     required WidgetRef ref,
   }) async {
     final String apiUrl = '${APIConfig.url}/products/$id';
-    final token = await getAuthToken();
-
-    print('=== DELETE PRODUCT API CALL ===');
-    print('Delete Product API URL: $apiUrl');
-    print('Delete Product API Token: Bearer $token');
-    print('Product ID to Delete: $id');
 
     try {
       CustomHttpClient customHttpClient = CustomHttpClient(ref: ref, context: context, client: http.Client());
@@ -224,24 +185,17 @@ class ProductRepo {
         url: Uri.parse(apiUrl),
       );
 
-      print('Delete Product API Response Status: ${response.statusCode}');
-      print('Delete Product API Response Headers: ${response.headers}');
-      print('Delete Product API Response Body: ${response.body}');
-
       EasyLoading.dismiss();
 
       if (response.statusCode == 200) {
-        print('Product Deleted Successfully!');
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Product deleted successfully')));
 
         var data1 = ref.refresh(productProvider);
       } else {
         final parsedData = jsonDecode(response.body);
-        print('Product Deletion Failed: ${parsedData['message']}');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete product: ${parsedData['message']}')));
       }
     } catch (e) {
-      print('Delete Product Error: $e');
       EasyLoading.dismiss();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
@@ -277,23 +231,11 @@ class ProductRepo {
     String? expDate,
   }) async {
     final uri = Uri.parse('${APIConfig.url}/products/$productId');
-    final token = await getAuthToken();
-    
-    print('=== UPDATE PRODUCT API CALL ===');
-    print('Update Product API URL: $uri');
-    print('Update Product API Token: Bearer $token');
-    print('Product ID: $productId');
-    print('Product Name: $productName');
-    print('Product Code: $productCode');
-    print('Category ID: $categoryId');
-    print('Sale Price: $productSalePrice');
-    print('Purchase Price: $productPurchasePrice');
-    
     CustomHttpClient customHttpClient = CustomHttpClient(client: http.Client(), context: context, ref: ref);
 
     var request = http.MultipartRequest('POST', uri)
       ..headers['Accept'] = 'application/json'
-      ..headers['Authorization'] = 'Bearer $token';
+      ..headers['Authorization'] = await getAuthToken();
 
     request.fields['_method'] = 'put';
     request.fields.addAll({
@@ -326,7 +268,7 @@ class ProductRepo {
     if (lowStock != null) request.fields['alert_qty'] = lowStock;
     if (expDate != null) request.fields['expire_date'] = expDate;
 
-    print('Update Product Request Fields: ${request.fields}');
+    print('Update response : ${request.fields}');
     final response = await customHttpClient.uploadFile(
       url: uri,
       file: image,
@@ -336,20 +278,13 @@ class ProductRepo {
     final responseData = await response.stream.bytesToString();
 
     final parsedData = jsonDecode(responseData);
-    
-    print('Update Product API Response Status: ${response.statusCode}');
-    print('Update Product API Response Headers: ${response.headers}');
-    print('Update Product API Response Body: $responseData');
-    print('Update Product API Parsed Data: $parsedData');
 
     if (response.statusCode == 200) {
-      print('Product Updated Successfully!');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Updated Successfully!')));
       var data1 = ref.refresh(productProvider);
 
       Navigator.pop(context);
     } else {
-      print('Product Update Failed: ${parsedData['message']}');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product Update failed: ${parsedData['message']}')));
     }
   }

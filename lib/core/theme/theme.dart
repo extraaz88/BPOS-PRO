@@ -23,14 +23,21 @@ abstract class AcnooTheme {
         ),
       ),
       dropdownMenuTheme: const DropdownMenuThemeData(
-        textStyle: const TextStyle(color: kTitleColor, fontSize: 16.0, fontWeight: FontWeight.normal),
+        textStyle: const TextStyle(
+            color: kTitleColor, fontSize: 16.0, fontWeight: FontWeight.normal),
         menuStyle: MenuStyle(
           backgroundColor: WidgetStatePropertyAll(Colors.white),
           surfaceTintColor: WidgetStatePropertyAll(Colors.white),
         ),
         inputDecorationTheme: InputDecorationTheme(
-          hintStyle: const TextStyle(color: kNeutralColor, fontSize: 14.0, fontWeight: FontWeight.normal),
-          labelStyle: const TextStyle(color: kTitleColor, fontSize: 16.0, fontWeight: FontWeight.normal),
+          hintStyle: const TextStyle(
+              color: kNeutralColor,
+              fontSize: 14.0,
+              fontWeight: FontWeight.normal),
+          labelStyle: const TextStyle(
+              color: kTitleColor,
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal),
           iconColor: kGreyTextColor,
           contentPadding: EdgeInsets.only(left: 10.0, right: 7.0),
         ),
@@ -45,8 +52,12 @@ abstract class AcnooTheme {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         focusColor: kMainColor,
         outlineBorder: const BorderSide(color: Color(0xFFD7D9DE), width: 1.0),
-        hintStyle: const TextStyle(color: kNeutralColor, fontSize: 14.0, fontWeight: FontWeight.normal),
-        labelStyle: const TextStyle(color: kTitleColor, fontSize: 16.0, fontWeight: FontWeight.normal),
+        hintStyle: const TextStyle(
+            color: kNeutralColor,
+            fontSize: 14.0,
+            fontWeight: FontWeight.normal),
+        labelStyle: const TextStyle(
+            color: kTitleColor, fontSize: 16.0, fontWeight: FontWeight.normal),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6.0),
           borderSide: const BorderSide(color: kMainColor, width: 1.0),
@@ -71,7 +82,11 @@ abstract class AcnooTheme {
         filled: false,
         fillColor: Colors.white,
       ),
-      colorScheme: const ColorScheme.light(surface: kWhite, primary: kMainColor, primaryContainer: kWhite, outline: kBorderColor),
+      colorScheme: const ColorScheme.light(
+          surface: kWhite,
+          primary: kMainColor,
+          primaryContainer: kWhite,
+          outline: kBorderColor),
       elevatedButtonTheme: _getElevatedButtonTheme(textTheme),
       outlinedButtonTheme: _getOutlineButtonTheme,
       pageTransitionsTheme: PageTransitionsTheme(
@@ -94,8 +109,10 @@ abstract class AcnooTheme {
   static SnackBarThemeData _getSnackBarTheme() {
     return const SnackBarThemeData(
       backgroundColor: Color(0xff333333), // Change this to your desired color
-      actionTextColor: Colors.white, // Change action button text color if needed
-      contentTextStyle: TextStyle(color: Colors.white), // Change the toast message color
+      actionTextColor:
+          Colors.white, // Change action button text color if needed
+      contentTextStyle:
+          TextStyle(color: Colors.white), // Change the toast message color
     );
   }
 
@@ -108,7 +125,8 @@ abstract class AcnooTheme {
         visualDensity: _buttonDensity,
         foregroundColor: DAppColors.kOnPrimary,
         backgroundColor: DAppColors.kPrimary,
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'NotoSans'),
+        textStyle: const TextStyle(
+            fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'NotoSans'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         minimumSize: const Size.fromHeight(48),
       ),
@@ -122,7 +140,7 @@ abstract class AcnooTheme {
       ),
       visualDensity: _buttonDensity,
       padding: _buttonPadding,
-      side: const BorderSide(color: kMainColor),
+      side: const BorderSide(color: kMainColor, width: 1.5),
       foregroundColor: kMainColor,
     ),
   );
@@ -162,7 +180,8 @@ abstract class AcnooTheme {
       bodyMedium: baseTextTheme.bodyMedium?.copyWith(
         fontFamily: _fontFamily,
       ),
-      bodySmall: baseTextTheme.bodySmall?.copyWith(fontFamily: _fontFamily, color: kNeutralColor),
+      bodySmall: baseTextTheme.bodySmall
+          ?.copyWith(fontFamily: _fontFamily, color: kNeutralColor),
       labelLarge: baseTextTheme.labelLarge?.copyWith(
         fontFamily: _fontFamily,
       ),
@@ -186,7 +205,8 @@ class CustomPageTransitionBuilder extends PageTransitionsBuilder {
     Widget child,
   ) {
     return FadeTransition(
-      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut)),
+      opacity: Tween<double>(begin: 0.0, end: 1.0)
+          .animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut)),
       child: child,
     );
   }

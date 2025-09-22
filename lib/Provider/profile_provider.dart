@@ -19,17 +19,3 @@ final summaryInfoProvider = FutureProvider<TodaysSummaryModel>(
 final dashboardInfoProvider = FutureProvider.family
     .autoDispose<DashboardOverviewModel, String>(
         (ref, type) => businessRepository.dashboardData(type));
-
-// Custom date provider
-final customDateProvider = StateProvider<Map<String, DateTime?>>((ref) => {
-  'fromDate': null,
-  'toDate': null,
-});
-
-final dashboardCustomDateProvider = FutureProvider.family
-    .autoDispose<DashboardOverviewModel, Map<String, dynamic>>(
-        (ref, params) => businessRepository.dashboardData(
-          params['type'] as String,
-          fromDate: params['fromDate'] as DateTime?,
-          toDate: params['toDate'] as DateTime?,
-        ));

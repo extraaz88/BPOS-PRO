@@ -157,9 +157,6 @@ class BusinessRepository {
     print('Dashboard API URL: $uri');
     print('Dashboard API Token: Bearer $token');
     print('Original type: $type, Mapped duration: $durationParam');
-    if (type.toLowerCase() == 'custom date' && fromDate != null && toDate != null) {
-      print('Custom Date Range: ${fromDate.year}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')} to ${toDate.year}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}');
-    }
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
@@ -185,19 +182,8 @@ class BusinessRepository {
       }
     } else {
       // await LogOutRepo().signOut();
-      print('Dashboard API Error: ${response.statusCode} - ${response.body}');
-      
-      if (response.statusCode == 400) {
-        throw Exception('Bad Request: Invalid date parameters. Please check your date range.');
-      } else if (response.statusCode == 401) {
-        throw Exception('Unauthorized: Please check your authentication token.');
-      } else if (response.statusCode == 404) {
-        throw Exception('Not Found: Dashboard endpoint not found.');
-      } else if (response.statusCode == 500) {
-        throw Exception('Server Error: Please try again later.');
-      } else {
-        throw Exception('Failed to fetch dashboard data. Status: ${response.statusCode}');
-      }
+
+      throw Exception('Failed to fetch business data ${response.statusCode}');
     }
   }
 }

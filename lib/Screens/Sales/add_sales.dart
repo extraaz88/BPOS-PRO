@@ -1179,6 +1179,9 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                           style: OutlinedButton.styleFrom(
                             maximumSize: const Size(double.infinity, 48),
                             minimumSize: const Size(double.infinity, 48),
+                            side:
+                                const BorderSide(color: kMainColor, width: 1.5),
+                            foregroundColor: kMainColor,
                             disabledBackgroundColor: _theme.colorScheme.primary
                                 .withValues(alpha: 0.15),
                           ),
@@ -1190,7 +1193,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: _theme.textTheme.bodyMedium?.copyWith(
-                              color: _theme.colorScheme.primary,
+                              color: kMainColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),

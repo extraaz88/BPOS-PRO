@@ -17,21 +17,21 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final List<String> timeList = [
-    'Today', 
-    'Yesterday', 
-    'Last 7 Days', 
-    'Last 30 Days', 
-    'Current Month', 
-    'Last Month', 
+    'Today',
+    'Yesterday',
+    'Last 7 Days',
+    'Last 30 Days',
+    'Current Month',
+    'Last Month',
     'Current Year',
     'Custom Date'
   ];
   String selectedTime = 'Today';
-  
+
   // Custom date variables
   DateTime? fromDate;
   DateTime? toDate;
-  bool showCustomDatePicker = false;
+  bool showDatePicker = false;
 
   Map<String, String> getTranslatedTimes(BuildContext context) {
     return {
@@ -52,16 +52,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (_isRefreshing) return; // Prevent duplicate refresh calls
     _isRefreshing = true;
 
-    // Invalidate and refresh the provider based on selected time
-    if (selectedTime == 'Custom Date' && fromDate != null && toDate != null) {
-      ref.invalidate(dashboardCustomDateProvider({
-        'type': 'custom_date',
-        'fromDate': fromDate,
-        'toDate': toDate,
-      }));
-    } else {
-      ref.invalidate(dashboardInfoProvider(selectedTime.toLowerCase()));
-    }
+    // Invalidate and refresh the provider
+    ref.invalidate(dashboardInfoProvider(selectedTime.toLowerCase()));
 
     await Future.delayed(const Duration(seconds: 1)); // Optional delay
     _isRefreshing = false;
@@ -72,15 +64,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final theme = Theme.of(context);
     final translatedTimes = getTranslatedTimes(context);
     return Consumer(builder: (_, ref, watch) {
-      // Use custom date provider if custom date is selected
-      final dashboardInfo = selectedTime == 'Custom Date' && fromDate != null && toDate != null
-          ? ref.watch(dashboardCustomDateProvider({
-              'type': 'custom_date',
-              'fromDate': fromDate,
-              'toDate': toDate,
-            }))
-          : ref.watch(dashboardInfoProvider(selectedTime.toLowerCase()));
-      
+      final dashboardInfo =
+          ref.watch(dashboardInfoProvider(selectedTime.toLowerCase()));
       return dashboardInfo.when(data: (dashboard) {
         return Scaffold(
           backgroundColor: kBackgroundColor,
@@ -98,7 +83,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: 32,
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     // width: 100,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(color: kBorderColorTextField)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: kBorderColorTextField)),
                     child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                       icon: const Icon(
@@ -111,7 +98,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         return DropdownMenuItem<String>(
                           value: time,
                           child: Text(
-                            translatedTimes[time] ?? time, // Translate item dynamically
+                            translatedTimes[time] ??
+                                time, // Translate item dynamically
                             style: const TextStyle(
                               color: kGreyTextColor,
                               fontSize: 14,
@@ -124,21 +112,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         setState(() {
                           selectedTime = value!;
                           if (selectedTime == 'Custom Date') {
-                            showCustomDatePicker = true;
+                            showDatePicker = true;
                           } else {
-                            showCustomDatePicker = false;
+                            showDatePicker = false;
                           }
                         });
                         // Refresh the provider with new selected time
-                        if (selectedTime == 'Custom Date' && fromDate != null && toDate != null) {
-                          ref.invalidate(dashboardCustomDateProvider({
-                            'type': 'custom_date',
-                            'fromDate': fromDate,
-                            'toDate': toDate,
-                          }));
-                        } else {
-                          ref.invalidate(dashboardInfoProvider(selectedTime.toLowerCase()));
-                        }
+                        ref.invalidate(
+                            dashboardInfoProvider(selectedTime.toLowerCase()));
                       },
                     ))),
               )
@@ -153,7 +134,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Custom Date Picker
-                    if (showCustomDatePicker) ...[
+                    if (showDatePicker) ...[
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -176,47 +157,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'From Date',
-                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
                                           color: kGreyTextColor,
                                         ),
                                       ),
                                       const SizedBox(height: 8),
                                       InkWell(
                                         onTap: () async {
-                                          final date = await showDatePicker(
-                                            context: context,
-                                            initialDate: fromDate ?? DateTime.now().subtract(const Duration(days: 30)),
-                                            firstDate: DateTime(2020),
-                                            lastDate: DateTime.now(),
-                                          );
+                                          final date = await showDatePicker;
                                           if (date != null) {
                                             setState(() {
-                                              fromDate = date;
+                                              fromDate = date as DateTime?;
                                             });
                                           }
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
                                           decoration: BoxDecoration(
-                                            border: Border.all(color: kBorderColorTextField),
-                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color: kBorderColorTextField),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                fromDate != null 
+                                                fromDate != null
                                                     ? '${fromDate!.day}/${fromDate!.month}/${fromDate!.year}'
                                                     : 'Select From Date',
                                                 style: TextStyle(
-                                                  color: fromDate != null ? kTitleColor : kGreyTextColor,
+                                                  color: fromDate != null
+                                                      ? kTitleColor
+                                                      : kGreyTextColor,
                                                 ),
                                               ),
-                                              const Icon(Icons.calendar_today, size: 16, color: kGreyTextColor),
+                                              const Icon(Icons.calendar_today,
+                                                  size: 16,
+                                                  color: kGreyTextColor),
                                             ],
                                           ),
                                         ),
@@ -227,47 +213,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'To Date',
-                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
                                           color: kGreyTextColor,
                                         ),
                                       ),
                                       const SizedBox(height: 8),
                                       InkWell(
                                         onTap: () async {
-                                          final date = await showDatePicker(
-                                            context: context,
-                                            initialDate: toDate ?? DateTime.now(),
-                                            firstDate: fromDate ?? DateTime(2020),
-                                            lastDate: DateTime.now(),
-                                          );
+                                          final date = await showDatePicker;
                                           if (date != null) {
                                             setState(() {
-                                              toDate = date;
+                                              toDate = date as DateTime?;
                                             });
                                           }
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
                                           decoration: BoxDecoration(
-                                            border: Border.all(color: kBorderColorTextField),
-                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color: kBorderColorTextField),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                toDate != null 
+                                                toDate != null
                                                     ? '${toDate!.day}/${toDate!.month}/${toDate!.year}'
                                                     : 'Select To Date',
                                                 style: TextStyle(
-                                                  color: toDate != null ? kTitleColor : kGreyTextColor,
+                                                  color: toDate != null
+                                                      ? kTitleColor
+                                                      : kGreyTextColor,
                                                 ),
                                               ),
-                                              const Icon(Icons.calendar_today, size: 16, color: kGreyTextColor),
+                                              const Icon(Icons.calendar_today,
+                                                  size: 16,
+                                                  color: kGreyTextColor),
                                             ],
                                           ),
                                         ),
@@ -282,49 +273,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: fromDate != null && toDate != null
-                                    ? () async {
-                                        // Validate date range
-                                        if (fromDate!.isAfter(toDate!)) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('From date must be before To date'),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                          return;
-                                        }
-                                        
+                                    ? () {
                                         // Apply custom date filter
-                                        try {
-                                          ref.invalidate(dashboardCustomDateProvider({
-                                            'type': 'custom_date',
-                                            'fromDate': fromDate,
-                                            'toDate': toDate,
-                                          }));
-                                          setState(() {
-                                            showCustomDatePicker = false;
-                                          });
-                                          
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Data loaded for ${fromDate!.day}/${fromDate!.month}/${fromDate!.year} to ${toDate!.day}/${toDate!.month}/${toDate!.year}'),
-                                              backgroundColor: Colors.green,
-                                            ),
-                                          );
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Error loading data: $e'),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                        }
+                                        ref.invalidate(dashboardInfoProvider(
+                                            'custom_date'));
+                                        setState(() {
+                                          showDatePicker = false;
+                                        });
                                       }
                                     : null,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: kMainColor,
                                   foregroundColor: kWhite,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -345,14 +307,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                     Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kWhite),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: kWhite),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             lang.S.of(context).salesPurchaseOverview,
                             //'Sales & Purchase Overview',
-                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: kTitleColor),
+                            style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: kTitleColor),
                           ),
                           const SizedBox(
                             height: 20,
@@ -372,7 +338,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   text: TextSpan(
                                       text: lang.S.of(context).sales,
                                       //'Sales',
-                                      style: const TextStyle(color: kTitleColor),
+                                      style:
+                                          const TextStyle(color: kTitleColor),
                                       children: const [
                                     // TextSpan(
                                     //     text: '$currency 500',
@@ -395,7 +362,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       text: lang.S.of(context).purchase,
 
                                       //'Purchase',
-                                      style: const TextStyle(color: kTitleColor),
+                                      style:
+                                          const TextStyle(color: kTitleColor),
                                       children: const [
                                     // TextSpan(
                                     //     text: '$currency 300',
@@ -410,7 +378,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           SizedBox(
                               height: 250,
                               width: double.infinity,
-                              child: dashboard.data?.sales != null && dashboard.data?.purchases != null
+                              child: dashboard.data?.sales != null &&
+                                      dashboard.data?.purchases != null
                                   ? DashboardChart(
                                       model: dashboard,
                                     )
@@ -428,11 +397,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(child: GlobalContainer(title: lang.S.of(context).totalItems, image: 'assets/totalItem.svg', subtitle: (dashboard.data?.totalItems?.round() ?? 0).toString())),
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).totalItems,
+                                image: 'assets/totalItem.svg',
+                                subtitle:
+                                    (dashboard.data?.totalItems?.round() ?? 0)
+                                        .toString())),
                         const SizedBox(
                           width: 12,
                         ),
-                        Expanded(child: GlobalContainer(title: lang.S.of(context).totalCategories, image: 'assets/purchaseLisst.svg', subtitle: (dashboard.data?.totalCategories?.round() ?? 0).toString()))
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).totalCategories,
+                                image: 'assets/purchaseLisst.svg',
+                                subtitle:
+                                    (dashboard.data?.totalCategories?.round() ??
+                                            0)
+                                        .toString()))
                       ],
                     ),
 
@@ -441,38 +423,74 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Text(
                       lang.S.of(context).quickOverview,
                       //'Quick Overview',
-                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        Expanded(child: GlobalContainer(title: lang.S.of(context).totalIncome, image: 'assets/totalIncome.svg', subtitle: '$currency${(dashboard.data?.totalIncome ?? 0).toStringAsFixed(2)}')),
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).totalIncome,
+                                image: 'assets/totalIncome.svg',
+                                subtitle:
+                                    '$currency${(dashboard.data?.totalIncome ?? 0).toStringAsFixed(2)}')),
                         const SizedBox(
                           width: 12,
                         ),
-                        Expanded(child: GlobalContainer(title: lang.S.of(context).totalExpense, image: 'assets/expense.svg', subtitle: '$currency${(dashboard.data?.totalExpense ?? 0).toStringAsFixed(2)}'))
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).totalExpense,
+                                image: 'assets/expense.svg',
+                                subtitle:
+                                    '$currency${(dashboard.data?.totalExpense ?? 0).toStringAsFixed(2)}'))
                       ],
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        Expanded(child: GlobalContainer(title: lang.S.of(context).customerDue, image: 'assets/duelist.svg', subtitle: '$currency ${(dashboard.data?.totalDue ?? 0).toStringAsFixed(2)}')),
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).customerDue,
+                                image: 'assets/duelist.svg',
+                                subtitle:
+                                    '$currency ${(dashboard.data?.totalDue ?? 0).toStringAsFixed(2)}')),
                         const SizedBox(
                           width: 12,
                         ),
-                        Expanded(child: GlobalContainer(title: lang.S.of(context).stockValue, image: 'assets/stock.svg', subtitle: "$currency${(dashboard.data?.stockValue ?? 0).toStringAsFixed(2)}"))
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).stockValue,
+                                image: 'assets/stock.svg',
+                                subtitle:
+                                    "$currency${(dashboard.data?.stockValue ?? 0).toStringAsFixed(2)}"))
                       ],
                     ),
                     const SizedBox(height: 20),
                     Text(
                       lang.S.of(context).lossProfit,
-                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
 
                     ///__________Total_Lass_and_Total_profit_____________________________________
                     const SizedBox(height: 10),
                     Row(
-                      children: [Expanded(child: GlobalContainer(title: lang.S.of(context).totalProfit, image: 'assets/lossprofit.svg', subtitle: '$currency${(dashboard.data?.totalProfit ?? 0).toStringAsFixed(2)}')), const SizedBox(width: 12), Expanded(child: GlobalContainer(title: lang.S.of(context).totalLoss, image: 'assets/expense.svg', subtitle: '$currency${(dashboard.data?.totalLoss ?? 0).abs().toStringAsFixed(2)}'))],
+                      children: [
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).totalProfit,
+                                image: 'assets/lossprofit.svg',
+                                subtitle:
+                                    '$currency${(dashboard.data?.totalProfit ?? 0).toStringAsFixed(2)}')),
+                        const SizedBox(width: 12),
+                        Expanded(
+                            child: GlobalContainer(
+                                title: lang.S.of(context).totalLoss,
+                                image: 'assets/expense.svg',
+                                subtitle:
+                                    '$currency${(dashboard.data?.totalLoss ?? 0).abs().toStringAsFixed(2)}'))
+                      ],
                     ),
                   ],
                 ),
@@ -490,7 +508,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Text(
                   //'{No data found} $e',
                   '${lang.S.of(context).noDataFound} $e',
-                  style: const TextStyle(color: kGreyTextColor, fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                      color: kGreyTextColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
                 ),
               ],
             ),
