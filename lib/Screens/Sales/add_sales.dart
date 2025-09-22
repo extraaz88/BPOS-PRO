@@ -1245,6 +1245,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                   providerData.cartItemList.map((element) {
                                 return CartSaleProducts(
                                   productId: element.productId.toInt(),
+                                  stockId: element.productId.toInt(), // Using productId as stockId
                                   quantities: element.quantity,
                                   price: num.tryParse(
                                           element.unitPrice.toString()) ??
