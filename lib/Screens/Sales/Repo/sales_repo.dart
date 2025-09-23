@@ -242,14 +242,12 @@ class SaleRepo {
 
 class CartSaleProducts {
   final int productId;
-  final int stockId;
   final num? price;
   final num? lossProfit;
   final num? quantities;
 
   CartSaleProducts({
     required this.productId,
-    required this.stockId,
     required this.price,
     required this.quantities,
     required this.lossProfit,
@@ -257,7 +255,6 @@ class CartSaleProducts {
 
   Map<String, dynamic> toJson() => {
         'product_id': productId,
-        'stock_id': stockId,
         'price': price,
         'lossProfit': lossProfit,
         'quantities': quantities,

@@ -1005,6 +1005,8 @@ class AddProductState extends State<AddProduct> {
                     ElevatedButton(
                       onPressed: () async {
                         if (key.currentState!.validate()) {
+                          print('=== FORM VALIDATION PASSED ===');
+                          print('Stock value before processing: "${productStockController.text}"');
                           try {
                             ProductRepo product = ProductRepo();
                             if (widget.productModel == null) {
@@ -1039,6 +1041,20 @@ class AddProductState extends State<AddProduct> {
                               );
                               EasyLoading.dismiss();
                             } else {
+                              print('=== ADD PRODUCT UPDATE DEBUG ===');
+                              print('Product ID: ${widget.productModel?.id}');
+                              print('Stock Controller Value: "${productStockController.text}"');
+                              print('Stock Controller Empty: ${productStockController.text.isEmpty}');
+                              print('Stock Controller Length: ${productStockController.text.length}');
+                              print('Stock Controller Trimmed: "${productStockController.text.trim()}"');
+                              
+                              // Process stock value
+                              String stockValue = productStockController.text.trim();
+                              if (stockValue.isEmpty) {
+                                stockValue = '0';
+                              }
+                              print('Processed stock value: "$stockValue"');
+                              
                               EasyLoading.show(status: lang.S.of(context).updating);
                               await product.updateProduct(
                                 ref: ref,
@@ -1048,7 +1064,7 @@ class AddProductState extends State<AddProduct> {
                                 categoryId: selectedCategory!.id.toString(),
                                 brandId: selectedBrand?.id.toString(),
                                 unitId: selectedUnit?.id.toString(),
-                                productStock: productStockController.text,
+                                productStock: stockValue,
                                 productCode: productCodeController.text,
                                 productSalePrice: salePriceController.text,
                                 productPurchasePrice: selectedTaxType.toLowerCase() == 'exclusive' ? purchaseExclusivePriceController.text : purchaseInclusivePriceController.text,

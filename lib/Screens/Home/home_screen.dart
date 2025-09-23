@@ -35,11 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _isRefreshing = true;
     try {
+      // ignore: unused_result
       ref.refresh(summaryInfoProvider);
+      // ignore: unused_result
       ref.refresh(bannerProvider);
+      // ignore: unused_result
       ref.refresh(businessInfoProvider);
+      // ignore: unused_result
       ref.refresh(businessSettingProvider);
+      // ignore: unused_result
       ref.refresh(partiesProvider);
+      // ignore: unused_result
       ref.refresh(getExpireDateProvider(ref));
       await Future.delayed(const Duration(seconds: 3));
     } finally {
@@ -231,20 +237,25 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       AddAndUpdatePurchaseScreen(
-                                          customerModel: null)),
+                                          supplierModel: null)),
                             );
                           },
                         ),
                         _buildQuickActionCard(
                           icon: Icons.people,
-                          title: 'Add Customer',
+                          title: 'Add Customer/Supplier',
                           color: Colors.orange,
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddParty()),
                             );
+
+                            // If a customer/supplier was added, refresh data
+                            if (result != null) {
+                              refreshAllProviders(ref: ref);
+                            }
                           },
                         ),
                         _buildQuickActionCard(

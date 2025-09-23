@@ -72,22 +72,20 @@ class AppDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          AddAndUpdatePurchaseScreen(customerModel: null)),
+                          AddAndUpdatePurchaseScreen(supplierModel: null)),
                 );
               },
-            ),
-            _buildDrawerItem(
-              icon: Icons.people,
-              title: 'Parties',
-              subtitle: '',
-              color: Colors.orange,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CustomerList()),
-                );
-              },
+              // icon: Icons.people,
+              // title: 'Parties',
+              // subtitle: '',
+              // color: Colors.orange,
+              // onTap: () {
+              //   Navigator.pop(context);
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => CustomerList()),
+              //   );
+              // },
             ),
             _buildDrawerItem(
               icon: Icons.inventory,
@@ -132,7 +130,7 @@ class AppDrawer extends StatelessWidget {
             ),
             _buildDrawerItem(
               icon: Icons.people_outline,
-              title: 'Customer List',
+              title: 'Customer/Supplier List',
               subtitle: '',
               color: Colors.cyan,
               onTap: () {
@@ -522,20 +520,7 @@ class AppDrawer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Hero(
-                //   tag: "extraazLogo",
-                //   child: Container(
-                //     padding: EdgeInsets.all(3),
-                //     decoration: BoxDecoration(
-                //       color: Colors.white.withOpacity(0.2),
-                //       borderRadius: BorderRadius.circular(6),
-                //     ),
-                //     child: Image.asset(
-                //       "images/extraaaz-logo-white-DIqhPNzv.webp",
-                //       height: 18,
-                //     ),
-                //   ),
-                // ),
+                
                 const SizedBox(width: 8),
                 Text(
                   "Powered by Extraaaz",

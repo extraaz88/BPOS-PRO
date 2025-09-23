@@ -32,6 +32,7 @@ import 'Screens/Sales List/sales_list_screen.dart';
 import 'Screens/custom_print/custom_print.dart';
 import 'Screens/language/language_provider.dart';
 import 'Screens/stock_list/stock_list_main.dart';
+import 'Screens/Graphs/animated_sales_purchase_graph.dart';
 import 'core/theme/theme.dart';
 import 'generated/l10n.dart';
 
@@ -112,6 +113,7 @@ class MyApp extends StatelessWidget {
                   '/Sales List': (context) => const SalesListScreen(),
                   '/Purchase List': (context) => const PurchaseListScreen(),
                   '/Loss/Profit': (context) => const LossProfitScreen(),
+                  '/AnimatedGraphs': (context) => const AnimatedSalesPurchaseGraph(),
                 },
                 theme: AcnooTheme.kLightTheme(context),
               )),

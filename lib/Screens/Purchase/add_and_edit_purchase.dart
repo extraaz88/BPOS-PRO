@@ -25,9 +25,9 @@ import 'Repo/purchase_repo.dart';
 
 class AddAndUpdatePurchaseScreen extends ConsumerStatefulWidget {
   AddAndUpdatePurchaseScreen(
-      {super.key, required this.customerModel, this.transitionModel});
+      {super.key, required this.supplierModel, this.transitionModel});
 
-  party.Party? customerModel;
+  final party.Party? supplierModel;
   final PurchaseTransaction? transitionModel;
 
   @override
@@ -46,8 +46,8 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController recevedAmountController = TextEditingController();
 
-  // Variables for customer dropdown
-  party.Party? selectedCustomer;
+  // Variables for supplier dropdown
+  party.Party? selectedSupplier;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
       final editedSales = widget.transitionModel;
       dateController.text = editedSales?.purchaseDate?.substring(0, 10) ?? '';
       recevedAmountController.text = editedSales?.paidAmount.toString() ?? '';
-      widget.customerModel = party.Party(
+      selectedSupplier = party.Party(
         id: widget.transitionModel?.party?.id,
         name: widget.transitionModel?.party?.name,
       );
@@ -241,9 +241,9 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                         children: [
                           Text(lang.S.of(context).dueAmount),
                           Text(
-                            widget.customerModel?.due == null
+                            selectedSupplier?.due == null
                                 ? '$currency 0'
-                                : '$currency${widget.customerModel?.due}',
+                                : '$currency${selectedSupplier?.due}',
                             style: const TextStyle(color: Color(0xFFFF8C34)),
                           ),
                         ],
@@ -256,16 +256,21 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                           final partiesAsync = ref.watch(partiesProvider);
                           return partiesAsync.when(
                             data: (parties) {
+                              // Filter only suppliers
+                              final suppliers = parties
+                                  .where((party) => party.type == 'Supplier')
+                                  .toList();
+
                               return DropdownButtonFormField<party.Party>(
-                                value: selectedCustomer,
+                                value: selectedSupplier,
                                 decoration: InputDecoration(
-                                  labelText: lang.S.of(context).customerName,
+                                  labelText: lang.S.of(context).supplierName,
                                   border: const OutlineInputBorder(),
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
                                 ),
-                                hint: Text('Select Customer'),
-                                items: parties.map((party.Party partyItem) {
+                                hint: Text('Select Supplier'),
+                                items: suppliers.map((party.Party partyItem) {
                                   return DropdownMenuItem<party.Party>(
                                     value: partyItem,
                                     child: Text(partyItem.name ?? 'Unknown'),
@@ -273,7 +278,7 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                 }).toList(),
                                 onChanged: (party.Party? newValue) {
                                   setState(() {
-                                    selectedCustomer = newValue;
+                                    selectedSupplier = newValue;
                                     // Auto-fill phone number
                                     if (newValue?.phone != null) {
                                       phoneController.text = newValue!.phone!;
@@ -297,11 +302,11 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                           textFieldType: TextFieldType.PHONE,
                           decoration: kInputDecoration.copyWith(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
-                            //labelText: 'Customer Phone Number',
-                            labelText: lang.S.of(context).customerPhoneNumber,
-                            //hintText: 'Enter customer phone number',
+                            //labelText: 'Supplier Phone Number',
+                            labelText: lang.S.of(context).supplierPhoneNumber,
+                            //hintText: 'Enter supplier phone number',
                             hintText:
-                                lang.S.of(context).enterCustomerPhoneNumber,
+                                lang.S.of(context).enterSupplierPhoneNumber,
                           ),
                         ),
                       ),
@@ -485,7 +490,7 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                   GestureDetector(
                     onTap: () {
                       PurchaseProducts(
-                        customerModel: widget.customerModel,
+                        supplierModel: widget.supplierModel,
                       ).launch(context);
                     },
                     child: Container(
@@ -968,7 +973,7 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   lang.S.of(context).addProductFirst);
                               return;
                             }
-                            if (selectedCustomer == null &&
+                            if (selectedSupplier == null &&
                                 providerData.dueAmount > 0) {
                               EasyLoading.showError(
                                   'Sales on due are not allowed for walk-in customers.');
@@ -1006,7 +1011,7 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   vatPercent:
                                       providerData.selectedVat?.rate ?? 0,
                                   paymentType: paymentType?.toString() ?? '',
-                                  partyId: selectedCustomer?.id ?? 0,
+                                  partyId: selectedSupplier?.id ?? 0,
                                   isPaid: providerData.dueAmount <= 0
                                       ? true
                                       : false,
@@ -1018,8 +1023,7 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   shippingCharge:
                                       providerData.finalShippingCharge,
                                   discountPercent: providerData.discountPercent,
-                                  discountType:
-                                      discountType.toLowerCase() ?? '',
+                                  discountType: discountType.toLowerCase(),
                                 );
 
                                 if (purchaseData != null) {

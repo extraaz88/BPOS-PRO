@@ -230,14 +230,94 @@ class ProductRepo {
     String? lowStock,
     String? expDate,
   }) async {
+    print('=== UPDATE PRODUCT START ===');
+    print('Product ID: $productId');
+    print('Stock Value: $productStock');
+    print('Stock Value Type: ${productStock.runtimeType}');
+    print('Stock Value Empty: ${productStock?.isEmpty}');
+    print('Stock Value Null: ${productStock == null}');
+    print('Stock Value Length: ${productStock?.length}');
+    print('Stock Value Trimmed: "${productStock?.trim()}"');
+    
     final uri = Uri.parse('${APIConfig.url}/products/$productId');
     CustomHttpClient customHttpClient = CustomHttpClient(client: http.Client(), context: context, ref: ref);
 
+    // Try direct PUT request first
+    try {
+      print('Trying direct PUT request...');
+      
+      // Process stock value for PUT request
+      String processedStock = '0';
+      if (productStock != null && productStock.isNotEmpty) {
+        processedStock = productStock.trim();
+        try {
+          double.parse(processedStock);
+        } catch (e) {
+          print('Invalid stock value for PUT: $processedStock, using 0');
+          processedStock = '0';
+        }
+      }
+      print('PUT Request - Processed Stock: "$processedStock"');
+      
+      final requestBody = {
+        'productName': productName,
+        'productCode': productCode,
+        'productSalePrice': productSalePrice,
+        'productPurchasePrice': productPurchasePrice,
+        'productStock': processedStock,
+        if (categoryId != null) 'category_id': categoryId,
+        if (brandId != null) 'brand_id': brandId,
+        if (unitId != null) 'unit_id': unitId,
+        if (size != null) 'size': size,
+        if (color != null) 'color': color,
+        if (weight != null) 'weight': weight,
+        if (capacity != null) 'capacity': capacity,
+        if (type != null) 'type': type,
+        if (productWholeSalePrice != null) 'productWholeSalePrice': productWholeSalePrice,
+        if (productDealerPrice != null) 'productDealerPrice': productDealerPrice,
+        if (productManufacturer != null) 'productManufacturer': productManufacturer,
+        if (productDiscount != null) 'productDiscount': productDiscount,
+        if (vatId != null) 'vat_id': vatId,
+        if (vatType != null) 'vat_type': vatType,
+        if (vatAmount != null) 'vat_amount': vatAmount,
+        if (profitMargin != null) 'profit_percent': profitMargin,
+        if (lowStock != null) 'alert_qty': lowStock,
+        if (expDate != null) 'expire_date': expDate,
+      };
+      
+      print('PUT Request Body: $requestBody');
+      
+      final putResponse = await http.put(
+        uri,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': await getAuthToken(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+      
+      print('PUT Response status: ${putResponse.statusCode}');
+      print('PUT Response body: ${putResponse.body}');
+      
+      if (putResponse.statusCode == 200) {
+        print('Product updated successfully via PUT');
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Updated Successfully!')));
+        await ref.refresh(productProvider);
+        Navigator.pop(context);
+        return;
+      }
+    } catch (e) {
+      print('PUT request failed: $e');
+    }
+
+    // Fallback to multipart request
+    print('Falling back to multipart request...');
     var request = http.MultipartRequest('POST', uri)
       ..headers['Accept'] = 'application/json'
       ..headers['Authorization'] = await getAuthToken();
 
-    request.fields['_method'] = 'put';
+    request.fields['_method'] = 'PUT';
     request.fields.addAll({
       "productName": productName,
       "productCode": productCode,
@@ -261,14 +341,42 @@ class ProductRepo {
     if (productDealerPrice != null) request.fields['productDealerPrice'] = productDealerPrice;
     if (productManufacturer != null) request.fields['productManufacturer'] = productManufacturer;
     if (productDiscount != null) request.fields['productDiscount'] = productDiscount;
-    if (productStock != null) request.fields['productStock'] = productStock;
+    // Handle stock value properly
+    String stockValue = '0';
+    if (productStock != null && productStock.isNotEmpty) {
+      stockValue = productStock.trim();
+      // Convert to double to ensure it's a valid number
+      try {
+        double.parse(stockValue);
+        print('Valid stock value: $stockValue');
+      } catch (e) {
+        print('Invalid stock value: $stockValue, using 0');
+        stockValue = '0';
+      }
+    } else {
+      print('Stock value is null or empty, using 0');
+    }
+    
+    // Try different field names that the API might expect
+    request.fields['productStock'] = stockValue;
+    request.fields['stock'] = stockValue;
+    request.fields['quantity'] = stockValue;
+    request.fields['qty'] = stockValue;
+    
+    print('Final stock value being sent: $stockValue');
+    print('All stock-related fields: productStock=${request.fields['productStock']}, stock=${request.fields['stock']}, quantity=${request.fields['quantity']}, qty=${request.fields['qty']}');
     if (image != null) {
       request.files.add(http.MultipartFile.fromBytes('productPicture', image.readAsBytesSync(), filename: image.path));
     }
     if (lowStock != null) request.fields['alert_qty'] = lowStock;
     if (expDate != null) request.fields['expire_date'] = expDate;
 
-    print('Update response : ${request.fields}');
+    print('=== MULTIPART REQUEST DEBUG ===');
+    print('Product ID: $productId');
+    print('All request fields: ${request.fields}');
+    print('Stock value in fields: ${request.fields['productStock']}');
+    print('Stock value type: ${request.fields['productStock'].runtimeType}');
+    
     final response = await customHttpClient.uploadFile(
       url: uri,
       file: image,
@@ -277,14 +385,19 @@ class ProductRepo {
     );
     final responseData = await response.stream.bytesToString();
 
+    print('Response status: ${response.statusCode}');
+    print('Response body: $responseData');
+
     final parsedData = jsonDecode(responseData);
 
     if (response.statusCode == 200) {
+      print('Product updated successfully');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Updated Successfully!')));
       var data1 = ref.refresh(productProvider);
 
       Navigator.pop(context);
     } else {
+      print('Product update failed: ${parsedData['message']}');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product Update failed: ${parsedData['message']}')));
     }
   }

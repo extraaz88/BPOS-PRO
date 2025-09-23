@@ -84,66 +84,138 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                     onTap: () {
                                       PurchaseInvoiceDetails(
                                         businessInfo: businessInfoData.value!,
-                                        transitionModel: purchaseTransactions[index],
+                                        transitionModel:
+                                            purchaseTransactions[index],
                                       ).launch(context);
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(16),
                                       width: context.width(),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Flexible(
                                                 child: Text(
-                                                  purchaseTransactions[index].party?.name ?? '',
-                                                  style: _theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                                                  purchaseTransactions[index]
+                                                          .party
+                                                          ?.name ??
+                                                      '',
+                                                  style: _theme
+                                                      .textTheme.bodyMedium
+                                                      ?.copyWith(fontSize: 16),
                                                   maxLines: 2,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                               const SizedBox(width: 4),
                                               Text(
                                                 '#${purchaseTransactions[index].invoiceNumber}',
-                                                style: _theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                                                style: _theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(fontSize: 16),
                                               ),
                                             ],
                                           ),
                                           const SizedBox(height: 4),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Row(
                                                 children: [
                                                   Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                    decoration: BoxDecoration(color: purchaseTransactions[index].dueAmount! <= 0 ? const Color(0xff0dbf7d).withOpacity(0.1) : const Color(0xFFED1A3B).withOpacity(0.1), borderRadius: const BorderRadius.all(Radius.circular(2))),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                        color: purchaseTransactions[
+                                                                        index]
+                                                                    .dueAmount! <=
+                                                                0
+                                                            ? const Color(
+                                                                    0xff0dbf7d)
+                                                                .withOpacity(
+                                                                    0.1)
+                                                            : const Color(
+                                                                    0xFFED1A3B)
+                                                                .withOpacity(
+                                                                    0.1),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    2))),
                                                     child: Text(
-                                                      purchaseTransactions[index].dueAmount! <= 0 ? lang.S.of(context).paid : lang.S.of(context).unPaid,
-                                                      style: TextStyle(color: purchaseTransactions[index].dueAmount! <= 0 ? const Color(0xff0dbf7d) : const Color(0xFFED1A3B)),
+                                                      purchaseTransactions[
+                                                                      index]
+                                                                  .dueAmount! <=
+                                                              0
+                                                          ? lang.S
+                                                              .of(context)
+                                                              .paid
+                                                          : lang.S
+                                                              .of(context)
+                                                              .unPaid,
+                                                      style: TextStyle(
+                                                          color: purchaseTransactions[
+                                                                          index]
+                                                                      .dueAmount! <=
+                                                                  0
+                                                              ? const Color(
+                                                                  0xff0dbf7d)
+                                                              : const Color(
+                                                                  0xFFED1A3B)),
                                                     ),
                                                   ),
 
                                                   ///________Return_tag_________________________________________
                                                   Visibility(
-                                                    visible: purchaseTransactions[index].purchaseReturns?.isNotEmpty ?? false,
+                                                    visible:
+                                                        purchaseTransactions[
+                                                                    index]
+                                                                .purchaseReturns
+                                                                ?.isNotEmpty ??
+                                                            false,
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(left: 8, right: 8),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8,
+                                                              right: 8),
                                                       child: Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.orange.withOpacity(0.2),
-                                                          borderRadius: const BorderRadius.all(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 8,
+                                                                vertical: 2),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.orange
+                                                              .withOpacity(0.2),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
                                                             Radius.circular(2),
                                                           ),
                                                         ),
                                                         child: Text(
-                                                          lang.S.of(context).returned,
-                                                          style: const TextStyle(color: Colors.orange),
+                                                          lang.S
+                                                              .of(context)
+                                                              .returned,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .orange),
                                                         ),
                                                       ),
                                                     ),
@@ -151,60 +223,110 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                 ],
                                               ),
                                               Text(
-                                                DateFormat.yMMMd().format(DateTime.parse(purchaseTransactions[index].purchaseDate ?? '')),
-                                                style: const TextStyle(color: DAppColors.kSecondary),
+                                                DateFormat.yMMMd().format(
+                                                    DateTime.parse(
+                                                        purchaseTransactions[
+                                                                    index]
+                                                                .purchaseDate ??
+                                                            '')),
+                                                style: const TextStyle(
+                                                    color:
+                                                        DAppColors.kSecondary),
                                               ),
                                             ],
                                           ),
                                           const SizedBox(height: 10),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 '${lang.S.of(context).total} : $currency ${purchaseTransactions[index].totalAmount.toString()}',
-                                                style: _theme.textTheme.bodyMedium?.copyWith(fontSize: 14, color: DAppColors.kSecondary),
+                                                style: _theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                        fontSize: 14,
+                                                        color: DAppColors
+                                                            .kSecondary),
                                               ),
                                               const SizedBox(width: 4),
-                                              if (purchaseTransactions[index].dueAmount!.toInt() != 0)
+                                              if (purchaseTransactions[index]
+                                                      .dueAmount!
+                                                      .toInt() !=
+                                                  0)
                                                 Text(
                                                   '${lang.S.of(context).paid} : $currency ${purchaseTransactions[index].totalAmount!.toDouble() - purchaseTransactions[index].dueAmount!.toDouble()}',
-                                                  style: _theme.textTheme.bodyMedium?.copyWith(fontSize: 14, color: DAppColors.kSecondary),
+                                                  style: _theme
+                                                      .textTheme.bodyMedium
+                                                      ?.copyWith(
+                                                          fontSize: 14,
+                                                          color: DAppColors
+                                                              .kSecondary),
                                                 ),
                                             ],
                                           ),
                                           const SizedBox(height: 4),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              if (purchaseTransactions[index].dueAmount!.toInt() == 0)
+                                              if (purchaseTransactions[index]
+                                                      .dueAmount!
+                                                      .toInt() ==
+                                                  0)
                                                 Flexible(
                                                   child: Text(
                                                     '${lang.S.of(context).paid} : $currency ${purchaseTransactions[index].totalAmount!.toDouble() - purchaseTransactions[index].dueAmount!.toDouble()}',
-                                                    style: _theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                                                    style: _theme
+                                                        .textTheme.bodyMedium
+                                                        ?.copyWith(
+                                                            fontSize: 16),
                                                     maxLines: 2,
                                                   ),
                                                 ),
-                                              if (purchaseTransactions[index].dueAmount!.toInt() != 0)
+                                              if (purchaseTransactions[index]
+                                                      .dueAmount!
+                                                      .toInt() !=
+                                                  0)
                                                 Text(
                                                   '${lang.S.of(context).due}: $currency ${purchaseTransactions[index].dueAmount.toString()}',
-                                                  style: _theme.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                                                  style: _theme
+                                                      .textTheme.bodyMedium
+                                                      ?.copyWith(fontSize: 16),
                                                 ),
-                                              businessInfoData.when(data: (data) {
+                                              businessInfoData.when(
+                                                  data: (data) {
                                                 return Row(
                                                   children: [
                                                     IconButton(
-                                                        padding: EdgeInsets.zero,
-                                                        visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        visualDensity:
+                                                            const VisualDensity(
+                                                                horizontal: -4,
+                                                                vertical: -4),
                                                         onPressed: () async {
                                                           ///________Print_______________________________________________________
 
-                                                          PrintPurchaseTransactionModel model = PrintPurchaseTransactionModel(purchaseTransitionModel: purchaseTransactions[index], personalInformationModel: data);
+                                                          PrintPurchaseTransactionModel
+                                                              model =
+                                                              PrintPurchaseTransactionModel(
+                                                                  purchaseTransitionModel:
+                                                                      purchaseTransactions[
+                                                                          index],
+                                                                  personalInformationModel:
+                                                                      data);
 
-                                                          await printerData.printPurchaseThermalInvoiceNow(
+                                                          await printerData
+                                                              .printPurchaseThermalInvoiceNow(
                                                             transaction: model,
-                                                            productList: model.purchaseTransitionModel!.details,
+                                                            productList: model
+                                                                .purchaseTransitionModel!
+                                                                .details,
                                                             context: context,
                                                           );
                                                         },
@@ -215,28 +337,60 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                     const SizedBox(
                                                       width: 6,
                                                     ),
-                                                    businessSetting.when(data: (bussiness) {
+                                                    businessSetting.when(
+                                                        data: (bussiness) {
                                                       return Row(
                                                         children: [
                                                           IconButton(
-                                                              padding: EdgeInsets.zero,
-                                                              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                                                              onPressed: () => PurchaseInvoicePDF.generatePurchaseDocument(purchaseTransactions[index], data, context, bussiness),
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              visualDensity:
+                                                                  const VisualDensity(
+                                                                      horizontal:
+                                                                          -4,
+                                                                      vertical:
+                                                                          -4),
+                                                              onPressed: () => PurchaseInvoicePDF
+                                                                  .generatePurchaseDocument(
+                                                                      purchaseTransactions[
+                                                                          index],
+                                                                      data,
+                                                                      context,
+                                                                      bussiness),
                                                               icon: const Icon(
-                                                                Icons.picture_as_pdf,
-                                                                color: Colors.grey,
+                                                                Icons
+                                                                    .picture_as_pdf,
+                                                                color:
+                                                                    Colors.grey,
                                                               )),
                                                           IconButton(
-                                                            style: IconButton.styleFrom(
-                                                                padding: EdgeInsets.zero,
-                                                                visualDensity: const VisualDensity(
-                                                                  horizontal: -4,
-                                                                  vertical: -4,
-                                                                )),
-                                                            onPressed: () => PurchaseInvoicePDF.generatePurchaseDocument(purchaseTransactions[index], data, context, bussiness, isShare: true),
+                                                            style: IconButton
+                                                                .styleFrom(
+                                                                    padding:
+                                                                        EdgeInsets
+                                                                            .zero,
+                                                                    visualDensity:
+                                                                        const VisualDensity(
+                                                                      horizontal:
+                                                                          -4,
+                                                                      vertical:
+                                                                          -4,
+                                                                    )),
+                                                            onPressed: () => PurchaseInvoicePDF
+                                                                .generatePurchaseDocument(
+                                                                    purchaseTransactions[
+                                                                        index],
+                                                                    data,
+                                                                    context,
+                                                                    bussiness,
+                                                                    isShare:
+                                                                        true),
                                                             icon: const Icon(
-                                                              Icons.share_outlined,
-                                                              color: Colors.grey,
+                                                              Icons
+                                                                  .share_outlined,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
                                                           ),
                                                         ],
@@ -245,7 +399,8 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                       return Text(e.toString());
                                                     }, loading: () {
                                                       return const Center(
-                                                        child: CircularProgressIndicator(),
+                                                        child:
+                                                            CircularProgressIndicator(),
                                                       );
                                                     }),
                                                     const SizedBox(
@@ -254,15 +409,29 @@ class PurchaseReportState extends State<PurchaseListScreen> {
 
                                                     ///_________Edit_purchase______________________________
                                                     Visibility(
-                                                      visible: !(purchaseTransactions[index].purchaseReturns?.isNotEmpty ?? false),
+                                                      visible:
+                                                          !(purchaseTransactions[
+                                                                      index]
+                                                                  .purchaseReturns
+                                                                  ?.isNotEmpty ??
+                                                              false),
                                                       child: IconButton(
-                                                          padding: EdgeInsets.zero,
-                                                          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          visualDensity:
+                                                              const VisualDensity(
+                                                                  horizontal:
+                                                                      -4,
+                                                                  vertical: -4),
                                                           onPressed: () async {
-                                                            ref.refresh(cartNotifierPurchaseNew);
+                                                            ref.refresh(
+                                                                cartNotifierPurchaseNew);
                                                             AddAndUpdatePurchaseScreen(
-                                                              transitionModel: purchaseTransactions[index],
-                                                              customerModel: null,
+                                                              transitionModel:
+                                                                  purchaseTransactions[
+                                                                      index],
+                                                              supplierModel:
+                                                                  null,
                                                             ).launch(context);
                                                           },
                                                           icon: const Icon(
@@ -273,12 +442,17 @@ class PurchaseReportState extends State<PurchaseListScreen> {
 
                                                     ///_____More____________________________________________
                                                     PopupMenuButton(
-                                                      offset: const Offset(0, 30),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(4.0),
+                                                      offset:
+                                                          const Offset(0, 30),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0),
                                                       ),
                                                       padding: EdgeInsets.zero,
-                                                      itemBuilder: (BuildContext bc) => [
+                                                      itemBuilder:
+                                                          (BuildContext bc) => [
                                                         ///________Sale List Delete_______________________________
                                                         // PopupMenuItem(
                                                         //   child: GestureDetector(
@@ -307,12 +481,17 @@ class PurchaseReportState extends State<PurchaseListScreen> {
 
                                                         ///________Purchase Return___________________________________
                                                         PopupMenuItem(
-                                                          child: GestureDetector(
+                                                          child:
+                                                              GestureDetector(
                                                             onTap: () async {
-                                                              await Navigator.push(
+                                                              await Navigator
+                                                                  .push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder: (context) => InvoiceReturnScreen(purchaseTransaction: purchaseTransactions[index]),
+                                                                  builder: (context) =>
+                                                                      InvoiceReturnScreen(
+                                                                          purchaseTransaction:
+                                                                              purchaseTransactions[index]),
                                                                 ),
                                                               );
                                                               Navigator.pop(bc);
@@ -320,15 +499,19 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                             child: const Row(
                                                               children: [
                                                                 Icon(
-                                                                  Icons.keyboard_return_outlined,
-                                                                  color: kGreyTextColor,
+                                                                  Icons
+                                                                      .keyboard_return_outlined,
+                                                                  color:
+                                                                      kGreyTextColor,
                                                                 ),
                                                                 SizedBox(
                                                                   width: 10.0,
                                                                 ),
                                                                 Text(
                                                                   'Purchase return',
-                                                                  style: TextStyle(color: kGreyTextColor),
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          kGreyTextColor),
                                                                 ),
                                                               ],
                                                             ),
@@ -336,10 +519,12 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                         ),
                                                       ],
                                                       onSelected: (value) {
-                                                        Navigator.pushNamed(context, '$value');
+                                                        Navigator.pushNamed(
+                                                            context, '$value');
                                                       },
                                                       child: const Icon(
-                                                        FeatherIcons.moreVertical,
+                                                        FeatherIcons
+                                                            .moreVertical,
                                                         color: kGreyTextColor,
                                                       ),
                                                     ),
@@ -349,7 +534,8 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                 return Text(e.toString());
                                               }, loading: () {
                                                 //return  Text('Loading');
-                                                return Text(lang.S.of(context).loading);
+                                                return Text(
+                                                    lang.S.of(context).loading);
                                               }),
                                             ],
                                           ),

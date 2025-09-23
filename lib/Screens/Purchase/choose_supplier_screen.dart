@@ -50,7 +50,8 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
               child: providerData.when(data: (customer) {
                 return customer.isNotEmpty
                     ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
                         child: Column(
                           children: [
                             TextFormField(
@@ -74,13 +75,26 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: customer.length,
                               itemBuilder: (_, index) {
-                                customer[index].type == 'Supplier' ? color = const Color(0xFFA569BD) : Colors.white;
-                                return customer[index].name!.toLowerCase().trim().contains(searchCustomer) && customer[index].type!.contains('Supplier')
+                                customer[index].type == 'Supplier'
+                                    ? color = const Color(0xFFA569BD)
+                                    : Colors.white;
+                                return customer[index]
+                                            .name!
+                                            .toLowerCase()
+                                            .trim()
+                                            .contains(searchCustomer) &&
+                                        customer[index]
+                                            .type!
+                                            .contains('Supplier')
                                     ? ListTile(
                                         contentPadding: EdgeInsets.zero,
                                         onTap: () async {
+                                          // ignore: unused_result
                                           ref.refresh(cartNotifierPurchaseNew);
-                                          AddAndUpdatePurchaseScreen(customerModel: customer[index]).launch(context);
+                                          AddAndUpdatePurchaseScreen(
+                                                  supplierModel:
+                                                      customer[index])
+                                              .launch(context);
                                         },
                                         leading: customer[index].image != null
                                             ? Container(
@@ -88,7 +102,10 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                                                 width: 40,
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  border: Border.all(color: Colors.grey.shade50, width: 0.3),
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.grey.shade50,
+                                                      width: 0.3),
                                                   image: DecorationImage(
                                                       image: NetworkImage(
                                                         '${APIConfig.domain}${customer[index].image}',
@@ -96,10 +113,13 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                                                       fit: BoxFit.cover),
                                                 ),
                                               )
-                                            : CircleAvatarWidget(name: customer[index].name),
+                                            : CircleAvatarWidget(
+                                                name: customer[index].name),
                                         title: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
                                               child: Text(
@@ -107,7 +127,9 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                                                 maxLines: 1,
                                                 textAlign: TextAlign.start,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: _theme.textTheme.bodyMedium?.copyWith(
+                                                style: _theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(
                                                   color: Colors.black,
                                                   fontSize: 16.0,
                                                 ),
@@ -116,21 +138,25 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                                             const SizedBox(width: 4),
                                             Text(
                                               '$currency${customer[index].due}',
-                                              style: _theme.textTheme.bodyMedium?.copyWith(
+                                              style: _theme.textTheme.bodyMedium
+                                                  ?.copyWith(
                                                 fontSize: 16.0,
                                               ),
                                             ),
                                           ],
                                         ),
                                         subtitle: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Expanded(
                                               child: Text(
                                                 customer[index].type ?? '',
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: _theme.textTheme.bodyMedium?.copyWith(
+                                                style: _theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(
                                                   color: color,
                                                   fontSize: 14.0,
                                                 ),
@@ -138,9 +164,17 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              customer[index].due != null && customer[index].due != 0 ? lang.S.of(context).due : 'No Due',
-                                              style: _theme.textTheme.bodyMedium?.copyWith(
-                                                color: customer[index].due != null && customer[index].due != 0 ? const Color(0xFFff5f00) : const Color(0xff7B787B),
+                                              customer[index].due != null &&
+                                                      customer[index].due != 0
+                                                  ? lang.S.of(context).due
+                                                  : 'No Due',
+                                              style: _theme.textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                color: customer[index].due !=
+                                                            null &&
+                                                        customer[index].due != 0
+                                                    ? const Color(0xFFff5f00)
+                                                    : const Color(0xff7B787B),
                                                 fontSize: 14.0,
                                               ),
                                             ),
@@ -180,7 +214,13 @@ class _PurchaseContactsState extends State<PurchaseContacts> {
                   color: kWhite,
                 ),
                 onPressed: () async {
-                  const AddParty().launch(context);
+                  final result = await const AddParty().launch(context);
+
+                  // If a customer/supplier was added, refresh data
+                  if (result != null) {
+                    // ignore: unused_result
+                    ref.refresh(partiesProvider);
+                  }
                 }),
           ),
         );

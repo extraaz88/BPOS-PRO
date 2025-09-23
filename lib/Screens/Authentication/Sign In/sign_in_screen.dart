@@ -102,7 +102,7 @@ class _SignInState extends State<SignIn> {
                       const SizedBox(
                         height: 24,
                       ),
-                      const NameWithLogo(),
+                      const NameWithoutLogo(),
                       const SizedBox(
                         height: 24,
                       ),

@@ -39,7 +39,7 @@ class AddSalesScreen extends ConsumerStatefulWidget {
     this.transitionModel,
   });
 
-  Party? customerModel;
+  final Party? customerModel;
   final SalesTransactionModel? transitionModel;
 
   @override
@@ -62,6 +62,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
 
   // Variables for searchable dropdown
   Party? selectedCustomer;
+  double _height = 100;
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
       final editedSales = widget.transitionModel;
       dateController.text = editedSales?.saleDate?.substring(0, 10) ?? '';
       recevedAmountController.text = editedSales?.paidAmount.toString() ?? '';
-      widget.customerModel = Party(
+      selectedCustomer = Party(
         id: widget.transitionModel?.party?.id,
         name: widget.transitionModel?.party?.name,
       );
@@ -160,7 +161,6 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
   @override
   Widget build(BuildContext context) {
     final _theme = Theme.of(context);
-    double _height = 100;
     final providerData = ref.watch(cartNotifier);
     final personalData = ref.watch(businessInfoProvider);
     final taxesData = ref.watch(taxProvider);
@@ -292,6 +292,11 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                           final partiesAsync = ref.watch(partiesProvider);
                           return partiesAsync.when(
                             data: (parties) {
+                              // Filter only customers (Customer)
+                              final customers = parties
+                                  .where((party) => party.type == 'Customer')
+                                  .toList();
+
                               return DropdownButtonFormField<Party>(
                                 value: selectedCustomer,
                                 decoration: InputDecoration(
@@ -301,7 +306,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                       horizontal: 12, vertical: 8),
                                 ),
                                 hint: Text('Select Customer'),
-                                items: parties.map((Party party) {
+                                items: customers.map((Party party) {
                                   return DropdownMenuItem<Party>(
                                     value: party,
                                     child: Text(party.name ?? 'Unknown'),
@@ -310,7 +315,6 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                 onChanged: (Party? newValue) {
                                   setState(() {
                                     selectedCustomer = newValue;
-                                    widget.customerModel = newValue;
                                     // Auto-fill phone number
                                     if (newValue?.phone != null) {
                                       phoneController.text = newValue!.phone!;
@@ -1073,6 +1077,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                         Expanded(
                           // Use Expanded to allow the TextFormField to take available space
                           child: Container(
+                            height: _height,
                             constraints: const BoxConstraints(
                               maxHeight: 200,
                             ),
@@ -1179,9 +1184,6 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                           style: OutlinedButton.styleFrom(
                             maximumSize: const Size(double.infinity, 48),
                             minimumSize: const Size(double.infinity, 48),
-                            side:
-                                const BorderSide(color: kMainColor, width: 1.5),
-                            foregroundColor: kMainColor,
                             disabledBackgroundColor: _theme.colorScheme.primary
                                 .withValues(alpha: 0.15),
                           ),
@@ -1193,7 +1195,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: _theme.textTheme.bodyMedium?.copyWith(
-                              color: kMainColor,
+                              color: _theme.colorScheme.primary,
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),
@@ -1245,7 +1247,6 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                   providerData.cartItemList.map((element) {
                                 return CartSaleProducts(
                                   productId: element.productId.toInt(),
-                                  stockId: element.productId.toInt(), // Using productId as stockId
                                   quantities: element.quantity,
                                   price: num.tryParse(
                                           element.unitPrice.toString()) ??

@@ -155,12 +155,12 @@ class BusinessRepository {
     final token = await getAuthToken();
     
     print('Dashboard API URL: $uri');
-    print('Dashboard API Token: Bearer $token');
+    print('Dashboard API Token: $token');
     print('Original type: $type, Mapped duration: $durationParam');
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
+      'Authorization': token.startsWith('Bearer ') ? token : 'Bearer $token',
     });
     print('Dashboard API Response Status: ${response.statusCode}');
     print('Dashboard API Response Body: ${response.body}');

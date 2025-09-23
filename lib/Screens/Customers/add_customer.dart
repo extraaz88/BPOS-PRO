@@ -25,7 +25,7 @@ class AddParty extends StatefulWidget {
 }
 
 class _AddPartyState extends State<AddParty> {
-  String groupValue = 'Retailer';
+  String groupValue = 'Customer';
   bool expanded = false;
   final ImagePicker _picker = ImagePicker();
   bool showProgress = false;
@@ -69,7 +69,8 @@ class _AddPartyState extends State<AddParty> {
                       children: [
                         ///_________Phone_______________________
                         Padding(
-                          padding: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
+                          padding: const EdgeInsets.only(
+                              top: 10.0, left: 10, right: 10),
                           child: IntlPhoneField(
                             // controller: phoneController,
                             decoration: InputDecoration(
@@ -121,7 +122,8 @@ class _AddPartyState extends State<AddParty> {
                             },
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
                               labelText: lang.S.of(context).name,
                               hintText: lang.S.of(context).enterYourName,
                               border: const OutlineInputBorder(),
@@ -133,44 +135,44 @@ class _AddPartyState extends State<AddParty> {
                   ),
 
                   ///_______Type___________________________
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RadioListTile(
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: groupValue,
-                          title: Text(
-                            lang.S.of(context).retailer,
-                            maxLines: 1,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          value: 'Retailer',
-                          onChanged: (value) {
-                            setState(() {
-                              groupValue = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: RadioListTile(
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: groupValue,
-                          title: Text(
-                            lang.S.of(context).dealer,
-                            maxLines: 1,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          value: 'Dealer',
-                          onChanged: (value) {
-                            setState(() {
-                              groupValue = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: RadioListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         groupValue: groupValue,
+                  //         title: Text(
+                  //           lang.S.of(context).retailer,
+                  //           maxLines: 1,
+                  //           style: theme.textTheme.bodyMedium,
+                  //         ),
+                  //         value: 'Retailer',
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             groupValue = value.toString();
+                  //           });
+                  //         },
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: RadioListTile(
+                  //         contentPadding: EdgeInsets.zero,
+                  //         groupValue: groupValue,
+                  //         title: Text(
+                  //           lang.S.of(context).dealer,
+                  //           maxLines: 1,
+                  //           style: theme.textTheme.bodyMedium,
+                  //         ),
+                  //         value: 'Dealer',
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             groupValue = value.toString();
+                  //           });
+                  //         },
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   Row(
                     children: [
                       Expanded(
@@ -179,11 +181,11 @@ class _AddPartyState extends State<AddParty> {
                           activeColor: kMainColor,
                           groupValue: groupValue,
                           title: Text(
-                            lang.S.of(context).wholesaler,
+                            "Customer",
                             maxLines: 1,
                             style: theme.textTheme.bodyMedium,
                           ),
-                          value: 'Wholesaler',
+                          value: 'Customer',
                           onChanged: (value) {
                             setState(() {
                               groupValue = value.toString();
@@ -242,7 +244,9 @@ class _AddPartyState extends State<AddParty> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    expanded == false ? expanded = true : expanded = false;
+                                    expanded == false
+                                        ? expanded = true
+                                        : expanded = false;
                                   });
                                 },
                               ),
@@ -259,36 +263,54 @@ class _AddPartyState extends State<AddParty> {
                                       return Dialog(
                                         backgroundColor: kWhite,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12.0),
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
                                         ),
                                         // ignore: sized_box_for_whitespace
                                         child: Container(
                                           height: 200.0,
-                                          width: MediaQuery.of(context).size.width - 80,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              80,
                                           child: Center(
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 GestureDetector(
                                                   onTap: () async {
-                                                    pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+                                                    pickedImage =
+                                                        await _picker.pickImage(
+                                                            source: ImageSource
+                                                                .gallery);
                                                     setState(() {});
-                                                    Future.delayed(const Duration(milliseconds: 100), () {
+                                                    Future.delayed(
+                                                        const Duration(
+                                                            milliseconds: 100),
+                                                        () {
                                                       Navigator.pop(context);
                                                     });
                                                   },
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       const Icon(
-                                                        Icons.photo_library_rounded,
+                                                        Icons
+                                                            .photo_library_rounded,
                                                         size: 60.0,
                                                         color: kMainColor,
                                                       ),
                                                       Text(
-                                                        lang.S.of(context).gallery,
+                                                        lang.S
+                                                            .of(context)
+                                                            .gallery,
                                                         //'Gallery',
-                                                        style: theme.textTheme.titleMedium?.copyWith(
+                                                        style: theme.textTheme
+                                                            .titleMedium
+                                                            ?.copyWith(
                                                           color: kMainColor,
                                                         ),
                                                       ),
@@ -300,14 +322,22 @@ class _AddPartyState extends State<AddParty> {
                                                 ),
                                                 GestureDetector(
                                                   onTap: () async {
-                                                    pickedImage = await _picker.pickImage(source: ImageSource.camera);
+                                                    pickedImage =
+                                                        await _picker.pickImage(
+                                                            source: ImageSource
+                                                                .camera);
                                                     setState(() {});
-                                                    Future.delayed(const Duration(milliseconds: 100), () {
+                                                    Future.delayed(
+                                                        const Duration(
+                                                            milliseconds: 100),
+                                                        () {
                                                       Navigator.pop(context);
                                                     });
                                                   },
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       const Icon(
                                                         Icons.camera,
@@ -315,9 +345,13 @@ class _AddPartyState extends State<AddParty> {
                                                         color: kGreyTextColor,
                                                       ),
                                                       Text(
-                                                        lang.S.of(context).camera,
+                                                        lang.S
+                                                            .of(context)
+                                                            .camera,
                                                         //'Camera',
-                                                        style: theme.textTheme.titleMedium?.copyWith(
+                                                        style: theme.textTheme
+                                                            .titleMedium
+                                                            ?.copyWith(
                                                           color: kGreyTextColor,
                                                         ),
                                                       ),
@@ -337,15 +371,19 @@ class _AddPartyState extends State<AddParty> {
                                     height: 120,
                                     width: 120,
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black54, width: 1),
-                                      borderRadius: const BorderRadius.all(Radius.circular(120)),
+                                      border: Border.all(
+                                          color: Colors.black54, width: 1),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(120)),
                                       image: pickedImage == null
                                           ? const DecorationImage(
-                                              image: AssetImage('images/no_shop_image.png'),
+                                              image: AssetImage(
+                                                  'images/no_shop_image.png'),
                                               fit: BoxFit.cover,
                                             )
                                           : DecorationImage(
-                                              image: FileImage(File(pickedImage!.path)),
+                                              image: FileImage(
+                                                  File(pickedImage!.path)),
                                               fit: BoxFit.cover,
                                             ),
                                     ),
@@ -357,8 +395,10 @@ class _AddPartyState extends State<AddParty> {
                                       height: 35,
                                       width: 35,
                                       decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.white, width: 2),
-                                        borderRadius: const BorderRadius.all(Radius.circular(120)),
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(120)),
                                         color: kMainColor,
                                       ),
                                       child: const Icon(
@@ -380,7 +420,8 @@ class _AddPartyState extends State<AddParty> {
                                 controller: emailController,
                                 decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
                                     labelText: lang.S.of(context).email,
                                     //hintText: 'Enter your email address',
                                     hintText: lang.S.of(context).hintEmail),
@@ -392,7 +433,8 @@ class _AddPartyState extends State<AddParty> {
                                 controller: addressController,
                                 decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
                                     labelText: lang.S.of(context).address,
                                     //hintText: 'Enter your address'
                                     hintText: lang.S.of(context).hintEmail),
@@ -402,9 +444,17 @@ class _AddPartyState extends State<AddParty> {
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: dueController,
-                                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))],
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d*\.?\d{0,2}'))
+                                ],
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(border: const OutlineInputBorder(), floatingLabelBehavior: FloatingLabelBehavior.always, labelText: lang.S.of(context).previousDue, hintText: lang.S.of(context).amount),
+                                decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
+                                    labelText: lang.S.of(context).previousDue,
+                                    hintText: lang.S.of(context).amount),
                               ),
                             ),
                           ],
@@ -418,7 +468,8 @@ class _AddPartyState extends State<AddParty> {
                     child: ElevatedButton(
                         onPressed: () async {
                           // if (_formKay.currentState!.validate()) {
-                          if (!nameController.text.isEmptyOrNull && !phoneNumber.isEmptyOrNull) {
+                          if (!nameController.text.isEmptyOrNull &&
+                              !phoneNumber.isEmptyOrNull) {
                             final partyRepo = PartyRepository();
                             await partyRepo.addParty(
                               ref: ref,
@@ -426,13 +477,26 @@ class _AddPartyState extends State<AddParty> {
                               name: nameController.text,
                               phone: phoneNumber ?? '',
                               type: groupValue,
-                              image: pickedImage != null ? File(pickedImage!.path) : null,
-                              address: addressController.text.isEmptyOrNull ? null : addressController.text,
-                              email: emailController.text.isEmptyOrNull ? null : emailController.text,
-                              due: dueController.text.isEmptyOrNull ? null : dueController.text,
+                              image: pickedImage != null
+                                  ? File(pickedImage!.path)
+                                  : null,
+                              address: addressController.text.isEmptyOrNull
+                                  ? null
+                                  : addressController.text,
+                              email: emailController.text.isEmptyOrNull
+                                  ? null
+                                  : emailController.text,
+                              due: dueController.text.isEmptyOrNull
+                                  ? null
+                                  : dueController.text,
                             );
+
+                            // Navigate back with success result
+                            Navigator.pop(context, true);
                           } else {
-                            EasyLoading.showError(lang.S.of(context).pleaseEnterValidPhoneAndNameFirst
+                            EasyLoading.showError(lang.S
+                                    .of(context)
+                                    .pleaseEnterValidPhoneAndNameFirst
                                 //'Please Enter valid phone and name first'
                                 );
                           }

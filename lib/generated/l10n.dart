@@ -1642,8 +1642,58 @@ class S {
   /// `Please Add A Customer`
   String get addCustomer {
     return Intl.message(
-      'Please Add A Customer',
+      'Please Add A Customer/Supplier',
       name: 'addCustomer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customers`
+  String get customers {
+    return Intl.message(
+      'Customers',
+      name: 'customers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Suppliers`
+  String get suppliers {
+    return Intl.message(
+      'Suppliers',
+      name: 'suppliers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supplier Name`
+  String get supplierName {
+    return Intl.message(
+      'Supplier Name',
+      name: 'supplierName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supplier Phone Number`
+  String get supplierPhoneNumber {
+    return Intl.message(
+      'Supplier Phone Number',
+      name: 'supplierPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter supplier phone number`
+  String get enterSupplierPhoneNumber {
+    return Intl.message(
+      'Enter supplier phone number',
+      name: 'enterSupplierPhoneNumber',
       desc: '',
       args: [],
     );
@@ -2147,16 +2197,6 @@ class S {
   /// `Inv No`
   String get inv {
     return Intl.message('Inv No', name: 'inv', desc: '', args: []);
-  }
-
-  /// `Supplier Name`
-  String get supplierName {
-    return Intl.message(
-      'Supplier Name',
-      name: 'supplierName',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Item Added`

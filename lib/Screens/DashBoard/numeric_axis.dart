@@ -13,183 +13,6 @@ class DashboardChart extends StatefulWidget {
   @override
   State<DashboardChart> createState() => _DashboardChartState();
 }
-//
-// class _DashboardChartState extends State<DashboardChart> {
-//   List<ChartData> chartData = [];
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     getData(widget.model);
-//   }
-//
-//   void getData(DashboardOverviewModel model) {
-//     chartData = [];
-//     for (int i = 0; i < model.data!.sales!.length; i++) {
-//       chartData.add(ChartData(
-//         model.data!.sales![i].date!,
-//         model.data!.sales![i].amount!.toDouble(),
-//         model.data!.purchases![i].amount!.toDouble(),
-//       ));
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Container(
-//           color: Colors.white,
-//           // padding: const EdgeInsets.all(16.0),
-//           child: Stack(
-//             alignment: Alignment.topRight,
-//             children: [
-//               BarChart(
-//                 BarChartData(
-//                   alignment: BarChartAlignment.spaceAround,
-//                   maxY: _getMaxY(),
-//                   barTouchData: BarTouchData(enabled: false),
-//                   titlesData: FlTitlesData(
-//                     show: true,
-//                     bottomTitles: AxisTitles(
-//                       sideTitles: SideTitles(
-//                         showTitles: true,
-//                         getTitlesWidget: _getBottomTitles,
-//                         reservedSize: 42,
-//                       ),
-//                     ),
-//                     rightTitles: const AxisTitles(
-//                       sideTitles: SideTitles(
-//                         showTitles: false,
-//                       ),
-//                     ),
-//                     topTitles: const AxisTitles(
-//                       sideTitles: SideTitles(showTitles: false,reservedSize: 20)
-//                     ),
-//                     leftTitles: AxisTitles(
-//                       sideTitles: SideTitles(
-//                         showTitles: true,
-//                         getTitlesWidget: _getLeftTitles,
-//                         reservedSize: 50,
-//                       ),
-//                     ),
-//                   ),
-//                   borderData: FlBorderData(
-//                     show: false,  // Ensure borders are shown
-//                   ),
-//                   gridData: FlGridData(
-//                     show: true,
-//                     drawVerticalLine: false,
-//                     drawHorizontalLine: true,
-//                     getDrawingHorizontalLine: (value) {
-//                       return const FlLine(
-//                         color: Color(0xffD1D5DB),
-//                         dashArray: [4, 4],
-//                         strokeWidth: 1,
-//                       );
-//                     },
-//                   ),
-//                   barGroups: _buildBarGroups(),
-//                 ),
-//
-//               ),
-//         Column(
-//           children: [
-//             CustomPaint(
-//               size:  Size(
-//                   MediaQuery.of(context).size.width-100, 0.1), // Adjust size as needed
-//               painter: DashedBarPainter(
-//                 barHeight: 1,
-//                 barColor: const Color(0xffD1D5DB),
-//                 dashWidth: 4,
-//                 dashSpace: 4,
-//               )),
-//             // const SizedBox(),
-//             const Spacer(),
-//             Padding(
-//               padding: const EdgeInsets.only(bottom: 42),
-//               child: CustomPaint(
-//                   size:  Size(
-//                       MediaQuery.of(context).size.width-100, 0.1), // Adjust size as needed
-//                   painter: DashedBarPainter(
-//                     barHeight: 1,
-//                     barColor: const Color(0xffD1D5DB),
-//                     dashWidth: 4,
-//                     dashSpace: 4,
-//                   )),
-//             ),
-//           ],
-//         ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   double _getMaxY() {
-//     double maxY = 0;
-//     for (var data in chartData) {
-//       maxY = maxY > data.y ? maxY : data.y;
-//       maxY = maxY > data.y1 ? maxY : data.y1;
-//     }
-//     return maxY + 10;
-//   }
-//
-//   List<BarChartGroupData> _buildBarGroups() {
-//     return chartData.asMap().entries.map((entry) {
-//       int index = entry.key;
-//       ChartData data = entry.value;
-//
-//       return BarChartGroupData(
-//         x: index,
-//         barRods: [
-//           BarChartRodData(
-//             toY: data.y,
-//             color: Colors.green,
-//             width: 6,
-//             borderRadius: const BorderRadius.all(Radius.circular(10)),
-//           ),
-//           BarChartRodData(
-//             toY: data.y1,
-//             color: kMainColor,
-//             width: 6,
-//             borderRadius: const BorderRadius.all(Radius.circular(10)),
-//           ),
-//         ],
-//         barsSpace: 8,
-//       );
-//     }).toList();
-//   }
-//
-//   Widget _getBottomTitles(double value, TitleMeta meta) {
-//     const style = TextStyle(
-//       color: Color(0xff4D4D4D),
-//       fontSize: 12,
-//     );
-//
-//     String text = chartData[value.toInt()].x;
-//
-//     return SideTitleWidget(
-//       axisSide: meta.axisSide,
-//       space: 8,
-//       child: Text(text, style: style),
-//     );
-//   }
-//
-//   Widget _getLeftTitles(double value, TitleMeta meta) {
-//     return SideTitleWidget(
-//       axisSide: meta.axisSide,
-//       child: Text(
-//         value.toInt().toString(),
-//         style: const TextStyle(
-//           color: Colors.black,
-//           fontSize: 12,
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class _DashboardChartState extends State<DashboardChart> {
   List<ChartData> chartData = [];
@@ -203,145 +26,271 @@ class _DashboardChartState extends State<DashboardChart> {
   void getData(DashboardOverviewModel model) {
     chartData = [];
     
+    print('=== CHART DEBUG START ===');
+    print('Model: $model');
+    print('Model data: ${model.data}');
+    print('Sales data: ${model.data?.sales}');
+    print('Purchases data: ${model.data?.purchases}');
+    
     // Add null safety checks
     if (model.data?.sales != null && model.data?.purchases != null) {
       int salesLength = model.data!.sales!.length;
       int purchasesLength = model.data!.purchases!.length;
       int maxLength = salesLength < purchasesLength ? salesLength : purchasesLength;
       
+      print('Sales length: $salesLength, Purchases length: $purchasesLength');
+      
+      double totalSales = 0;
+      double totalPurchases = 0;
+      int daysWithSales = 0;
+      int daysWithPurchases = 0;
+      
       for (int i = 0; i < maxLength; i++) {
+        double salesAmount = (model.data!.sales![i].amount ?? 0).toDouble();
+        double purchaseAmount = (model.data!.purchases![i].amount ?? 0).toDouble();
+        
+        totalSales += salesAmount;
+        totalPurchases += purchaseAmount;
+        
+        if (salesAmount > 0) daysWithSales++;
+        if (purchaseAmount > 0) daysWithPurchases++;
+        
         chartData.add(ChartData(
           model.data!.sales![i].date ?? '',
-          (model.data!.sales![i].amount ?? 0).toDouble(),
-          (model.data!.purchases![i].amount ?? 0).toDouble(),
+          salesAmount,
+          purchaseAmount,
         ));
+        
+        // Print first few data points
+        if (i < 5) {
+          print('Data[$i]: Date=${model.data!.sales![i].date}, Sales=$salesAmount, Purchase=$purchaseAmount');
+        }
       }
+      
+      print('Total chart data points: ${chartData.length}');
+      print('Total Sales: \$${totalSales.toStringAsFixed(2)}');
+      print('Total Purchases: \$${totalPurchases.toStringAsFixed(2)}');
+      print('Days with Sales: $daysWithSales');
+      print('Days with Purchases: $daysWithPurchases');
+      print('Max Y value: ${_getMaxY()}');
+    } else {
+      print('ERROR: Sales or purchases data is null!');
     }
+    print('=== CHART DEBUG END ===');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              width: chartData.length * 50.0, // Adjust width based on the number of data points
-              child: Stack(
-                alignment: Alignment.topRight,
+    print('=== CHART BUILD DEBUG ===');
+    print('Chart data length: ${chartData.length}');
+    print('Chart data empty: ${chartData.isEmpty}');
+    
+    // Show message if no chart data
+    if (chartData.isEmpty) {
+      print('Showing no chart data message');
+      return const Center(
+        child: Text(
+          'No chart data available',
+          style: TextStyle(color: kGreyTextColor),
+        ),
+      );
+    }
+    
+    // Check if all data is zero
+    bool allDataZero = chartData.every((data) => data.y == 0 && data.y1 == 0);
+    
+    print('Building chart with ${chartData.length} data points');
+    print('Max Y value: ${_getMaxY()}');
+    
+    // Try to build the chart, if it fails, show a simple fallback
+    try {
+      return Container(
+        height: 250,
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: allDataZero 
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.spaceAround,
-                      maxY: _getMaxY(),
-                      barTouchData: BarTouchData(enabled: false),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) {
-                              return SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: _getBottomTitles(value, meta),
-                              );
-                            },
-                            reservedSize: 42,
-                          ),
-                        ),
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: false,
-                          ),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false, reservedSize: 20),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: _getLeftTitles,
-                            reservedSize: _getLeftTitleReservedSize(),
-                          ),
-                        ),
-                      ),
-                      borderData: FlBorderData(
-                        show: false,
-                      ),
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        drawHorizontalLine: true,
-                        getDrawingHorizontalLine: (value) {
-                          return const FlLine(
-                            color: Color(0xffD1D5DB),
-                            dashArray: [4, 4],
-                            strokeWidth: 1,
-                          );
-                        },
-                      ),
-                      barGroups: _buildBarGroups(),
-                    ),
+                  Icon(
+                    Icons.bar_chart,
+                    size: 48,
+                    color: Colors.grey.withOpacity(0.5),
                   ),
-                  Column(
-                    children: [
-                      // CustomPaint(
-                      //     size: Size(
-                      //         MediaQuery.of(context).size.width - 100, 0.1), // Adjust size as needed
-                      //     painter: DashedBarPainter(
-                      //       barHeight: 1,
-                      //       barColor: const Color(0xffD1D5DB),
-                      //       dashWidth: 4,
-                      //       dashSpace: 4,
-                      //     )),
-                      SizedBox(),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 42),
-                        child: CustomPaint(
-                          size: Size(
-                              chartData.length * 50.0 - _getLeftTitleReservedSize(), // Adjust to match the width of the BarChart exactly
-                              0.1),
-                          painter: DashedBarPainter(
-                            barHeight: 1,
-                            barColor: const Color(0xffD1D5DB),
-                            dashWidth: 4,
-                            dashSpace: 4,
-                          ),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 16),
+                  Text(
+                    'No sales/purchase data for selected period',
+                    style: TextStyle(
+                      color: Colors.grey.withOpacity(0.7),
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Try selecting a different time period',
+                    style: TextStyle(
+                      color: Colors.grey.withOpacity(0.5),
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
+              ),
+            )
+          : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: chartData.length * 50.0, // Adjust width based on data points
+                child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: _getMaxY(),
+                minY: 0,
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (touchedSpot) => Colors.blueGrey.withOpacity(0.8),
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      String weekDay = chartData[group.x].x;
+                      double actualValue = rod.toY > 0.1 ? rod.toY : 0; // Handle the minimum height for zero values
+                      
+                      if (rodIndex == 0) {
+                        return BarTooltipItem(
+                          'Sales\nDay $weekDay\n\$${actualValue.toStringAsFixed(2)}',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        );
+                      } else {
+                        return BarTooltipItem(
+                          'Purchase\nDay $weekDay\n\$${actualValue.toStringAsFixed(2)}',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: _getBottomTitles,
+                      reservedSize: 30,
+                      interval: 1,
+                    ),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: _getLeftTitles,
+                      reservedSize: 40,
+                      interval: _getMaxY() / 5, // Show 5 intervals
+                    ),
+                  ),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: const Color(0xffD1D5DB), width: 1),
+                ),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  drawHorizontalLine: true,
+                  horizontalInterval: _getMaxY() / 5,
+                  getDrawingHorizontalLine: (value) {
+                    return const FlLine(
+                      color: Color(0xffD1D5DB),
+                      dashArray: [4, 4],
+                      strokeWidth: 1,
+                    );
+                  },
+                ),
+                barGroups: _buildBarGroups(),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      print('Chart build error: $e');
+      return Container(
+        height: 250,
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.red.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 48),
+              const SizedBox(height: 16),
+              Text(
+                'Chart Error: $e',
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Data points: ${chartData.length}',
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   double _getMaxY() {
+    if (chartData.isEmpty) return 100;
+    
     double maxY = 0;
+    bool hasNonZeroData = false;
+    
     for (var data in chartData) {
+      if (data.y > 0 || data.y1 > 0) hasNonZeroData = true;
       maxY = maxY > data.y ? maxY : data.y;
       maxY = maxY > data.y1 ? maxY : data.y1;
     }
-    return maxY + 10;
-  }
-
-  double _getLeftTitleReservedSize() {
-    double maxY = _getMaxY();
-    if (maxY < 999) {
-      return 32;
-    } else if (maxY < 1000) {
-      return 35;
-    } else if (maxY < 10000) {
-      return 54;
+    
+    // If maxY is 0 and no non-zero data, set a minimum scale for visualization
+    if (maxY == 0) {
+      return hasNonZeroData ? 100 : 50; // Lower scale when all data is zero
+    }
+    
+    // For small amounts (less than 1000), use smaller intervals
+    if (maxY < 1000) {
+      // Add 30% padding for small amounts
+      double paddedMax = maxY * 1.3;
+      // Round up to the nearest 25 for better granularity
+      return ((paddedMax / 25).ceil() * 25).toDouble();
     } else {
-      return 50; // Add more cases if needed
+      // Add 20% padding to the max value for better visibility
+      double paddedMax = maxY * 1.2;
+      // Round up to the nearest 50 for cleaner scale
+      return ((paddedMax / 50).ceil() * 50).toDouble();
     }
   }
 
@@ -354,19 +303,26 @@ class _DashboardChartState extends State<DashboardChart> {
         x: index,
         barRods: [
           BarChartRodData(
-            toY: data.y,
-            color: Colors.green,
-            width: 6,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            toY: data.y > 0 ? data.y : 0.1,
+            color: data.y > 0 ? Colors.green : Colors.grey.withOpacity(0.5),
+            width: 12,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(4),
+              topRight: Radius.circular(4),
+            ),
           ),
           BarChartRodData(
-            toY: data.y1,
-            color: kMainColor,
-            width: 6,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            toY: data.y1 > 0 ? data.y1 : 0.1,
+            color: data.y1 > 0 ? kMainColor : Colors.grey.withOpacity(0.5),
+            width: 12,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(4),
+              topRight: Radius.circular(4),
+            ),
           ),
         ],
-        barsSpace: 8,
+        barsSpace: 6,
+        groupVertically: true,
       );
     }).toList();
   }
@@ -374,7 +330,8 @@ class _DashboardChartState extends State<DashboardChart> {
   Widget _getBottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Color(0xff4D4D4D),
-      fontSize: 12,
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
     );
 
     // Add null safety check
@@ -383,66 +340,54 @@ class _DashboardChartState extends State<DashboardChart> {
     }
     
     String text = chartData[value.toInt()].x;
+    
+    // Show only every 3rd label to avoid overcrowding
+    if (value.toInt() % 3 != 0 && chartData.length > 10) {
+      return const SizedBox.shrink();
+    }
+
+    // Format the date better - handle hour format (00-23) and day format
+    String formattedText;
+    if (text.length == 2 && int.tryParse(text) != null) {
+      int hour = int.parse(text);
+      if (hour >= 0 && hour <= 23) {
+        // This is hour format, show as time
+        formattedText = '${hour.toString().padLeft(2, '0')}:00';
+      } else {
+        // This might be day format
+        formattedText = 'Day $text';
+      }
+    } else {
+      formattedText = text;
+    }
 
     return SideTitleWidget(
       space: 8,
-      meta: TitleMeta(
-        min: meta.min,
-        max: meta.max,
-        parentAxisSize: meta.parentAxisSize,
-        axisPosition: meta.axisPosition,
-        appliedInterval: meta.appliedInterval,
-        sideTitles: meta.sideTitles,
-        formattedValue: meta.formattedValue,
-        axisSide: meta.axisSide,
-        rotationQuarterTurns: meta.rotationQuarterTurns,
-      ),
-      child: Text(text, style: style),
+      meta: meta,
+      child: Text(formattedText, style: style),
     );
   }
 
   Widget _getLeftTitles(double value, TitleMeta meta) {
-    // Calculate the maximum y-value in the chart data
-    double maxY = _getMaxY();
-    // Check if the current value is the maximum; if so, return an empty widget
-    if (value == maxY) {
-      return const SizedBox.shrink(); // Don't display the highest value
+    const style = TextStyle(
+      color: Color(0xff4D4D4D),
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
+    );
+
+    // Only show integer values
+    if (value % 1 != 0) {
+      return const SizedBox.shrink();
     }
 
     return SideTitleWidget(
-      meta: TitleMeta(
-        min: meta.min,
-        max: meta.max,
-        parentAxisSize: meta.parentAxisSize,
-        axisPosition: meta.axisPosition,
-        appliedInterval: meta.appliedInterval,
-        sideTitles: meta.sideTitles,
-        formattedValue: meta.formattedValue,
-        axisSide: meta.axisSide,
-        rotationQuarterTurns: meta.rotationQuarterTurns,
-      ),
+      meta: meta,
       child: Text(
-        value.toInt().toString(),
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 12,
-        ),
+        '\$${value.toInt()}',
+        style: style,
       ),
     );
   }
-
-// Widget _getLeftTitles(double value, TitleMeta meta) {
-//   return SideTitleWidget(
-//     axisSide: meta.axisSide,
-//     child: Text(
-//       value.toInt().toString(),
-//       style: const TextStyle(
-//         color: Colors.black,
-//         fontSize: 12,
-//       ),
-//     ),
-//   );
-// }
 }
 
 ///---------------------------------dash line-------------------------------
@@ -477,103 +422,3 @@ class DashedBarPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-///-----------------------------synfusion data chart--------------------------------
-
-// class NumericAxisChart extends StatefulWidget {
-//   const NumericAxisChart({Key? key, required this.model}) : super(key: key);
-//
-//   final DashboardOverviewModel model;
-//
-//   @override
-//   State<NumericAxisChart> createState() => _NumericAxisChartState();
-// }
-//
-// class _NumericAxisChartState extends State<NumericAxisChart> {
-//   final List<ChartData> chartData = [];
-//
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     getData(widget.model);
-//     super.initState();
-//   }
-//
-//   getData(DashboardOverviewModel model) {
-//     for (int i = 0; i < model.data!.sales!.length; i++) {
-//       chartData.add(ChartData(
-//           model.data!.sales![i].date!,
-//           model.data!.sales![i].amount!.toDouble(),
-//           model.data!.purchases![i].amount!.toDouble()));
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Container(
-//           color: kWhite,
-//           child: SfCartesianChart(
-//             primaryXAxis: const CategoryAxis(
-//               axisLine: AxisLine(width: 0), // Remove bottom axis line
-//               majorGridLines: MajorGridLines(width: 0), //// Remove vertical grid lines// Make labels transparent
-//               majorTickLines: MajorTickLines(size: 0),
-//             ),
-//             primaryYAxis: const NumericAxis(
-//               axisLine: AxisLine(width: 0), // Remove left axis line
-//               majorGridLines: MajorGridLines(
-//                 color: Color(0xffD1D5DB),
-//                 dashArray: [5, 5], // Creates a dotted line pattern for horizontal grid lines
-//               ),
-//             ),
-//             plotAreaBorderWidth: 0,
-//             series: <CartesianSeries<ChartData, String>>[
-//               ColumnSeries<ChartData, String>(
-//                 dataSource: chartData,
-//                 spacing: 0.3,
-//                 width: 0.5,
-//                 xValueMapper: (ChartData data, _) => data.x,
-//                 yValueMapper: (ChartData data, _) => data.y,
-//                 name: 'Sales',
-//                 dataLabelSettings: const DataLabelSettings(isVisible: false),
-//                 color: Colors.green,
-//                 borderRadius: const BorderRadius.only(
-//                   topLeft: Radius.circular(10),
-//                   topRight: Radius.circular(10),
-//                   bottomRight: Radius.circular(10),
-//                   bottomLeft: Radius.circular(10)
-//                 ),
-//               ),
-//               ColumnSeries<ChartData, String>(
-//                 dataSource: chartData,
-//                 width: 0.5,
-//                 spacing: 0.3,
-//                 xValueMapper: (ChartData data, _) => data.x,
-//                 yValueMapper: (ChartData data, _) => data.y1,
-//                 name: 'Purchase',
-//                 color: kMainColor,
-//                 dataLabelSettings: const DataLabelSettings(isVisible: false),
-//                 borderRadius: const BorderRadius.only(
-//                   topLeft: Radius.circular(10),
-//                   topRight: Radius.circular(10),
-//                   bottomLeft: Radius.circular(10),
-//                   bottomRight: Radius.circular(10)
-//                 ),
-//               ),
-//             ],
-//           )
-//           ,
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class ChartData {
-//   ChartData(this.x, this.y, this.y1);
-//
-//   final String x;
-//   final double y;
-//   final double y1;
-// }
