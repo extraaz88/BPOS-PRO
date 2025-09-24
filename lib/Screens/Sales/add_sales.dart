@@ -12,6 +12,7 @@ import 'package:mobile_pos/Provider/add_to_cart.dart';
 import 'package:mobile_pos/Provider/profile_provider.dart';
 import 'package:mobile_pos/Screens/Sales/Repo/sales_repo.dart';
 import 'package:mobile_pos/Screens/Sales/sales_add_to_cart_sales_widget.dart';
+import 'package:mobile_pos/Screens/Sales/sales_contact.dart';
 import 'package:mobile_pos/Screens/Sales/sales_products_list_screen.dart';
 import 'package:mobile_pos/Screens/Settings/sales%20settings/model/amount_rounding_dropdown_model.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
@@ -1036,17 +1037,116 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 right: 10, left: 10, top: 13, bottom: 13),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column(
                               children: [
-                                Text(
-                                  lang.S.of(context).dueAmount,
-                                  style: const TextStyle(fontSize: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      lang.S.of(context).dueAmount,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                      formatPointNumber(providerData.dueAmount),
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  formatPointNumber(providerData.dueAmount),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
+                                // Warning for walk-in customers with due amount
+                                if (selectedCustomer == null && providerData.dueAmount > 0)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 8),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.orange.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.warning, color: Colors.orange, size: 16),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Walk-in customers cannot make credit sales.',
+                                                style: TextStyle(
+                                                  color: Colors.orange[700],
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => const SalesContact(),
+                                                        ),
+                                                      ).then((customer) {
+                                                        if (customer != null) {
+                                                          setState(() {
+                                                            selectedCustomer = customer;
+                                                          });
+                                                        }
+                                                      });
+                                                    },
+                                                    style: TextButton.styleFrom(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                      minimumSize: Size.zero,
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    ),
+                                                    child: Text(
+                                                      'Select Customer',
+                                                      style: TextStyle(
+                                                        color: Colors.blue[700],
+                                                        fontSize: 11,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'or',
+                                                    style: TextStyle(
+                                                      color: Colors.orange[700],
+                                                      fontSize: 11,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      // Clear due amount by setting received amount to total
+                                                      recevedAmountController.text = providerData.totalPayableAmount.toString();
+                                                      providerData.calculatePrice(receivedAmount: recevedAmountController.text);
+                                                    },
+                                                    style: TextButton.styleFrom(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                      minimumSize: Size.zero,
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    ),
+                                                    child: Text(
+                                                      'Pay Full Amount',
+                                                      style: TextStyle(
+                                                        color: Colors.green[700],
+                                                        fontSize: 11,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -1217,10 +1317,11 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                   lang.S.of(context).addProductFirst);
                               return;
                             }
-                            if (widget.customerModel == null &&
-                                providerData.dueAmount > 0) {
+                            // Prevent walk-in customers from making credit sales (due amount > 0)
+                            // This matches the server-side validation
+                            if (selectedCustomer == null && providerData.dueAmount > 0) {
                               EasyLoading.showError(
-                                  'Sales on due are not allowed for walk-in customers.');
+                                  'Walk-in customers cannot make credit sales. Please select a customer or pay the full amount.');
                               return;
                             }
                             if (paymentType == null) {
@@ -1238,6 +1339,16 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                             });
 
                             try {
+                              // Debug information
+                              print('=== SALE SAVE DEBUG ===');
+                              print('Customer Model: ${selectedCustomer?.id}');
+                              print('Cart Items: ${providerData.cartItemList.length}');
+                              print('Total Amount: ${providerData.totalPayableAmount}');
+                              print('Due Amount: ${providerData.dueAmount}');
+                              print('Payment Type: $paymentType');
+                              print('Is Full Paid: ${providerData.isFullPaid}');
+                              print('Selected Date: $selectedDate');
+                              
                               EasyLoading.show(
                                   status: lang.S.of(context).loading,
                                   dismissOnTap: false);
@@ -1260,6 +1371,7 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                                   .productPurchasePrice
                                                   .toString()) ??
                                               0)),
+                                  stockId: element.productId.toInt(), // Use productId as stockId
                                 );
                               }).toList();
 
@@ -1279,8 +1391,8 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                   purchaseDate: selectedDate.toString(),
                                   products: selectedProductList,
                                   paymentType: paymentType?.toString() ?? '',
-                                  partyId: widget.customerModel?.id,
-                                  customerPhone: widget.customerModel == null
+                                  partyId: selectedCustomer?.id,
+                                  customerPhone: selectedCustomer == null
                                       ? phoneController.text
                                       : null,
                                   vatAmount: providerData.vatAmount,
@@ -1343,8 +1455,25 @@ class AddSalesScreenState extends ConsumerState<AddSalesScreen> {
                                 );
                               }
                             } catch (e) {
+                              print('=== SALE SAVE ERROR ===');
+                              print('Error: $e');
+                              print('Stack trace: ${StackTrace.current}');
+                              
+                              EasyLoading.dismiss();
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(e.toString())));
+                                SnackBar(
+                                  content: Text('Failed to save sale: $e'),
+                                  backgroundColor: Colors.red,
+                                  duration: const Duration(seconds: 5),
+                                  action: SnackBarAction(
+                                    label: 'Retry',
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      // Optionally implement retry logic
+                                    },
+                                  ),
+                                ),
+                              );
                             } finally {
                               EasyLoading.dismiss();
                               setState(() {

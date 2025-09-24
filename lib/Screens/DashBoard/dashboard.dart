@@ -31,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // Custom date variables
   DateTime? fromDate;
   DateTime? toDate;
-  bool showDatePicker = false;
+  bool showCustomDatePicker = false;
 
   Map<String, String> getTranslatedTimes(BuildContext context) {
     return {
@@ -112,9 +112,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         setState(() {
                           selectedTime = value!;
                           if (selectedTime == 'Custom Date') {
-                            showDatePicker = true;
+                            showCustomDatePicker = true;
                           } else {
-                            showDatePicker = false;
+                            showCustomDatePicker = false;
                           }
                         });
                         // Refresh the provider with new selected time
@@ -134,7 +134,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Custom Date Picker
-                    if (showDatePicker) ...[
+                    if (showCustomDatePicker) ...[
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -170,10 +170,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       const SizedBox(height: 8),
                                       InkWell(
                                         onTap: () async {
-                                          final date = await showDatePicker;
+                                          final date = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2000),
+                                            lastDate: DateTime.now(),
+                                          );
                                           if (date != null) {
                                             setState(() {
-                                              fromDate = date as DateTime?;
+                                              fromDate = date;
                                             });
                                           }
                                         },
@@ -226,10 +231,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       const SizedBox(height: 8),
                                       InkWell(
                                         onTap: () async {
-                                          final date = await showDatePicker;
+                                          final date = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2000),
+                                            lastDate: DateTime.now(),
+                                          );
                                           if (date != null) {
                                             setState(() {
-                                              toDate = date as DateTime?;
+                                              toDate = date;
                                             });
                                           }
                                         },
@@ -278,7 +288,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         ref.invalidate(dashboardInfoProvider(
                                             'custom_date'));
                                         setState(() {
-                                          showDatePicker = false;
+                                          showCustomDatePicker = false;
                                         });
                                       }
                                     : null,
@@ -326,50 +336,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
-                                Icons.circle,
-                                color: Colors.green,
-                                size: 18,
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF10B981),
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                              const SizedBox(
-                                width: 5,
+                              const SizedBox(width: 8),
+                              Text(
+                                lang.S.of(context).sales,
+                                style: const TextStyle(
+                                  color: Color(0xFF374151),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                              RichText(
-                                  text: TextSpan(
-                                      text: lang.S.of(context).sales,
-                                      //'Sales',
-                                      style:
-                                          const TextStyle(color: kTitleColor),
-                                      children: const [
-                                    // TextSpan(
-                                    //     text: '$currency 500',
-                                    //     style: gTextStyle.copyWith(fontWeight: FontWeight.bold,color: kTitleColor)
-                                    // ),
-                                  ])),
-                              const SizedBox(
-                                width: 20,
+                              const SizedBox(width: 24),
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFEF4444),
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                              const Icon(
-                                Icons.circle,
-                                color: kMainColor,
-                                size: 18,
+                              const SizedBox(width: 8),
+                              Text(
+                                lang.S.of(context).purchase,
+                                style: const TextStyle(
+                                  color: Color(0xFF374151),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              RichText(
-                                  text: TextSpan(
-                                      text: lang.S.of(context).purchase,
-
-                                      //'Purchase',
-                                      style:
-                                          const TextStyle(color: kTitleColor),
-                                      children: const [
-                                    // TextSpan(
-                                    //     text: '$currency 300',
-                                    //     style: gTextStyle.copyWith(fontWeight: FontWeight.bold,color: kTitleColor)
-                                    // ),
-                                  ])),
                             ],
                           ),
                           const SizedBox(
@@ -378,17 +379,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           SizedBox(
                               height: 250,
                               width: double.infinity,
-                              child: dashboard.data?.sales != null &&
-                                      dashboard.data?.purchases != null
-                                  ? DashboardChart(
-                                      model: dashboard,
-                                    )
-                                  : const Center(
-                                      child: Text(
-                                        'No chart data available',
-                                        style: TextStyle(color: kGreyTextColor),
-                                      ),
-                                    )),
+                              child: DashboardChart(
+                                model: dashboard,
+                              )),
                         ],
                       ),
                     ),

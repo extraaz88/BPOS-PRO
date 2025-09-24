@@ -129,9 +129,21 @@ class ThermalPrinter extends ChangeNotifier {
     isBluetoothConnected ? SalesThermalPrinterInvoice().printSalesTicket(printTransactionModel: transaction, productList: productList) : listOfBluDialog(context: context);
   }
 
+  /// Print sales invoice with Marathi and Hindi support
+  Future<void> printMultilingualSalesThermalInvoiceNow({required PrintTransactionModel transaction, required List<SalesDetails>? productList, required BuildContext context}) async {
+    await getBluetooth();
+    isBluetoothConnected ? SalesThermalPrinterInvoice().printMultilingualSalesTicket(printTransactionModel: transaction, productList: productList) : listOfBluDialog(context: context);
+  }
+
   Future<void> printPurchaseThermalInvoiceNow({required PrintPurchaseTransactionModel transaction, required List<PurchaseDetails>? productList, required BuildContext context}) async {
     await getBluetooth();
     isBluetoothConnected ? PurchaseThermalPrinterInvoice().printPurchaseThermalInvoice(printTransactionModel: transaction, productList: productList) : listOfBluDialog(context: context);
+  }
+
+  /// Print purchase invoice with Marathi and Hindi support
+  Future<void> printMultilingualPurchaseThermalInvoiceNow({required PrintPurchaseTransactionModel transaction, required List<PurchaseDetails>? productList, required BuildContext context}) async {
+    await getBluetooth();
+    isBluetoothConnected ? PurchaseThermalPrinterInvoice().printMultilingualPurchaseInvoice(printTransactionModel: transaction, productList: productList) : listOfBluDialog(context: context);
   }
 
   Future<void> printDueThermalInvoiceNow({required PrintDueTransactionModel transaction, required BuildContext context}) async {

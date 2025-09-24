@@ -816,9 +816,80 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                     const SizedBox(height: 40),
                   ]),
                 )),
-                bottomNavigationBar: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                bottomNavigationBar: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Print buttons row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () async {
+                              PrintTransactionModel model = PrintTransactionModel(transitionModel: widget.saleTransaction, personalInformationModel: widget.businessInfo);
+                              await printerData.printSalesThermalInvoiceNow(
+                                transaction: model,
+                                productList: model.transitionModel!.salesDetails,
+                                context: context,
+                              );
+                            },
+                            child: Container(
+                              height: 50,
+                              width: context.width() / 4,
+                              decoration: const BoxDecoration(
+                                color: mainConstant.kMainColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(25),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Print',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () async {
+                              PrintTransactionModel model = PrintTransactionModel(transitionModel: widget.saleTransaction, personalInformationModel: widget.businessInfo);
+                              await printerData.printMultilingualSalesThermalInvoiceNow(
+                                transaction: model,
+                                productList: model.transitionModel!.salesDetails,
+                                context: context,
+                              );
+                            },
+                            child: Container(
+                              height: 50,
+                              width: context.width() / 4,
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(25),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'मराठी/हिंदी',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Cancel button
                     Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: GestureDetector(
@@ -844,39 +915,6 @@ class _SalesInvoiceDetailsState extends State<SalesInvoiceDetails> {
                           child: Center(
                             child: Text(
                               lang.S.of(context).cancel,
-                              //'Cancel',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: GestureDetector(
-                        onTap: () async {
-                          PrintTransactionModel model = PrintTransactionModel(transitionModel: widget.saleTransaction, personalInformationModel: widget.businessInfo);
-                          await printerData.printSalesThermalInvoiceNow(
-                            transaction: model,
-                            productList: model.transitionModel!.salesDetails,
-                            context: context,
-                          );
-                        },
-                        child: Container(
-                          height: 60,
-                          width: context.width() / 3,
-                          decoration: const BoxDecoration(
-                            color: mainConstant.kMainColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(30),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              lang.S.of(context).print,
                               style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,

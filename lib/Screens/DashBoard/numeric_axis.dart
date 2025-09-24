@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_pos/constant.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile_pos/Const/api_config.dart';
+import 'package:mobile_pos/Repository/constant_functions.dart';
 import 'package:mobile_pos/model/dashboard_overview_model.dart';
 
 import 'chart_data.dart';
@@ -13,6 +17,183 @@ class DashboardChart extends StatefulWidget {
   @override
   State<DashboardChart> createState() => _DashboardChartState();
 }
+//
+// class _DashboardChartState extends State<DashboardChart> {
+//   List<ChartData> chartData = [];
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     getData(widget.model);
+//   }
+//
+//   void getData(DashboardOverviewModel model) {
+//     chartData = [];
+//     for (int i = 0; i < model.data!.sales!.length; i++) {
+//       chartData.add(ChartData(
+//         model.data!.sales![i].date!,
+//         model.data!.sales![i].amount!.toDouble(),
+//         model.data!.purchases![i].amount!.toDouble(),
+//       ));
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Center(
+//         child: Container(
+//           color: Colors.white,
+//           // padding: const EdgeInsets.all(16.0),
+//           child: Stack(
+//             alignment: Alignment.topRight,
+//             children: [
+//               BarChart(
+//                 BarChartData(
+//                   alignment: BarChartAlignment.spaceAround,
+//                   maxY: _getMaxY(),
+//                   barTouchData: BarTouchData(enabled: false),
+//                   titlesData: FlTitlesData(
+//                     show: true,
+//                     bottomTitles: AxisTitles(
+//                       sideTitles: SideTitles(
+//                         showTitles: true,
+//                         getTitlesWidget: _getBottomTitles,
+//                         reservedSize: 42,
+//                       ),
+//                     ),
+//                     rightTitles: const AxisTitles(
+//                       sideTitles: SideTitles(
+//                         showTitles: false,
+//                       ),
+//                     ),
+//                     topTitles: const AxisTitles(
+//                       sideTitles: SideTitles(showTitles: false,reservedSize: 20)
+//                     ),
+//                     leftTitles: AxisTitles(
+//                       sideTitles: SideTitles(
+//                         showTitles: true,
+//                         getTitlesWidget: _getLeftTitles,
+//                         reservedSize: 50,
+//                       ),
+//                     ),
+//                   ),
+//                   borderData: FlBorderData(
+//                     show: false,  // Ensure borders are shown
+//                   ),
+//                   gridData: FlGridData(
+//                     show: true,
+//                     drawVerticalLine: false,
+//                     drawHorizontalLine: true,
+//                     getDrawingHorizontalLine: (value) {
+//                       return const FlLine(
+//                         color: Color(0xffD1D5DB),
+//                         dashArray: [4, 4],
+//                         strokeWidth: 1,
+//                       );
+//                     },
+//                   ),
+//                   barGroups: _buildBarGroups(),
+//                 ),
+//
+//               ),
+//         Column(
+//           children: [
+//             CustomPaint(
+//               size:  Size(
+//                   MediaQuery.of(context).size.width-100, 0.1), // Adjust size as needed
+//               painter: DashedBarPainter(
+//                 barHeight: 1,
+//                 barColor: const Color(0xffD1D5DB),
+//                 dashWidth: 4,
+//                 dashSpace: 4,
+//               )),
+//             // const SizedBox(),
+//             const Spacer(),
+//             Padding(
+//               padding: const EdgeInsets.only(bottom: 42),
+//               child: CustomPaint(
+//                   size:  Size(
+//                       MediaQuery.of(context).size.width-100, 0.1), // Adjust size as needed
+//                   painter: DashedBarPainter(
+//                     barHeight: 1,
+//                     barColor: const Color(0xffD1D5DB),
+//                     dashWidth: 4,
+//                     dashSpace: 4,
+//                   )),
+//             ),
+//           ],
+//         ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   double _getMaxY() {
+//     double maxY = 0;
+//     for (var data in chartData) {
+//       maxY = maxY > data.y ? maxY : data.y;
+//       maxY = maxY > data.y1 ? maxY : data.y1;
+//     }
+//     return maxY + 10;
+//   }
+//
+//   List<BarChartGroupData> _buildBarGroups() {
+//     return chartData.asMap().entries.map((entry) {
+//       int index = entry.key;
+//       ChartData data = entry.value;
+//
+//       return BarChartGroupData(
+//         x: index,
+//         barRods: [
+//           BarChartRodData(
+//             toY: data.y,
+//             color: Colors.green,
+//             width: 6,
+//             borderRadius: const BorderRadius.all(Radius.circular(10)),
+//           ),
+//           BarChartRodData(
+//             toY: data.y1,
+//             color: kMainColor,
+//             width: 6,
+//             borderRadius: const BorderRadius.all(Radius.circular(10)),
+//           ),
+//         ],
+//         barsSpace: 8,
+//       );
+//     }).toList();
+//   }
+//
+//   Widget _getBottomTitles(double value, TitleMeta meta) {
+//     const style = TextStyle(
+//       color: Color(0xff4D4D4D),
+//       fontSize: 12,
+//     );
+//
+//     String text = chartData[value.toInt()].x;
+//
+//     return SideTitleWidget(
+//       axisSide: meta.axisSide,
+//       space: 8,
+//       child: Text(text, style: style),
+//     );
+//   }
+//
+//   Widget _getLeftTitles(double value, TitleMeta meta) {
+//     return SideTitleWidget(
+//       axisSide: meta.axisSide,
+//       child: Text(
+//         value.toInt().toString(),
+//         style: const TextStyle(
+//           color: Colors.black,
+//           fontSize: 12,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _DashboardChartState extends State<DashboardChart> {
   List<ChartData> chartData = [];
@@ -23,275 +204,331 @@ class _DashboardChartState extends State<DashboardChart> {
     getData(widget.model);
   }
 
-  void getData(DashboardOverviewModel model) {
-    chartData = [];
-    
-    print('=== CHART DEBUG START ===');
-    print('Model: $model');
-    print('Model data: ${model.data}');
-    print('Sales data: ${model.data?.sales}');
-    print('Purchases data: ${model.data?.purchases}');
-    
-    // Add null safety checks
-    if (model.data?.sales != null && model.data?.purchases != null) {
-      int salesLength = model.data!.sales!.length;
-      int purchasesLength = model.data!.purchases!.length;
-      int maxLength = salesLength < purchasesLength ? salesLength : purchasesLength;
+  @override
+  void didUpdateWidget(DashboardChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.model != widget.model) {
+      getData(widget.model);
+    }
+  }
+
+  Future<void> getData(DashboardOverviewModel model) async {
+    setState(() {
+      chartData = [];
+
+      print('=== DASHBOARD CHART DEBUG ===');
+      print('Model data: ${model.data}');
+      print('Sales data: ${model.data?.sales}');
+      print('Purchases data: ${model.data?.purchases}');
+      print('Sales count: ${model.data?.sales?.length ?? 0}');
+      print('Purchases count: ${model.data?.purchases?.length ?? 0}');
+
+      // Process actual sales and purchase data
+      if (model.data?.sales != null || model.data?.purchases != null) {
+      // Create a map to combine sales and purchases by date
+      Map<String, Map<String, double>> combinedData = {};
       
-      print('Sales length: $salesLength, Purchases length: $purchasesLength');
+      // Process sales data - only include days with actual amounts
+      if (model.data?.sales != null && model.data!.sales!.isNotEmpty) {
+        print('Processing ${model.data!.sales!.length} sales records...');
+        for (var sale in model.data!.sales!) {
+          print('Sale record: date=${sale.date}, amount=${sale.amount}');
+          if (sale.date != null && sale.amount != null) {
+            String dateStr = sale.date!.toString().trim();
+            double amount = sale.amount!.toDouble();
+            
+            print('Processing sale: date=$dateStr, amount=$amount');
+            
+            // Only include days with actual sales amount > 0
+            if (amount > 0 && amount.isFinite) {
+              combinedData[dateStr] = {
+                'sales': amount,
+                'purchase': 0.0,
+              };
+              print('Added sale to chart: $dateStr = ₹$amount');
+            } else {
+              print('Skipped sale (amount <= 0 or invalid): $dateStr = ₹$amount');
+            }
+          } else {
+            print('Skipped sale (null date or amount): date=${sale.date}, amount=${sale.amount}');
+          }
+        }
+      } else {
+        print('No sales data available or empty');
+      }
       
-      double totalSales = 0;
-      double totalPurchases = 0;
-      int daysWithSales = 0;
-      int daysWithPurchases = 0;
-      
-      for (int i = 0; i < maxLength; i++) {
-        double salesAmount = (model.data!.sales![i].amount ?? 0).toDouble();
-        double purchaseAmount = (model.data!.purchases![i].amount ?? 0).toDouble();
-        
-        totalSales += salesAmount;
-        totalPurchases += purchaseAmount;
-        
-        if (salesAmount > 0) daysWithSales++;
-        if (purchaseAmount > 0) daysWithPurchases++;
-        
-        chartData.add(ChartData(
-          model.data!.sales![i].date ?? '',
-          salesAmount,
-          purchaseAmount,
-        ));
-        
-        // Print first few data points
-        if (i < 5) {
-          print('Data[$i]: Date=${model.data!.sales![i].date}, Sales=$salesAmount, Purchase=$purchaseAmount');
+      // Process purchase data - only include days with actual amounts
+      if (model.data?.purchases != null && model.data!.purchases!.isNotEmpty) {
+        for (var purchase in model.data!.purchases!) {
+          if (purchase.date != null && purchase.amount != null) {
+            String dateStr = purchase.date!.toString().trim();
+            double amount = purchase.amount!.toDouble();
+            
+            // Only include days with actual purchase amount > 0
+            if (amount > 0 && amount.isFinite) {
+              if (combinedData.containsKey(dateStr)) {
+                combinedData[dateStr]!['purchase'] = amount;
+              } else {
+                combinedData[dateStr] = {
+                  'sales': 0.0,
+                  'purchase': amount,
+                };
+              }
+            }
+          }
         }
       }
       
-      print('Total chart data points: ${chartData.length}');
-      print('Total Sales: \$${totalSales.toStringAsFixed(2)}');
-      print('Total Purchases: \$${totalPurchases.toStringAsFixed(2)}');
-      print('Days with Sales: $daysWithSales');
-      print('Days with Purchases: $daysWithPurchases');
-      print('Max Y value: ${_getMaxY()}');
-    } else {
-      print('ERROR: Sales or purchases data is null!');
+      // Convert combined data to chart data
+      List<String> sortedDates = combinedData.keys.toList()..sort();
+      
+      print('=== CHART DATA SUMMARY ===');
+      print('Total combined data entries: ${combinedData.length}');
+      print('Sorted dates: $sortedDates');
+      print('Dashboard Chart: Processing ${sortedDates.length} dates with actual data');
+      
+      for (String date in sortedDates) {
+        var data = combinedData[date]!;
+        chartData.add(ChartData(
+          date,
+          data['sales']!,
+          data['purchase']!,
+        ));
+        print('Dashboard Chart: Date: $date, Sales: ₹${data['sales']}, Purchase: ₹${data['purchase']}');
+      }
+      
+      print('Final chart data count: ${chartData.length}');
+      print('=== END CHART DEBUG ===');
+      
+      // If no actual data, mark for API fetch
+      if (chartData.isEmpty) {
+        print('No chart data found, will fetch from sales API...');
+        chartData = [
+          ChartData('Loading...', 0, 0),
+        ];
+      }
+      }
+    });
+    
+    // Always fetch from sales API as fallback to get real data
+    print('Fetching real sales data as fallback...');
+    await fetchRealSalesData();
+  }
+
+  // Fallback method to fetch sales data directly
+  Future<void> fetchSalesDataDirectly() async {
+    try {
+      // This would be implemented to fetch sales data directly
+      // from the sales API as a fallback
+      print('Fallback: Fetching sales data directly...');
+    } catch (e) {
+      print('Fallback failed: $e');
     }
-    print('=== CHART DEBUG END ===');
+  }
+
+  // Method to fetch real sales and purchase data from APIs
+  Future<void> fetchRealSalesData() async {
+    try {
+      print('Fetching real sales and purchase data from APIs...');
+      
+      // Fetch both sales and purchase data
+      final salesUri = Uri.parse('${APIConfig.url}/sales');
+      final purchaseUri = Uri.parse('${APIConfig.url}/purchase');
+      
+      final salesResponse = await http.get(salesUri, headers: {
+        'Accept': 'application/json',
+        'Authorization': await getAuthToken(),
+      });
+      
+      final purchaseResponse = await http.get(purchaseUri, headers: {
+        'Accept': 'application/json',
+        'Authorization': await getAuthToken(),
+      });
+
+      Map<String, double> dailySales = {};
+      Map<String, double> dailyPurchases = {};
+
+      // Process sales data
+      if (salesResponse.statusCode == 200) {
+        final salesData = jsonDecode(salesResponse.body) as Map<String, dynamic>;
+        final salesList = salesData['data'] as List<dynamic>;
+        
+        print('=== DASHBOARD CHART - SALES API DATA ===');
+        print('Fetched ${salesList.length} sales records from API');
+        
+        for (var sale in salesList) {
+          try {
+            String saleDate = sale['saleDate'] ?? sale['sale_date'] ?? sale['created_at'];
+            double amount = double.tryParse(sale['totalAmount']?.toString() ?? sale['total_amount']?.toString() ?? '0') ?? 0.0;
+            
+            if (amount > 0) {
+              String dateKey = saleDate.split(' ')[0];
+              dailySales[dateKey] = (dailySales[dateKey] ?? 0) + amount;
+            }
+          } catch (e) {
+            print('Error processing sale: $e');
+          }
+        }
+      }
+
+      // Process purchase data
+      if (purchaseResponse.statusCode == 200) {
+        final purchaseData = jsonDecode(purchaseResponse.body) as Map<String, dynamic>;
+        final purchaseList = purchaseData['data'] as List<dynamic>;
+        
+        print('=== DASHBOARD CHART - PURCHASE API DATA ===');
+        print('Fetched ${purchaseList.length} purchase records from API');
+        
+        for (var purchase in purchaseList) {
+          try {
+            String purchaseDate = purchase['purchaseDate'] ?? purchase['purchase_date'] ?? purchase['created_at'];
+            double amount = double.tryParse(purchase['totalAmount']?.toString() ?? purchase['total_amount']?.toString() ?? '0') ?? 0.0;
+            
+            if (amount > 0) {
+              String dateKey = purchaseDate.split(' ')[0];
+              dailyPurchases[dateKey] = (dailyPurchases[dateKey] ?? 0) + amount;
+            }
+          } catch (e) {
+            print('Error processing purchase: $e');
+          }
+        }
+      }
+      
+      print('=== DAILY SALES SUMMARY ===');
+      dailySales.forEach((date, amount) {
+        print('Sales $date: ₹$amount');
+      });
+      
+      print('=== DAILY PURCHASE SUMMARY ===');
+      dailyPurchases.forEach((date, amount) {
+        print('Purchase $date: ₹$amount');
+      });
+      
+      // Combine sales and purchase data
+      Set<String> allDates = {...dailySales.keys, ...dailyPurchases.keys};
+      List<String> sortedDates = allDates.toList()..sort();
+      
+      print('=== CHART DATA CREATION ===');
+      print('All dates: $sortedDates');
+      
+      // Convert to chart data
+      setState(() {
+        chartData = [];
+        
+        for (String date in sortedDates) {
+          chartData.add(ChartData(
+            date,
+            dailySales[date] ?? 0.0,
+            dailyPurchases[date] ?? 0.0,
+          ));
+          print('Added to chart: $date - Sales: ₹${dailySales[date] ?? 0}, Purchase: ₹${dailyPurchases[date] ?? 0}');
+        }
+        
+        print('Final chart data count: ${chartData.length}');
+      });
+      
+    } catch (e) {
+      print('Error fetching real sales and purchase data: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('=== CHART BUILD DEBUG ===');
-    print('Chart data length: ${chartData.length}');
-    print('Chart data empty: ${chartData.isEmpty}');
-    
-    // Show message if no chart data
-    if (chartData.isEmpty) {
-      print('Showing no chart data message');
-      return const Center(
-        child: Text(
-          'No chart data available',
-          style: TextStyle(color: kGreyTextColor),
-        ),
-      );
-    }
-    
-    // Check if all data is zero
-    bool allDataZero = chartData.every((data) => data.y == 0 && data.y1 == 0);
-    
-    print('Building chart with ${chartData.length} data points');
-    print('Max Y value: ${_getMaxY()}');
-    
-    // Try to build the chart, if it fails, show a simple fallback
-    try {
-      return Container(
-        height: 250,
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.withOpacity(0.3)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: allDataZero 
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.bar_chart,
-                    size: 48,
-                    color: Colors.grey.withOpacity(0.5),
+    return Container(
+      height: 250,
+      padding: const EdgeInsets.all(16),
+      child: BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          maxY: _getMaxY(),
+          barTouchData: BarTouchData(
+            enabled: true,
+            touchTooltipData: BarTouchTooltipData(
+              tooltipPadding: const EdgeInsets.all(8),
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                String label = '';
+                double value = 0;
+
+                if (rodIndex == 0) {
+                  label = 'Sales';
+                  value = rod.toY;
+                } else {
+                  label = 'Purchase';
+                  value = rod.toY;
+                }
+
+                return BarTooltipItem(
+                  '$label\n₹${value.toStringAsFixed(2)}',
+                  TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No sales/purchase data for selected period',
-                    style: TextStyle(
-                      color: Colors.grey.withOpacity(0.7),
-                      fontSize: 14,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Try selecting a different time period',
-                    style: TextStyle(
-                      color: Colors.grey.withOpacity(0.5),
-                      fontSize: 12,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                );
+              },
+            ),
+          ),
+          titlesData: FlTitlesData(
+            show: true,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: _getBottomTitles,
+                reservedSize: 30,
+                interval: 1,
               ),
-            )
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: chartData.length * 50.0, // Adjust width based on data points
-                child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: _getMaxY(),
-                minY: 0,
-                barTouchData: BarTouchData(
-                  enabled: true,
-                  touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (touchedSpot) => Colors.blueGrey.withOpacity(0.8),
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      String weekDay = chartData[group.x].x;
-                      double actualValue = rod.toY > 0.1 ? rod.toY : 0; // Handle the minimum height for zero values
-                      
-                      if (rodIndex == 0) {
-                        return BarTooltipItem(
-                          'Sales\nDay $weekDay\n\$${actualValue.toStringAsFixed(2)}',
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        );
-                      } else {
-                        return BarTooltipItem(
-                          'Purchase\nDay $weekDay\n\$${actualValue.toStringAsFixed(2)}',
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: _getBottomTitles,
-                      reservedSize: 30,
-                      interval: 1,
-                    ),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: _getLeftTitles,
-                      reservedSize: 40,
-                      interval: _getMaxY() / 5, // Show 5 intervals
-                    ),
-                  ),
-                ),
-                borderData: FlBorderData(
-                  show: true,
-                  border: Border.all(color: const Color(0xffD1D5DB), width: 1),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  drawHorizontalLine: true,
-                  horizontalInterval: _getMaxY() / 5,
-                  getDrawingHorizontalLine: (value) {
-                    return const FlLine(
-                      color: Color(0xffD1D5DB),
-                      dashArray: [4, 4],
-                      strokeWidth: 1,
-                    );
-                  },
-                ),
-                barGroups: _buildBarGroups(),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: _getLeftTitles,
+                reservedSize: 50,
+                interval: _getMaxY() / 4, // Show 4 horizontal lines for better readability
               ),
             ),
           ),
-        ),
-      );
-    } catch (e) {
-      print('Chart build error: $e');
-      return Container(
-        height: 250,
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.red.withOpacity(0.3)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 48),
-              const SizedBox(height: 16),
-              Text(
-                'Chart Error: $e',
-                style: const TextStyle(color: Colors.red),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Data points: ${chartData.length}',
-                style: const TextStyle(color: Colors.grey),
-              ),
-            ],
+          borderData: FlBorderData(
+            show: false,
           ),
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            drawHorizontalLine: true,
+            horizontalInterval: _getMaxY() / 4, // Match with left titles interval
+            getDrawingHorizontalLine: (value) {
+              return FlLine(
+                color: const Color(0xFFE5E7EB),
+                strokeWidth: 1,
+                dashArray: [5, 5],
+              );
+            },
+          ),
+          barGroups: _buildBarGroups(),
         ),
-      );
-    }
+      ),
+    );
   }
 
   double _getMaxY() {
-    if (chartData.isEmpty) return 100;
-    
     double maxY = 0;
-    bool hasNonZeroData = false;
-    
     for (var data in chartData) {
-      if (data.y > 0 || data.y1 > 0) hasNonZeroData = true;
       maxY = maxY > data.y ? maxY : data.y;
       maxY = maxY > data.y1 ? maxY : data.y1;
     }
     
-    // If maxY is 0 and no non-zero data, set a minimum scale for visualization
+    // If no data, return a small value
     if (maxY == 0) {
-      return hasNonZeroData ? 100 : 50; // Lower scale when all data is zero
+      return 100;
     }
     
-    // For small amounts (less than 1000), use smaller intervals
-    if (maxY < 1000) {
-      // Add 30% padding for small amounts
-      double paddedMax = maxY * 1.3;
-      // Round up to the nearest 25 for better granularity
-      return ((paddedMax / 25).ceil() * 25).toDouble();
-    } else {
-      // Add 20% padding to the max value for better visibility
-      double paddedMax = maxY * 1.2;
-      // Round up to the nearest 50 for cleaner scale
-      return ((paddedMax / 50).ceil() * 50).toDouble();
-    }
+    // Add 20% padding to the maximum value for better visualization
+    return maxY * 1.2;
   }
 
   List<BarChartGroupData> _buildBarGroups() {
@@ -303,8 +540,8 @@ class _DashboardChartState extends State<DashboardChart> {
         x: index,
         barRods: [
           BarChartRodData(
-            toY: data.y > 0 ? data.y : 0.1,
-            color: data.y > 0 ? Colors.green : Colors.grey.withOpacity(0.5),
+            toY: data.y,
+            color: const Color(0xFF10B981), // Green color for sales
             width: 12,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(4),
@@ -312,8 +549,8 @@ class _DashboardChartState extends State<DashboardChart> {
             ),
           ),
           BarChartRodData(
-            toY: data.y1 > 0 ? data.y1 : 0.1,
-            color: data.y1 > 0 ? kMainColor : Colors.grey.withOpacity(0.5),
+            toY: data.y1,
+            color: const Color(0xFFEF4444), // Red color for purchases
             width: 12,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(4),
@@ -321,16 +558,15 @@ class _DashboardChartState extends State<DashboardChart> {
             ),
           ),
         ],
-        barsSpace: 6,
-        groupVertically: true,
+        barsSpace: 4,
       );
     }).toList();
   }
 
   Widget _getBottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(
-      color: Color(0xff4D4D4D),
-      fontSize: 10,
+      color: Color(0xFF6B7280),
+      fontSize: 12,
       fontWeight: FontWeight.w500,
     );
 
@@ -338,87 +574,165 @@ class _DashboardChartState extends State<DashboardChart> {
     if (chartData.isEmpty || value.toInt() >= chartData.length) {
       return const SizedBox.shrink();
     }
-    
+
     String text = chartData[value.toInt()].x;
     
-    // Show only every 3rd label to avoid overcrowding
-    if (value.toInt() % 3 != 0 && chartData.length > 10) {
-      return const SizedBox.shrink();
-    }
-
-    // Format the date better - handle hour format (00-23) and day format
-    String formattedText;
-    if (text.length == 2 && int.tryParse(text) != null) {
-      int hour = int.parse(text);
-      if (hour >= 0 && hour <= 23) {
-        // This is hour format, show as time
-        formattedText = '${hour.toString().padLeft(2, '0')}:00';
-      } else {
-        // This might be day format
-        formattedText = 'Day $text';
+    // Format date for better display
+    String formattedText = text;
+    if (text != 'No Data' && text.length > 10) {
+      // If it's a long date string, show only the day part
+      try {
+        DateTime date = DateTime.parse(text);
+        formattedText = '${date.day}/${date.month}';
+      } catch (e) {
+        // If parsing fails, use original text
+        formattedText = text;
       }
-    } else {
-      formattedText = text;
     }
 
     return SideTitleWidget(
-      space: 8,
       meta: meta,
+      space: 8,
       child: Text(formattedText, style: style),
     );
   }
 
   Widget _getLeftTitles(double value, TitleMeta meta) {
     const style = TextStyle(
-      color: Color(0xff4D4D4D),
-      fontSize: 10,
+      color: Color(0xFF6B7280),
+      fontSize: 12,
       fontWeight: FontWeight.w500,
     );
 
-    // Only show integer values
-    if (value % 1 != 0) {
-      return const SizedBox.shrink();
+    // Format the value with currency symbol
+    String formattedValue;
+    if (value >= 100000) {
+      formattedValue = '₹${(value / 100000).toStringAsFixed(1)}L';
+    } else if (value >= 1000) {
+      formattedValue = '₹${(value / 1000).toStringAsFixed(1)}K';
+    } else {
+      formattedValue = '₹${value.toInt()}';
     }
 
     return SideTitleWidget(
       meta: meta,
       child: Text(
-        '\$${value.toInt()}',
+        formattedValue,
         style: style,
       ),
     );
   }
+
+// Widget _getLeftTitles(double value, TitleMeta meta) {
+//   return SideTitleWidget(
+//     axisSide: meta.axisSide,
+//     child: Text(
+//       value.toInt().toString(),
+//       style: const TextStyle(
+//         color: Colors.black,
+//         fontSize: 12,
+//       ),
+//     ),
+//   );
+// }
 }
 
-///---------------------------------dash line-------------------------------
+///-----------------------------synfusion data chart--------------------------------
 
-class DashedBarPainter extends CustomPainter {
-  final double barHeight;
-  final Color barColor;
-  final double dashWidth;
-  final double dashSpace;
-
-  DashedBarPainter({
-    required this.barHeight,
-    required this.barColor,
-    this.dashWidth = 4.0,
-    this.dashSpace = 2.0,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = barColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = barHeight;
-
-    final dashPath = Path();
-    for (double i = 0; i < size.width; i += dashWidth + dashSpace) {
-      dashPath.addRect(Rect.fromLTWH(i, 0, dashWidth, size.height));
-    }
-    canvas.drawPath(dashPath, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
+// class NumericAxisChart extends StatefulWidget {
+//   const NumericAxisChart({Key? key, required this.model}) : super(key: key);
+//
+//   final DashboardOverviewModel model;
+//
+//   @override
+//   State<NumericAxisChart> createState() => _NumericAxisChartState();
+// }
+//
+// class _NumericAxisChartState extends State<NumericAxisChart> {
+//   final List<ChartData> chartData = [];
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     getData(widget.model);
+//     super.initState();
+//   }
+//
+//   getData(DashboardOverviewModel model) {
+//     for (int i = 0; i < model.data!.sales!.length; i++) {
+//       chartData.add(ChartData(
+//           model.data!.sales![i].date!,
+//           model.data!.sales![i].amount!.toDouble(),
+//           model.data!.purchases![i].amount!.toDouble()));
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Center(
+//         child: Container(
+//           color: kWhite,
+//           child: SfCartesianChart(
+//             primaryXAxis: const CategoryAxis(
+//               axisLine: AxisLine(width: 0), // Remove bottom axis line
+//               majorGridLines: MajorGridLines(width: 0), //// Remove vertical grid lines// Make labels transparent
+//               majorTickLines: MajorTickLines(size: 0),
+//             ),
+//             primaryYAxis: const NumericAxis(
+//               axisLine: AxisLine(width: 0), // Remove left axis line
+//               majorGridLines: MajorGridLines(
+//                 color: Color(0xffD1D5DB),
+//                 dashArray: [5, 5], // Creates a dotted line pattern for horizontal grid lines
+//               ),
+//             ),
+//             plotAreaBorderWidth: 0,
+//             series: <CartesianSeries<ChartData, String>>[
+//               ColumnSeries<ChartData, String>(
+//                 dataSource: chartData,
+//                 spacing: 0.3,
+//                 width: 0.5,
+//                 xValueMapper: (ChartData data, _) => data.x,
+//                 yValueMapper: (ChartData data, _) => data.y,
+//                 name: 'Sales',
+//                 dataLabelSettings: const DataLabelSettings(isVisible: false),
+//                 color: Colors.green,
+//                 borderRadius: const BorderRadius.only(
+//                   topLeft: Radius.circular(10),
+//                   topRight: Radius.circular(10),
+//                   bottomRight: Radius.circular(10),
+//                   bottomLeft: Radius.circular(10)
+//                 ),
+//               ),
+//               ColumnSeries<ChartData, String>(
+//                 dataSource: chartData,
+//                 width: 0.5,
+//                 spacing: 0.3,
+//                 xValueMapper: (ChartData data, _) => data.x,
+//                 yValueMapper: (ChartData data, _) => data.y1,
+//                 name: 'Purchase',
+//                 color: kMainColor,
+//                 dataLabelSettings: const DataLabelSettings(isVisible: false),
+//                 borderRadius: const BorderRadius.only(
+//                   topLeft: Radius.circular(10),
+//                   topRight: Radius.circular(10),
+//                   bottomLeft: Radius.circular(10),
+//                   bottomRight: Radius.circular(10)
+//                 ),
+//               ),
+//             ],
+//           )
+//           ,
+//         ),
+//       ),
+//     );
+//   }
+// }
+//
+// class ChartData {
+//   ChartData(this.x, this.y, this.y1);
+//
+//   final String x;
+//   final double y;
+//   final double y1;
+// }

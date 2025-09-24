@@ -19,18 +19,35 @@ class PurchaseRepo {
   Future<List<PurchaseTransaction>> fetchPurchaseList({bool? purchaseReturn}) async {
     final uri = Uri.parse('${APIConfig.url}/purchase${(purchaseReturn ?? false) ? "?returned-purchase=true" : ''}');
 
+    print('=== PURCHASE REPORT API DEBUG ===');
+    print('Purchase API URL: $uri');
+    print('Purchase Return: $purchaseReturn');
+
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
       'Authorization': await getAuthToken(),
     });
 
+    print('Purchase API Response Status: ${response.statusCode}');
+    print('Purchase API Response Body: ${response.body}');
+
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body) as Map<String, dynamic>;
+      print('Parsed Purchase Data: $parsedData');
 
       final partyList = parsedData['data'] as List<dynamic>;
+      print('Purchase List Count: ${partyList.length}');
+      
+      // Print each purchase record
+      for (int i = 0; i < partyList.length; i++) {
+        print('Purchase $i: ${partyList[i]}');
+      }
+
       return partyList.map((category) => PurchaseTransaction.fromJson(category)).toList();
       // Parse into Party objects
     } else {
+      print('Purchase API Error: ${response.statusCode}');
+      print('Purchase API Error Body: ${response.body}');
       throw Exception('Failed to fetch Purchase List');
     }
   }

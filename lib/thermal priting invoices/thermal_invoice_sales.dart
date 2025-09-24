@@ -7,9 +7,11 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import '../constant.dart';
 import '../model/sale_transaction_model.dart';
 import 'model/print_transaction_model.dart';
+import 'multilingual_thermal_printer.dart';
 
 class SalesThermalPrinterInvoice {
   ///________Sales____________________
+  final MultilingualThermalPrinter _multilingualPrinter = MultilingualThermalPrinter();
 
   Future<void> printSalesTicket({required PrintTransactionModel printTransactionModel, required List<SalesDetails>? productList}) async {
     bool? isConnected = await PrintBluetoothThermal.connectionStatus;
@@ -24,6 +26,14 @@ class SalesThermalPrinterInvoice {
     } else {
       EasyLoading.showError('Unable to connect with printer');
     }
+  }
+
+  /// Print sales ticket with Marathi and Hindi support
+  Future<void> printMultilingualSalesTicket({required PrintTransactionModel printTransactionModel, required List<SalesDetails>? productList}) async {
+    await _multilingualPrinter.printMultilingualSalesTicket(
+      printTransactionModel: printTransactionModel,
+      productList: productList,
+    );
   }
 
   Future<List<int>> getSalesTicket({required PrintTransactionModel printTransactionModel, required List<SalesDetails>? productList}) async {

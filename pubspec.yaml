@@ -119,6 +119,7 @@ flutter:
           weight: 800
         - asset: fonts/NotoSans/NotoSans-Black.ttf
           weight: 900
+    
 
 flutter_intl:
   enabled: true

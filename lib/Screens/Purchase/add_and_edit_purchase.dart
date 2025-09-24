@@ -973,10 +973,11 @@ class AddSalesScreenState extends ConsumerState<AddAndUpdatePurchaseScreen> {
                                   lang.S.of(context).addProductFirst);
                               return;
                             }
-                            if (selectedSupplier == null &&
-                                providerData.dueAmount > 0) {
+                            // Prevent walk-in suppliers from making credit purchases (due amount > 0)
+                            // This matches the server-side validation
+                            if (selectedSupplier == null && providerData.dueAmount > 0) {
                               EasyLoading.showError(
-                                  'Sales on due are not allowed for walk-in customers.');
+                                  'Walk-in suppliers cannot make credit purchases. Please select a supplier or pay the full amount.');
                               return;
                             }
                             if (paymentType == null) {

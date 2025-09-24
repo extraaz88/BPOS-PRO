@@ -204,6 +204,7 @@ String detectLanguageEnhanced(String text, {double threshold = 0.7}) {
   final Map<String, int> counts = {
     'bn': RegExp(r'[\u0980-\u09FF]').allMatches(cleanedText).length,
     'hi': RegExp(r'[\u0900-\u097F]').allMatches(cleanedText).length,
+    'mr': RegExp(r'[\u0900-\u097F]').allMatches(cleanedText).length, // Marathi uses Devanagari script
     'ar': RegExp(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]')
         .allMatches(cleanedText)
         .length,
