@@ -190,6 +190,20 @@ class PurchaseThermalPrinterInvoice {
     ]);
     bytes += generator.row([
       PosColumn(
+          text: 'Service Charge',
+          width: 8,
+          styles: const PosStyles(
+            align: PosAlign.left,
+          )),
+      PosColumn(
+          text: formatPointNumber((printTransactionModel.purchaseTransitionModel?.serviceCharge ?? 0)),
+          width: 4,
+          styles: const PosStyles(
+            align: PosAlign.right,
+          )),
+    ]);
+    bytes += generator.row([
+      PosColumn(
           text: printTransactionModel.purchaseTransitionModel?.vat?.name ?? 'Vat',
           width: 8,
           styles: const PosStyles(
@@ -197,6 +211,20 @@ class PurchaseThermalPrinterInvoice {
           )),
       PosColumn(
           text: formatPointNumber((printTransactionModel.purchaseTransitionModel?.vatAmount ?? 0)),
+          width: 4,
+          styles: const PosStyles(
+            align: PosAlign.right,
+          )),
+    ]);
+    bytes += generator.row([
+      PosColumn(
+          text: 'Shipping Charge',
+          width: 8,
+          styles: const PosStyles(
+            align: PosAlign.left,
+          )),
+      PosColumn(
+          text: formatPointNumber((printTransactionModel.purchaseTransitionModel?.shippingCharge ?? 0)),
           width: 4,
           styles: const PosStyles(
             align: PosAlign.right,

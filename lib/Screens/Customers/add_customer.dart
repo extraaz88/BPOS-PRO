@@ -80,7 +80,7 @@ class _AddPartyState extends State<AddParty> {
                                 borderSide: BorderSide(),
                               ),
                             ),
-                            initialCountryCode: 'BD',
+                            initialCountryCode: 'IN',
                             onChanged: (phone) {
                               phoneNumber = phone.completeNumber;
                             },
@@ -436,8 +436,9 @@ class _AddPartyState extends State<AddParty> {
                                     floatingLabelBehavior:
                                         FloatingLabelBehavior.always,
                                     labelText: lang.S.of(context).address,
-                                    //hintText: 'Enter your address'
-                                    hintText: lang.S.of(context).hintEmail),
+                                    hintText: 'Enter your address'
+                                    // hintText: lang.S.of(context).hintEmail
+                                    ),
                               ),
                             ),
                             Padding(
@@ -470,29 +471,41 @@ class _AddPartyState extends State<AddParty> {
                           // if (_formKay.currentState!.validate()) {
                           if (!nameController.text.isEmptyOrNull &&
                               !phoneNumber.isEmptyOrNull) {
-                            final partyRepo = PartyRepository();
-                            await partyRepo.addParty(
-                              ref: ref,
-                              context: context,
-                              name: nameController.text,
-                              phone: phoneNumber ?? '',
-                              type: groupValue,
-                              image: pickedImage != null
-                                  ? File(pickedImage!.path)
-                                  : null,
-                              address: addressController.text.isEmptyOrNull
-                                  ? null
-                                  : addressController.text,
-                              email: emailController.text.isEmptyOrNull
-                                  ? null
-                                  : emailController.text,
-                              due: dueController.text.isEmptyOrNull
-                                  ? null
-                                  : dueController.text,
-                            );
+                            setState(() {
+                              showProgress = true;
+                            });
 
-                            // Navigate back with success result
-                            Navigator.pop(context, true);
+                            try {
+                              final partyRepo = PartyRepository();
+                              await partyRepo.addParty(
+                                ref: ref,
+                                context: context,
+                                name: nameController.text,
+                                phone: phoneNumber ?? '',
+                                type: groupValue,
+                                image: pickedImage != null
+                                    ? File(pickedImage!.path)
+                                    : null,
+                                address: addressController.text.isEmptyOrNull
+                                    ? null
+                                    : addressController.text,
+                                email: emailController.text.isEmptyOrNull
+                                    ? null
+                                    : emailController.text,
+                                due: dueController.text.isEmptyOrNull
+                                    ? null
+                                    : dueController.text,
+                              );
+                            } catch (e) {
+                              // Handle any unexpected errors
+                              EasyLoading.showError('An error occurred: $e');
+                            } finally {
+                              setState(() {
+                                showProgress = false;
+                              });
+                            }
+
+                            // Navigation is handled in the repository
                           } else {
                             EasyLoading.showError(lang.S
                                     .of(context)

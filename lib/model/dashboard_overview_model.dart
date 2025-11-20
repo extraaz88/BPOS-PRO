@@ -8,8 +8,19 @@ class DashboardOverviewModel {
   }
 
   DashboardOverviewModel.fromJson(dynamic json) {
+    // Add debug print
+    // print('DashboardOverviewModel.fromJson input: $json');
     _message = json['message'];
-    _data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    // Fallback: if 'data' is null but json has expected fields, treat json as data
+    if (json['data'] != null) {
+      _data = Data.fromJson(json['data']);
+    } else if (json['total_items'] != null ||
+        json['total_categories'] != null ||
+        json['total_income'] != null) {
+      _data = Data.fromJson(json);
+    } else {
+      _data = null;
+    }
   }
 
   String? _message;
@@ -36,23 +47,30 @@ class Data {
     num? totalIncome,
     num? totalExpense,
     num? totalDue,
-    num? stockQty,
     num? totalLoss,
     num? totalProfit,
     num? stockValue,
     List<Sales>? sales,
     List<Purchases>? purchases,
+    num? totalCash,
+    num? totalCard,
+    num? totalOnline,
+    num? totalBank,
   }) {
     _totalItems = totalItems;
     _totalCategories = totalCategories;
     _totalIncome = totalIncome;
     _totalExpense = totalExpense;
     _totalDue = totalDue;
-    // _stockQty = stockQty;
     _totalLoss = totalLoss;
     _totalProfit = totalProfit;
+    _stockValue = stockValue;
     _sales = sales;
     _purchases = purchases;
+    _totalCash = totalCash;
+    _totalCard = totalCard;
+    _totalOnline = totalOnline;
+    _totalBank = totalBank;
   }
 
   Data.fromJson(dynamic json) {
@@ -61,7 +79,6 @@ class Data {
     _totalIncome = json['total_income'];
     _totalExpense = json['total_expense'];
     _totalDue = json['total_due'];
-    // _stockQty = json['stock_qty'];
     _totalLoss = json['total_loss'];
     _totalProfit = json['total_profit'];
     _stockValue = json['stock_value'];
@@ -77,6 +94,10 @@ class Data {
         _purchases?.add(Purchases.fromJson(v));
       });
     }
+    _totalCash = json['total_cash'];
+    _totalCard = json['total_card'];
+    _totalOnline = json['total_online'];
+    _totalBank = json['total_bank'];
   }
 
   num? _totalItems;
@@ -84,13 +105,15 @@ class Data {
   num? _totalIncome;
   num? _totalExpense;
   num? _totalDue;
-
-  // num? _stockQty;
   num? _totalLoss;
   num? _totalProfit;
   num? _stockValue;
   List<Sales>? _sales;
   List<Purchases>? _purchases;
+  num? _totalCash;
+  num? _totalCard;
+  num? _totalOnline;
+  num? _totalBank;
 
   num? get totalItems => _totalItems;
 
@@ -102,7 +125,6 @@ class Data {
 
   num? get totalDue => _totalDue;
 
-  // num? get stockQty => _stockQty;
   num? get totalLoss => _totalLoss;
 
   num? get totalProfit => _totalProfit;
@@ -113,6 +135,14 @@ class Data {
 
   List<Purchases>? get purchases => _purchases;
 
+  num? get totalCash => _totalCash;
+
+  num? get totalCard => _totalCard;
+
+  num? get totalOnline => _totalOnline;
+
+  num? get totalBank => _totalBank;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['total_items'] = _totalItems;
@@ -120,15 +150,19 @@ class Data {
     map['total_income'] = _totalIncome;
     map['total_expense'] = _totalExpense;
     map['total_due'] = _totalDue;
-    // map['stock_qty'] = _stockQty;
     map['total_loss'] = _totalLoss;
     map['total_profit'] = _totalProfit;
+    map['stock_value'] = _stockValue;
     if (_sales != null) {
       map['sales'] = _sales?.map((v) => v.toJson()).toList();
     }
     if (_purchases != null) {
       map['purchases'] = _purchases?.map((v) => v.toJson()).toList();
     }
+    map['total_cash'] = _totalCash;
+    map['total_card'] = _totalCard;
+    map['total_online'] = _totalOnline;
+    map['total_bank'] = _totalBank;
     return map;
   }
 }

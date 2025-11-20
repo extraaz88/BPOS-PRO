@@ -467,6 +467,24 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                     ),
 
                     const SizedBox(height: 5.0),
+                    ///__________service_charge______________
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text.rich(
+                        TextSpan(
+                          text: 'Service charge : ',
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          children: [
+                            TextSpan(
+                              text: '$currency ${mainConstant.formatPointNumber(widget.transitionModel.serviceCharge ?? 0)}',
+                            ),
+                          ],
+                        ),
+                        style: _theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+
+                    const SizedBox(height: 5.0),
                     //----------vat----------------------
                     Align(
                       alignment: Alignment.centerRight,
@@ -690,7 +708,7 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                           text: '${lang.S.of(context).paid} : ',
                           children: [
                             TextSpan(
-                              text: '$currency ${mainConstant.formatPointNumber(((widget.transitionModel.totalAmount ?? 0) - (widget.transitionModel.dueAmount ?? 0)) + (widget.transitionModel.changeAmount ?? 0))}',
+                              text: '$currency ${mainConstant.formatPointNumber(widget.transitionModel.paidAmount ?? ((widget.transitionModel.totalAmount ?? 0) - (widget.transitionModel.dueAmount ?? 0)) + (widget.transitionModel.changeAmount ?? 0))}',
                             ),
                           ],
                         ),
@@ -700,16 +718,35 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                     const SizedBox(height: 5.0),
 
                     //-----------due--------------
+                    // Always show Due Amount (even if 0)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text.rich(
+                        TextSpan(
+                          text: '${lang.S.of(context).due} : ',
+                          children: [
+                            TextSpan(
+                              text: '$currency ${mainConstant.formatPointNumber(widget.transitionModel.dueAmount ?? 0)}',
+                            ),
+                          ],
+                        ),
+                        style: _theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    const SizedBox(height: 5.0),
+
+                    ///-------------Payment Method---------------
                     Visibility(
-                      visible: (widget.transitionModel.dueAmount ?? 0) > 0,
+                      visible: widget.transitionModel.paymentType?.name != null,
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text.rich(
                           TextSpan(
-                            text: '${lang.S.of(context).due} : ',
+                            text: '${lang.S.of(context).paymentTypes} : ',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                             children: [
                               TextSpan(
-                                text: '$currency ${mainConstant.formatPointNumber(widget.transitionModel.dueAmount ?? 0)}',
+                                text: widget.transitionModel.paymentType?.name ?? 'N/A',
                               ),
                             ],
                           ),
@@ -717,6 +754,66 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 5.0),
+
+                    ///-------------Split Payment Details---------------
+                    if (widget.transitionModel.isSplitPayment == true) ...[
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.blue.shade200),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Split Payment Details:',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.money, size: 16, color: Colors.green),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Cash: $currency${mainConstant.formatPointNumber(widget.transitionModel.splitCashAmount ?? 0)}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.credit_card, size: 16, color: Colors.blue),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Online: $currency${mainConstant.formatPointNumber(widget.transitionModel.splitOnlineAmount ?? 0)}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                    ],
 
                     ///-------------Change Amount---------------
                     Visibility(
@@ -751,75 +848,93 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
                 ),
               ),
             ),
-            bottomNavigationBar: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            bottomNavigationBar: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                // Print and Cancel buttons in a row
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (widget.isFromPurchase ?? false) {
-                        int count = 0;
-                        Navigator.popUntil(context, (route) {
-                          return count++ == 2;
-                        });
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Container(
-                      height: 60,
-                      width: context.width() / 3,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(30),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          lang.S.of(context).cancel,
-
-                          ///'Cancel',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Print button
+                      GestureDetector(
+                        onTap: () async {
+                          // Use multilingual printer based on selected language
+                          PrintPurchaseTransactionModel model = PrintPurchaseTransactionModel(purchaseTransitionModel: widget.transitionModel, personalInformationModel: widget.businessInfo);
+                          
+                          // Check if a non-English language is selected
+                          if (mainConstant.selectedLanguage != null && 
+                              mainConstant.selectedLanguage != 'en' && 
+                              (mainConstant.selectedLanguage == 'hi' || mainConstant.selectedLanguage == 'mr')) {
+                            // Use multilingual printer for Hindi/Marathi
+                            await printerData.printMultilingualPurchaseThermalInvoiceNow(
+                              transaction: model,
+                              productList: model.purchaseTransitionModel!.details,
+                              context: context,
+                            );
+                          } else {
+                            // Use regular printer for English
+                            await printerData.printPurchaseThermalInvoiceNow(
+                              transaction: model,
+                              productList: model.purchaseTransitionModel!.details,
+                              context: context,
+                            );
+                          }
+                        },
+                        child: Container(
+                          height: 60,
+                          width: context.width() / 3,
+                          decoration: const BoxDecoration(
+                            color: mainConstant.kMainColor,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Print',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      PrintPurchaseTransactionModel model = PrintPurchaseTransactionModel(purchaseTransitionModel: widget.transitionModel, personalInformationModel: widget.businessInfo);
-                      await printerData.printPurchaseThermalInvoiceNow(
-                        transaction: model,
-                        productList: model.purchaseTransitionModel!.details,
-                        context: context,
-                      );
-                    },
-                    child: Container(
-                      height: 60,
-                      width: context.width() / 3,
-                      decoration: const BoxDecoration(
-                        color: mainConstant.kMainColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(30),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          lang.S.of(context).print,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
+                      // Cancel button
+                      GestureDetector(
+                        onTap: () {
+                          if (widget.isFromPurchase ?? false) {
+                            int count = 0;
+                            Navigator.popUntil(context, (route) {
+                              return count++ == 2;
+                            });
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Container(
+                          height: 60,
+                          width: context.width() / 3,
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              lang.S.of(context).cancel,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -839,6 +954,364 @@ class _PurchaseInvoiceDetailsState extends State<PurchaseInvoiceDetails> {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: image,
+        ),
+      ),
+    );
+  }
+
+  // Language selection dialog for Hindi/Marathi printing
+  Future<void> _showLanguageSelectionDialog(BuildContext context, WidgetRef ref) async {
+    String? selectedLang = 'hi'; // Default to Hindi
+    
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text(
+                'प्रिंटिंग भाषा चुनें',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'कृपया प्रिंटिंग के लिए भाषा चुनें',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(height: 20),
+                  // Hindi option
+                  ListTile(
+                    leading: Radio<String>(
+                      value: 'hi',
+                      groupValue: selectedLang,
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedLang = value;
+                        });
+                      },
+                    ),
+                    title: const Text(
+                      'हिंदी',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        selectedLang = 'hi';
+                      });
+                    },
+                  ),
+                  // Marathi option
+                  ListTile(
+                    leading: Radio<String>(
+                      value: 'mr',
+                      groupValue: selectedLang,
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedLang = value;
+                        });
+                      },
+                    ),
+                    title: const Text(
+                      'मराठी',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        selectedLang = 'mr';
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'रद्द करें',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await _printPurchaseWithSelectedLanguage(selectedLang!, ref);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text(
+                    'प्रिंट करें',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Print purchase invoice with selected language and loading animation
+  Future<void> _printPurchaseWithSelectedLanguage(String languageCode, WidgetRef ref) async {
+    // Show splash screen style loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: _PurchasePrintingLoadingDialog(languageCode: languageCode),
+        );
+      },
+    );
+
+    try {
+      // Update the global language for printing
+      mainConstant.updateSelectedLanguage(languageCode);
+      
+      // Wait a moment for the language to be updated
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Print the purchase invoice
+      PrintPurchaseTransactionModel model = PrintPurchaseTransactionModel(
+        purchaseTransitionModel: widget.transitionModel, 
+        personalInformationModel: widget.businessInfo
+      );
+      
+      final printerData = ref.read(thermalPrinterProvider);
+      await printerData.printMultilingualPurchaseThermalInvoiceNow(
+        transaction: model,
+        productList: model.purchaseTransitionModel!.details,
+        context: context,
+      );
+      
+      // Close loading dialog
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+      
+    } catch (e) {
+      // Close loading dialog on error
+      if (mounted) {
+        Navigator.of(context).pop();
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              languageCode == 'hi' 
+                ? 'प्रिंटिंग में त्रुटि हुई: $e'
+                : 'प्रिंटिंगमध्ये त्रुटी: $e'
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+}
+
+// Custom loading dialog with splash screen style animation for purchase invoices
+class _PurchasePrintingLoadingDialog extends StatefulWidget {
+  final String languageCode;
+  
+  const _PurchasePrintingLoadingDialog({required this.languageCode});
+  
+  @override
+  State<_PurchasePrintingLoadingDialog> createState() => _PurchasePrintingLoadingDialogState();
+}
+
+class _PurchasePrintingLoadingDialogState extends State<_PurchasePrintingLoadingDialog>
+    with TickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late AnimationController _rotationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _rotationAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAnimations();
+  }
+
+  void _initializeAnimations() {
+    // Fade controller for text and loading
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+
+    // Rotation controller for loading spinner
+    _rotationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    // Fade animation for text
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Scale animation for loading spinner
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    // Rotation animation for loading spinner
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _rotationController,
+      curve: Curves.linear,
+    ));
+
+    // Start animations
+    _fadeController.forward();
+    _rotationController.repeat();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _rotationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: 300,
+        height: 200,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: AnimatedBuilder(
+          animation: _fadeController,
+          builder: (context, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Premium Loading Animation (same as splash screen)
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Outer ring
+                          SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: AnimatedBuilder(
+                              animation: _rotationAnimation,
+                              builder: (context, child) {
+                                return Transform.rotate(
+                                  angle: _rotationAnimation.value * 2 * 3.14159,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      kMainColor.withOpacity(0.3),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          // Inner ring
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: AnimatedBuilder(
+                              animation: _rotationAnimation,
+                              builder: (context, child) {
+                                return Transform.rotate(
+                                  angle: -_rotationAnimation.value * 2 * 3.14159,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      kMainColor,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          // Center dot
+                          Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: kMainColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Text with fade animation
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.languageCode == 'hi' 
+                            ? 'हिंदी में प्रिंट हो रहा है...' 
+                            : 'मराठीत प्रिंट होत आहे...',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'कृपया प्रतीक्षा करें...',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

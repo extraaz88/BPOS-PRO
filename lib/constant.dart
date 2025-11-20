@@ -20,6 +20,12 @@ bool isPrintEnable = false;
 // const String appVersion = '4.9';
 String noProductImageUrl = 'images/no_product_image.png';
 
+///__________SharedPreference Keys_______________________________
+const String kZeroStockRestrictionKey = 'restrict_zero_stock_transactions';
+const String kSalesInvoiceEditToggleKey = 'enable_sales_invoice_edit';
+const String kSalesRoundOffToggleKey = 'enable_sales_round_off';
+const String kSalesBillSummaryToggleKey = 'enable_sales_bill_summary';
+
 ///_______Purchase_Code________________________________________
 String purchaseCode = 'Enter your purchase code';
 
@@ -168,6 +174,159 @@ String formatPointNumber(num value) {
 
 String? selectedLanguage = languageMap['English'];
 
+// Function to update the global selectedLanguage variable
+void updateSelectedLanguage(String languageCode) {
+  selectedLanguage = languageCode;
+}
+
+// Function to get localized text for printing based on selected language
+String getLocalizedPrintText(String englishText) {
+  if (selectedLanguage == null) return englishText;
+
+  // Hindi translations
+  if (selectedLanguage == 'hi') {
+    switch (englishText) {
+      case 'Seller':
+        return 'विक्रेता';
+      case 'Name':
+        return 'नाम';
+      case 'mobile':
+        return 'मोबाइल';
+      case 'Invoice':
+        return 'चालान';
+      case 'Item':
+        return 'वस्तु';
+      case 'Price':
+        return 'कीमत';
+      case 'Qty':
+        return 'मात्रा';
+      case 'Amount':
+        return 'राशि';
+      case 'Subtotal':
+        return 'उप-योग';
+      case 'Discount':
+        return 'छूट';
+      case 'VAT':
+        return 'वैट';
+      case 'Shipping Charge':
+        return 'शिपिंग शुल्क';
+      case 'Total':
+        return 'कुल';
+      case 'Rounding':
+        return 'गोलाई';
+      case 'Total Amount':
+        return 'कुल राशि';
+      case 'Return':
+        return 'वापसी';
+      case 'Returned Amount':
+        return 'वापसी राशि';
+      case 'Total Payable':
+        return 'कुल देय';
+      case 'Payment Type':
+        return 'भुगतान प्रकार';
+      case 'Partial Amount':
+        return 'आंशिक राशि';
+      case 'Due Amount':
+        return 'बकाया राशि';
+      case 'Change Amount':
+        return 'बदलाव राशि';
+      case 'Thank you!':
+        return 'धन्यवाद!';
+      case 'Note: Goods once sold will not be taken back or exchanged.':
+        return 'नोट: एक बार बेचे गए सामान को वापस नहीं लिया जाएगा या बदला नहीं जाएगा।';
+      case 'Developed By:':
+        return 'विकसित:';
+      case 'Tel:':
+        return 'टेल:';
+      case 'VAT No :':
+        return 'वैट नंबर:';
+      case 'Guest':
+        return 'अतिथि';
+      case 'Not Provided':
+        return 'उपलब्ध नहीं';
+      case 'N/A':
+        return 'उपलब्ध नहीं';
+      case 'Admin':
+        return 'प्रशासक';
+      default:
+        return englishText;
+    }
+  }
+
+  // Marathi translations
+  if (selectedLanguage == 'mr') {
+    switch (englishText) {
+      case 'Seller':
+        return 'विक्रेता';
+      case 'Name':
+        return 'नाव';
+      case 'mobile':
+        return 'मोबाइल';
+      case 'Invoice':
+        return 'चालान';
+      case 'Item':
+        return 'वस्तू';
+      case 'Price':
+        return 'किंमत';
+      case 'Qty':
+        return 'प्रमाण';
+      case 'Amount':
+        return 'रक्कम';
+      case 'Subtotal':
+        return 'उप-योग';
+      case 'Discount':
+        return 'सवलत';
+      case 'VAT':
+        return 'व्हॅट';
+      case 'Shipping Charge':
+        return 'शिपिंग शुल्क';
+      case 'Total':
+        return 'एकूण';
+      case 'Rounding':
+        return 'गोलाई';
+      case 'Total Amount':
+        return 'एकूण रक्कम';
+      case 'Return':
+        return 'परतावा';
+      case 'Returned Amount':
+        return 'परतावा रक्कम';
+      case 'Total Payable':
+        return 'एकूण देय';
+      case 'Payment Type':
+        return 'पेमेंट प्रकार';
+      case 'Received Amount':
+        return 'मिळालेली रक्कम';
+      case 'Due Amount':
+        return 'बाकी रक्कम';
+      case 'Change Amount':
+        return 'बदल रक्कम';
+      case 'Thank you!':
+        return 'धन्यवाद!';
+      case 'Note: Goods once sold will not be taken back or exchanged.':
+        return 'नोट: एकदा विकलेली वस्तू परत घेतली जाणार नाही किंवा बदलली जाणार नाही.';
+      case 'Developed By:':
+        return 'विकसित:';
+      case 'Tel:':
+        return 'टेल:';
+      case 'VAT No :':
+        return 'व्हॅट नंबर:';
+      case 'Guest':
+        return 'पाहुणा';
+      case 'Not Provided':
+        return 'उपलब्ध नाही';
+      case 'N/A':
+        return 'उपलब्ध नाही';
+      case 'Admin':
+        return 'प्रशासक';
+      default:
+        return englishText;
+    }
+  }
+
+  // Return English text for other languages
+  return englishText;
+}
+
 //withValues extension on color with a required value alpha
 extension ColorExt on Color {
   Color withValues({required double alpha}) {
@@ -204,7 +363,9 @@ String detectLanguageEnhanced(String text, {double threshold = 0.7}) {
   final Map<String, int> counts = {
     'bn': RegExp(r'[\u0980-\u09FF]').allMatches(cleanedText).length,
     'hi': RegExp(r'[\u0900-\u097F]').allMatches(cleanedText).length,
-    'mr': RegExp(r'[\u0900-\u097F]').allMatches(cleanedText).length, // Marathi uses Devanagari script
+    'mr': RegExp(r'[\u0900-\u097F]')
+        .allMatches(cleanedText)
+        .length, // Marathi uses Devanagari script
     'ar': RegExp(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]')
         .allMatches(cleanedText)
         .length,

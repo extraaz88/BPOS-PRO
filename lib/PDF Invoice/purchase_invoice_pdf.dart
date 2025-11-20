@@ -132,6 +132,8 @@ class PurchaseInvoicePDF {
         return arabicFont;
       } else if (selectedLanguage == 'hi') {
         return hindiFont;
+      } else if (selectedLanguage == 'mr') {
+        return hindiFont; // Marathi uses Devanagari script like Hindi
       } else if (selectedLanguage == 'fr') {
         return frenchFont;
       } else {
@@ -149,6 +151,8 @@ class PurchaseInvoicePDF {
         return arabicFont;
       } else if (detectedLanguage == 'hi') {
         return hindiFont;
+      } else if (detectedLanguage == 'mr') {
+        return hindiFont; // Marathi uses Devanagari script like Hindi
       } else if (detectedLanguage == 'fr') {
         return frenchFont;
       } else {
@@ -505,7 +509,7 @@ class PurchaseInvoicePDF {
             ),
             pw.Container(
               width: double.infinity,
-              color: const PdfColor.fromInt(0xffF18A23),
+              color: const PdfColor.fromInt(0xff2196F3),
               padding: const pw.EdgeInsets.all(10.0),
               child: pw.Center(
                   child: pw.Text('Powered by $companyName',
@@ -548,7 +552,7 @@ class PurchaseInvoicePDF {
                         children: [
                           pw.Container(
                             decoration: const pw.BoxDecoration(
-                              color: PdfColor.fromInt(0xffF18A23),
+                              color: PdfColor.fromInt(0xff2196F3),
                             ), // Red background
                             padding: const pw.EdgeInsets.all(8.0),
                             child: getLocalizedPdfText(
@@ -563,7 +567,7 @@ class PurchaseInvoicePDF {
                           ),
                           pw.Container(
                             color: const PdfColor.fromInt(
-                                0xffF18A23), // Red background
+                                0xff2196F3), // Red background
                             padding: const pw.EdgeInsets.all(8.0),
                             child: getLocalizedPdfText(
                               _lang.item,
@@ -729,6 +733,15 @@ class PurchaseInvoicePDF {
                         ),
                         pw.SizedBox(height: 5.0),
                         getLocalizedPdfText(
+                          "Service Charge: ${((transactions.serviceCharge ?? 0)).toStringAsFixed(2)}",
+                          pw.TextStyle(
+                              color: PdfColors.black,
+                              fontWeight: pw.FontWeight.bold,
+                              font: getFont(),
+                              fontFallback: [englishFont]),
+                        ),
+                        pw.SizedBox(height: 5.0),
+                        getLocalizedPdfText(
                           "${transactions.vat?.name ?? _lang.vat}: ${((transactions.vatAmount ?? 0)).toStringAsFixed(2)}",
                           pw.TextStyle(
                               color: PdfColors.black,
@@ -792,7 +805,7 @@ class PurchaseInvoicePDF {
                               children: [
                                 pw.Container(
                                   decoration: const pw.BoxDecoration(
-                                    color: PdfColor.fromInt(0xffF18A23),
+                                    color: PdfColor.fromInt(0xff2196F3),
                                   ), // Red background
                                   padding: const pw.EdgeInsets.all(8.0),
                                   child: getLocalizedPdfText(
@@ -807,7 +820,7 @@ class PurchaseInvoicePDF {
                                 ),
                                 pw.Container(
                                   color: const PdfColor.fromInt(
-                                      0xffF18A23), // Red background
+                                      0xff2196F3), // Red background
                                   padding: const pw.EdgeInsets.all(8.0),
                                   child: getLocalizedPdfText(
                                     _lang.date,
@@ -1011,7 +1024,7 @@ class PurchaseInvoicePDF {
                                 ),
                               ),
                               pw.Container(
-                                color: const PdfColor.fromInt(0xffF18A23),
+                                color: const PdfColor.fromInt(0xff2196F3),
                                 padding: const pw.EdgeInsets.all(5.0),
                                 child: getLocalizedPdfText(
                                   "${_lang.payableAmount}: ${formatPointNumber(transactions.totalAmount ?? 0)}",
@@ -1070,6 +1083,21 @@ class PurchaseInvoicePDF {
                                       fontFallback: [englishFont],
                                     ),
                                   ),
+                                  ///_______Payment_Method_Below_Due_Amount_____________________
+                                  if (transactions.paymentType?.name != null)
+                                    pw.Padding(
+                                      padding: const pw.EdgeInsets.only(top: 5.0),
+                                      child: getLocalizedPdfText(
+                                        "${_lang.paymentTypes}: ${transactions.paymentType?.name ?? 'N/A'}",
+                                        pw.TextStyle(
+                                          color: PdfColors.black,
+                                          fontSize: 11,
+                                          fontWeight: pw.FontWeight.normal,
+                                          font: getFont(),
+                                          fontFallback: [englishFont],
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ],

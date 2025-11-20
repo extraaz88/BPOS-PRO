@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_pos/Const/api_config.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
 import 'package:nb_utils/nb_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../GlobalComponents/glonal_popup.dart';
 import '../../../Provider/profile_provider.dart';
@@ -23,6 +24,7 @@ class _PrintingInvoiceScreenState extends ConsumerState<PrintingInvoiceScreen> {
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController upiIdController = TextEditingController();
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _PrintingInvoiceScreenState extends ConsumerState<PrintingInvoiceScreen> {
     super.initState();
     print(isPrintEnable);
     printing = isPrintEnable;
+    _loadUpiId();
     ref.read(businessInfoProvider).when(
           data: (data) {
             nameController.text = data.companyName ?? '';
@@ -39,6 +42,25 @@ class _PrintingInvoiceScreenState extends ConsumerState<PrintingInvoiceScreen> {
           error: (error, stackTrace) {},
           loading: () {},
         );
+  }
+
+  Future<void> _loadUpiId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final upiId = prefs.getString('upi_id') ?? '';
+    if (mounted) {
+      setState(() {
+        upiIdController.text = upiId;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    addressController.dispose();
+    phoneController.dispose();
+    nameController.dispose();
+    upiIdController.dispose();
+    super.dispose();
   }
 
   bool printing = false;
@@ -67,40 +89,46 @@ class _PrintingInvoiceScreenState extends ConsumerState<PrintingInvoiceScreen> {
         ),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: ElevatedButton.icon(
-            icon: const Icon(
-              Icons.arrow_forward,
-              color: Colors.white,
-            ),
-            label: Text(lang.S.of(context).continueButton),
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                final businessRepository = BusinessUpdateRepository();
-                final isProfileUpdated = await businessRepository.updateProfile(
-                  id: ref.watch(businessInfoProvider).value?.id.toString() ?? '',
-                  name: nameController.text,
-                  categoryId: ref.watch(businessInfoProvider).value?.category?.id.toString() ?? '',
-                  address: addressController.text,
-                  invoiceLogo: pickedImage != null ? File(pickedImage!.path) : null,
-                  phone: phoneController.text,
-                  ref: ref,
-                  context: context,
-                  fromInvoiceLogo: true,
-                );
-
-                if (isProfileUpdated) {
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.setBool('isPrintEnable', printing);
-                  isPrintEnable = printing;
-                  ref.refresh(businessInfoProvider);
-                  ref.refresh(businessSettingProvider);
-                  Navigator.pop(context);
+          child: SafeArea(
+            child: ElevatedButton.icon(
+              icon: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+              ),
+              label: Text(lang.S.of(context).continueButton),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  final businessRepository = BusinessUpdateRepository();
+                  final isProfileUpdated = await businessRepository.updateProfile(
+                    id: ref.watch(businessInfoProvider).value?.id.toString() ?? '',
+                    name: nameController.text,
+                    categoryId: ref.watch(businessInfoProvider).value?.category?.id.toString() ?? '',
+                    address: addressController.text,
+                    invoiceLogo: pickedImage != null ? File(pickedImage!.path) : null,
+                    phone: phoneController.text,
+                    ref: ref,
+                    context: context,
+                    fromInvoiceLogo: true,
+                  );
+            
+                  if (isProfileUpdated) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('isPrintEnable', printing);
+                    // Save UPI ID if provided
+                    if (upiIdController.text.trim().isNotEmpty) {
+                      await prefs.setString('upi_id', upiIdController.text.trim());
+                    }
+                    isPrintEnable = printing;
+                    ref.refresh(businessInfoProvider);
+                    ref.refresh(businessSettingProvider);
+                    Navigator.pop(context);
+                  }
                 }
-              }
-            },
+              },
+            ),
           ),
         ),
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             spacing: 10,
@@ -284,6 +312,45 @@ class _PrintingInvoiceScreenState extends ConsumerState<PrintingInvoiceScreen> {
                       decoration: kInputDecoration.copyWith(
                         labelText: lang.S.of(context).address,
                         border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    AppTextField(
+                      controller: upiIdController,
+                      validator: (value) {
+                        // Optional field, but if provided should be valid
+                        if (value != null && value.trim().isNotEmpty) {
+                          if (!value.trim().contains('@')) {
+                            return 'Please enter a valid UPI ID (e.g., yourname@paytm)';
+                          }
+                        }
+                        return null;
+                      },
+                      textFieldType: TextFieldType.EMAIL,
+                      decoration: kInputDecoration.copyWith(
+                        labelText: 'UPI ID (Optional)',
+                        hintText: 'e.g., yourname@paytm',
+                        border: const OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.qr_code, color: kMainColor),
+                        suffixIcon: upiIdController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear, color: Colors.red),
+                                onPressed: () async {
+                                  setState(() {
+                                    upiIdController.clear();
+                                  });
+                                  // Delete from SharedPreferences
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.remove('upi_id');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('UPI ID deleted successfully!'),
+                                      backgroundColor: Colors.green,
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                },
+                              )
+                            : null,
                       ),
                     ),
                   ],

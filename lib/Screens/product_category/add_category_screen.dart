@@ -72,98 +72,98 @@ class _AddCategoryState extends State<AddCategory> {
                   Text(lang.S.of(context).selectVariations
                       //'Select variations : '
                       ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CheckboxListTile(
-                          title: Text(
-                            lang.S.of(context).size,
-                            //"Size",
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: CheckboxListTile(
+                  //         title: Text(
+                  //           lang.S.of(context).size,
+                  //           //"Size",
 
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          value: sizeCheckbox,
-                          checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-                          onChanged: (newValue) {
-                            setState(() {
-                              sizeCheckbox = newValue!;
-                            });
-                          },
-                          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-                        ),
-                      ),
-                      Expanded(
-                        child: CheckboxListTile(
-                          title: Text(
-                            lang.S.of(context).color,
-                            //"Color",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          value: colorCheckbox,
-                          checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-                          onChanged: (newValue) {
-                            setState(() {
-                              colorCheckbox = newValue!;
-                            });
-                          },
-                          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CheckboxListTile(
-                          title: Text(
-                            lang.S.of(context).weight,
-                            //"Weight",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-                          value: weightCheckbox,
-                          onChanged: (newValue) {
-                            setState(() {
-                              weightCheckbox = newValue!;
-                            });
-                          },
-                          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-                        ),
-                      ),
-                      Expanded(
-                        child: CheckboxListTile(
-                          title: Text(
-                            lang.S.of(context).capacity,
-                            //"Capacity",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-                          value: capacityCheckbox,
-                          onChanged: (newValue) {
-                            setState(() {
-                              capacityCheckbox = newValue!;
-                            });
-                          },
-                          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-                        ),
-                      ),
-                    ],
-                  ),
-                  CheckboxListTile(
-                    title: Text(
-                      lang.S.of(context).type,
-                      //"Type",
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-                    value: typeCheckbox,
-                    onChanged: (newValue) {
-                      setState(() {
-                        typeCheckbox = newValue!;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-                  ),
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         value: sizeCheckbox,
+                  //         checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                  //         onChanged: (newValue) {
+                  //           setState(() {
+                  //             sizeCheckbox = newValue!;
+                  //           });
+                  //         },
+                  //         controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: CheckboxListTile(
+                  //         title: Text(
+                  //           lang.S.of(context).color,
+                  //           //"Color",
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         value: colorCheckbox,
+                  //         checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                  //         onChanged: (newValue) {
+                  //           setState(() {
+                  //             colorCheckbox = newValue!;
+                  //           });
+                  //         },
+                  //         controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: CheckboxListTile(
+                  //         title: Text(
+                  //           lang.S.of(context).weight,
+                  //           //"Weight",
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                  //         value: weightCheckbox,
+                  //         onChanged: (newValue) {
+                  //           setState(() {
+                  //             weightCheckbox = newValue!;
+                  //           });
+                  //         },
+                  //         controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: CheckboxListTile(
+                  //         title: Text(
+                  //           lang.S.of(context).capacity,
+                  //           //"Capacity",
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                  //         value: capacityCheckbox,
+                  //         onChanged: (newValue) {
+                  //           setState(() {
+                  //             capacityCheckbox = newValue!;
+                  //           });
+                  //         },
+                  //         controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // CheckboxListTile(
+                  //   title: Text(
+                  //     lang.S.of(context).type,
+                  //     //"Type",
+                  //     overflow: TextOverflow.ellipsis,
+                  //   ),
+                  //   checkboxShape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                  //   value: typeCheckbox,
+                  //   onChanged: (newValue) {
+                  //     setState(() {
+                  //       typeCheckbox = newValue!;
+                  //     });
+                  //   },
+                  //   controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+                  // ),
                   ElevatedButton(
                     onPressed: () async {
                       setState(() {

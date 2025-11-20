@@ -11,8 +11,7 @@ import 'package:mobile_pos/core/theme/_app_colors.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
 import 'package:mobile_pos/widgets/empty_widget/_empty_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:url_launcher/url_launcher.dart'; 
 import '../../GlobalComponents/glonal_popup.dart';
 import '../../GlobalComponents/sales_transaction_widget.dart';
 import '../../PDF Invoice/purchase_invoice_pdf.dart';
@@ -99,17 +98,21 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             surfaceTintColor: kWhite,
             backgroundColor: Colors.white,
             title: Text(
-              widget.party.type != 'Supplier' ? lang.S.of(context).CustomerDetails : lang.S.of(context).supplierDetails,
+              widget.party.type != 'Supplier'
+                  ? lang.S.of(context).CustomerDetails
+                  : lang.S.of(context).supplierDetails,
             ),
             actions: [
               businessInfo.when(data: (details) {
                 return Row(
                   children: [
                     IconButton(
-                      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
                       padding: EdgeInsets.zero,
                       onPressed: () async {
-                        EditCustomer(customerModel: widget.party).launch(context);
+                        EditCustomer(customerModel: widget.party)
+                            .launch(context);
                       },
                       icon: const Icon(
                         FeatherIcons.edit2,
@@ -120,10 +123,14 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: IconButton(
-                        visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                        visualDensity:
+                            const VisualDensity(horizontal: -4, vertical: -4),
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          await showDeleteConfirmationAlert(context: context, id: widget.party.id.toString(), ref: cRef);
+                          await showDeleteConfirmationAlert(
+                              context: context,
+                              id: widget.party.id.toString(),
+                              ref: cRef);
                         },
                         icon: const Icon(
                           FeatherIcons.trash2,
@@ -169,8 +176,14 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      (widget.party.name != null && widget.party.name!.length >= 2) ? widget.party.name!.substring(0, 2) : (widget.party.name != null ? widget.party.name! : ''),
-                                      style: _theme.textTheme.bodyMedium?.copyWith(
+                                      (widget.party.name != null &&
+                                              widget.party.name!.length >= 2)
+                                          ? widget.party.name!.substring(0, 2)
+                                          : (widget.party.name != null
+                                              ? widget.party.name!
+                                              : ''),
+                                      style:
+                                          _theme.textTheme.bodyMedium?.copyWith(
                                         color: Colors.white,
                                         fontSize: 21,
                                         fontWeight: FontWeight.w700,
@@ -182,14 +195,17 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                   height: 100,
                                   width: 100,
                                   decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20)),
                                     image: widget.party.image == null
                                         ? const DecorationImage(
-                                            image: AssetImage('images/no_shop_image.png'),
+                                            image: AssetImage(
+                                                'images/no_shop_image.png'),
                                             fit: BoxFit.cover,
                                           )
                                         : DecorationImage(
-                                            image: NetworkImage('${APIConfig.domain}${widget.party.image!}'),
+                                            image: NetworkImage(
+                                                '${APIConfig.domain}${widget.party.image!}'),
                                             fit: BoxFit.cover,
                                           ),
                                   ),
@@ -228,7 +244,9 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                 const SizedBox(height: 10),
                 widget.party.type != 'Supplier'
                     ? providerData.when(data: (transaction) {
-                        final filteredTransactions = transaction.where((t) => t.party?.id == widget.party.id).toList();
+                        final filteredTransactions = transaction
+                            .where((t) => t.party?.id == widget.party.id)
+                            .toList();
                         return filteredTransactions.isNotEmpty
                             ? ListView.builder(
                                 padding: EdgeInsets.zero,
@@ -236,7 +254,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: filteredTransactions.length,
                                 itemBuilder: (context, index) {
-                                  final currentTransaction = filteredTransactions[index];
+                                  final currentTransaction =
+                                      filteredTransactions[index];
                                   return salesTransactionWidget(
                                     context: context,
                                     ref: cRef,
@@ -248,7 +267,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                 },
                               )
                             : EmptyWidget(
-                                message: TextSpan(text: lang.S.of(context).noTransaction),
+                                message: TextSpan(
+                                    text: lang.S.of(context).noTransaction),
                               );
                       }, error: (e, stack) {
                         return Text(e.toString());
@@ -258,7 +278,9 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: purchaseList.when(data: (pTransaction) {
-                          final filteredTransactions = pTransaction.where((t) => t.party?.id == widget.party.id).toList();
+                          final filteredTransactions = pTransaction
+                              .where((t) => t.party?.id == widget.party.id)
+                              .toList();
 
                           return filteredTransactions.isNotEmpty
                               ? ListView.builder(
@@ -267,7 +289,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: filteredTransactions.length,
                                   itemBuilder: (context, index) {
-                                    final currentTransaction = filteredTransactions[index];
+                                    final currentTransaction =
+                                        filteredTransactions[index];
                                     return GestureDetector(
                                       onTap: () {
                                         PurchaseInvoiceDetails(
@@ -280,115 +303,216 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                           SizedBox(
                                             width: context.width(),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
                                                     Text(
                                                       "${lang.S.of(context).totalProduct} : ${currentTransaction.details!.length.toString()}",
-                                                      style: const TextStyle(fontSize: 16),
+                                                      style: const TextStyle(
+                                                          fontSize: 16),
                                                     ),
-                                                    Text('#${currentTransaction.invoiceNumber}'),
+                                                    Text(
+                                                        '#${currentTransaction.invoiceNumber}'),
                                                   ],
                                                 ),
                                                 const SizedBox(height: 2),
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
                                                     Container(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 8,
+                                                          vertical: 2),
                                                       decoration: BoxDecoration(
-                                                        color: currentTransaction.dueAmount! <= 0 ? const Color(0xff0dbf7d).withValues(alpha: 0.1) : const Color(0xFFED1A3B).withValues(alpha: 0.1),
-                                                        borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                        color: currentTransaction
+                                                                    .dueAmount! <=
+                                                                0
+                                                            ? const Color(
+                                                                    0xff0dbf7d)
+                                                                .withValues(
+                                                                    alpha: 0.1)
+                                                            : const Color(
+                                                                    0xFFED1A3B)
+                                                                .withValues(
+                                                                    alpha: 0.1),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    2)),
                                                       ),
                                                       child: Text(
-                                                        currentTransaction.dueAmount! <= 0 ? lang.S.of(context).paid : lang.S.of(context).unPaid,
+                                                        currentTransaction
+                                                                    .dueAmount! <=
+                                                                0
+                                                            ? lang.S
+                                                                .of(context)
+                                                                .paid
+                                                            : lang.S
+                                                                .of(context)
+                                                                .unPaid,
                                                         style: TextStyle(
-                                                          color: currentTransaction.dueAmount! <= 0 ? const Color(0xff0dbf7d) : const Color(0xFFED1A3B),
+                                                          color: currentTransaction
+                                                                      .dueAmount! <=
+                                                                  0
+                                                              ? const Color(
+                                                                  0xff0dbf7d)
+                                                              : const Color(
+                                                                  0xFFED1A3B),
                                                         ),
                                                       ),
                                                     ),
-                                                    Text(currentTransaction.purchaseDate!.substring(0, 10), style: _theme.textTheme.bodyMedium?.copyWith(color: DAppColors.kSecondary)),
+                                                    Text(
+                                                        currentTransaction
+                                                            .purchaseDate!
+                                                            .substring(0, 10),
+                                                        style: _theme.textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                                color: DAppColors
+                                                                    .kSecondary)),
                                                   ],
                                                 ),
                                                 const SizedBox(height: 10),
                                                 Text(
                                                   '${lang.S.of(context).total} : $currency${currentTransaction.totalAmount.toString()}',
-                                                  style: _theme.textTheme.bodyMedium?.copyWith(color: DAppColors.kSecondary),
+                                                  style: _theme
+                                                      .textTheme.bodyMedium
+                                                      ?.copyWith(
+                                                          color: DAppColors
+                                                              .kSecondary),
                                                 ),
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
                                                     Text(
                                                       '${lang.S.of(context).due}: $currency${currentTransaction.dueAmount.toString()}',
-                                                      style: const TextStyle(fontSize: 16),
+                                                      style: const TextStyle(
+                                                          fontSize: 16),
                                                     ),
-                                                    businessInfo.when(data: (data) {
+                                                    businessInfo.when(
+                                                        data: (data) {
                                                       return Row(
                                                         children: [
                                                           IconButton(
-                                                            onPressed: () async {
-                                                              PrintPurchaseTransactionModel model = PrintPurchaseTransactionModel(
-                                                                purchaseTransitionModel: currentTransaction,
-                                                                personalInformationModel: data,
+                                                            onPressed:
+                                                                () async {
+                                                              PrintPurchaseTransactionModel
+                                                                  model =
+                                                                  PrintPurchaseTransactionModel(
+                                                                purchaseTransitionModel:
+                                                                    currentTransaction,
+                                                                personalInformationModel:
+                                                                    data,
                                                               );
 
-                                                              await printerData.printPurchaseThermalInvoiceNow(
-                                                                transaction: model,
-                                                                productList: model.purchaseTransitionModel!.details,
-                                                                context: context,
+                                                              await printerData
+                                                                  .printPurchaseThermalInvoiceNow(
+                                                                transaction:
+                                                                    model,
+                                                                productList: model
+                                                                    .purchaseTransitionModel!
+                                                                    .details,
+                                                                context:
+                                                                    context,
                                                               );
                                                             },
                                                             icon: const Icon(
-                                                              FeatherIcons.printer,
-                                                              color: Colors.grey,
+                                                              FeatherIcons
+                                                                  .printer,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
-                                                            visualDensity: const VisualDensity(
+                                                            visualDensity:
+                                                                const VisualDensity(
                                                               horizontal: -4,
                                                               vertical: -4,
                                                             ),
-                                                            style: IconButton.styleFrom(
-                                                              padding: EdgeInsets.zero,
+                                                            style: IconButton
+                                                                .styleFrom(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
                                                             ),
                                                           ),
-                                                          const SizedBox(width: 8),
-                                                          businessData.when(data: (business) {
+                                                          const SizedBox(
+                                                              width: 8),
+                                                          businessData.when(
+                                                              data: (business) {
                                                             return Row(
                                                               children: [
                                                                 IconButton(
-                                                                  style: IconButton.styleFrom(
-                                                                      padding: EdgeInsets.zero,
-                                                                      visualDensity: const VisualDensity(
-                                                                        horizontal: -4,
-                                                                        vertical: -4,
-                                                                      )),
-                                                                  onPressed: () => PurchaseInvoicePDF.generatePurchaseDocument(currentTransaction, data, context, business),
-                                                                  icon: const Icon(
-                                                                    Icons.picture_as_pdf,
-                                                                    color: Colors.grey,
+                                                                  style: IconButton
+                                                                      .styleFrom(
+                                                                          padding: EdgeInsets
+                                                                              .zero,
+                                                                          visualDensity:
+                                                                              const VisualDensity(
+                                                                            horizontal:
+                                                                                -4,
+                                                                            vertical:
+                                                                                -4,
+                                                                          )),
+                                                                  onPressed: () =>
+                                                                      PurchaseInvoicePDF.generatePurchaseDocument(
+                                                                          currentTransaction,
+                                                                          data,
+                                                                          context,
+                                                                          business),
+                                                                  icon:
+                                                                      const Icon(
+                                                                    Icons
+                                                                        .picture_as_pdf,
+                                                                    color: Colors
+                                                                        .grey,
                                                                   ),
                                                                 ),
                                                                 IconButton(
-                                                                  style: IconButton.styleFrom(
-                                                                      padding: EdgeInsets.zero,
-                                                                      visualDensity: const VisualDensity(
-                                                                        horizontal: -4,
-                                                                        vertical: -4,
-                                                                      )),
-                                                                  onPressed: () => PurchaseInvoicePDF.generatePurchaseDocument(currentTransaction, data, context, business, isShare: true),
-                                                                  icon: const Icon(
-                                                                    Icons.share_outlined,
-                                                                    color: Colors.grey,
+                                                                  style: IconButton
+                                                                      .styleFrom(
+                                                                          padding: EdgeInsets
+                                                                              .zero,
+                                                                          visualDensity:
+                                                                              const VisualDensity(
+                                                                            horizontal:
+                                                                                -4,
+                                                                            vertical:
+                                                                                -4,
+                                                                          )),
+                                                                  onPressed: () => PurchaseInvoicePDF.generatePurchaseDocument(
+                                                                      currentTransaction,
+                                                                      data,
+                                                                      context,
+                                                                      business,
+                                                                      isShare:
+                                                                          true),
+                                                                  icon:
+                                                                      const Icon(
+                                                                    Icons
+                                                                        .share_outlined,
+                                                                    color: Colors
+                                                                        .grey,
                                                                   ),
                                                                 ),
                                                               ],
                                                             );
                                                           }, error: (e, stack) {
-                                                            return Text(e.toString());
+                                                            return Text(
+                                                                e.toString());
                                                           }, loading: () {
                                                             return const Center(
-                                                              child: CircularProgressIndicator(),
+                                                              child:
+                                                                  CircularProgressIndicator(),
                                                             );
                                                           }),
                                                         ],
@@ -396,7 +520,9 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                                     }, error: (e, stack) {
                                                       return Text(e.toString());
                                                     }, loading: () {
-                                                      return Text(lang.S.of(context).loading);
+                                                      return Text(lang.S
+                                                          .of(context)
+                                                          .loading);
                                                     }),
                                                   ],
                                                 ),
@@ -414,12 +540,14 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                                   },
                                 )
                               : EmptyWidget(
-                                  message: TextSpan(text: lang.S.of(context).noTransaction),
+                                  message: TextSpan(
+                                      text: lang.S.of(context).noTransaction),
                                 );
                         }, error: (e, stack) {
                           return Text(e.toString());
                         }, loading: () {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }),
                       ),
               ],
@@ -485,7 +613,8 @@ class _ContactOptionsRowState extends State<ContactOptionsRow> {
                 Navigator.pop(context1);
               },
               onSendSms: () {
-                UrlLauncher.handleLaunchURL(context, 'sms:${widget.party.phone}', false);
+                UrlLauncher.handleLaunchURL(
+                    context, 'sms:${widget.party.phone}', false);
                 // EasyLoading.show(status: 'SMS Sending..');
                 // PartyRepository repo = PartyRepository();
                 // await repo.sendCustomerUdeSms(id: widget.party.id!, context: context);
@@ -508,13 +637,15 @@ class _ContactOptionsRowState extends State<ContactOptionsRow> {
       }
     } else if (index == 2) {
       // Email functionality
-      if (widget.party.email == null || !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(widget.party.email!)) {
+      if (widget.party.email == null ||
+          !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(widget.party.email!)) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Invalid email address.')),
         );
         return;
       }
-      UrlLauncher.handleLaunchURL(context, 'mailto:${widget.party.email}', true);
+      UrlLauncher.handleLaunchURL(
+          context, 'mailto:${widget.party.email}', true);
     }
   }
 
@@ -527,7 +658,9 @@ class _ContactOptionsRowState extends State<ContactOptionsRow> {
           padding: const EdgeInsets.all(8),
           height: 90,
           decoration: BoxDecoration(
-            color: selectedIndex == index ? kMainColor : kMainColor.withValues(alpha: 0.10),
+            color: selectedIndex == index
+                ? kMainColor
+                : kMainColor.withValues(alpha: 0.10),
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           child: Center(

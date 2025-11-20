@@ -64,7 +64,8 @@ class _EditProfileState extends State<EditProfile> {
 
   BusinessCategory? selectedBusinessCategory;
 
-  DropdownButton<BusinessCategory> getCategory({required List<BusinessCategory> list}) {
+  DropdownButton<BusinessCategory> getCategory(
+      {required List<BusinessCategory> list}) {
     List<DropdownMenuItem<BusinessCategory>> dropDownItems = [];
 
     for (BusinessCategory category in list) {
@@ -187,22 +188,30 @@ class _EditProfileState extends State<EditProfile> {
                                   width: MediaQuery.of(context).size.width - 80,
                                   child: Center(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
-                                            pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+                                            pickedImage =
+                                                await _picker.pickImage(
+                                                    source:
+                                                        ImageSource.gallery);
 
                                             setState(() {
-                                              imageFile = File(pickedImage!.path);
+                                              imageFile =
+                                                  File(pickedImage!.path);
                                             });
 
-                                            Future.delayed(const Duration(milliseconds: 100), () {
+                                            Future.delayed(
+                                                const Duration(
+                                                    milliseconds: 100), () {
                                               Navigator.pop(context);
                                             });
                                           },
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               const Icon(
                                                 Icons.photo_library_rounded,
@@ -212,7 +221,9 @@ class _EditProfileState extends State<EditProfile> {
                                               Text(
                                                 lang.S.of(context).gallery,
                                                 // 'Gallery',
-                                                style: theme.textTheme.titleMedium?.copyWith(
+                                                style: theme
+                                                    .textTheme.titleMedium
+                                                    ?.copyWith(
                                                   color: kGreyTextColor,
                                                 ),
                                               ),
@@ -224,16 +235,22 @@ class _EditProfileState extends State<EditProfile> {
                                         ),
                                         GestureDetector(
                                           onTap: () async {
-                                            pickedImage = await _picker.pickImage(source: ImageSource.camera);
+                                            pickedImage =
+                                                await _picker.pickImage(
+                                                    source: ImageSource.camera);
                                             setState(() {
-                                              imageFile = File(pickedImage!.path);
+                                              imageFile =
+                                                  File(pickedImage!.path);
                                             });
-                                            Future.delayed(const Duration(milliseconds: 100), () {
+                                            Future.delayed(
+                                                const Duration(
+                                                    milliseconds: 100), () {
                                               Navigator.pop(context);
                                             });
                                           },
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               const Icon(
                                                 Icons.camera,
@@ -243,7 +260,9 @@ class _EditProfileState extends State<EditProfile> {
                                               Text(
                                                 lang.S.of(context).camera,
                                                 // 'Camera',
-                                                style: theme.textTheme.titleMedium?.copyWith(
+                                                style: theme
+                                                    .textTheme.titleMedium
+                                                    ?.copyWith(
                                                   color: kGreyTextColor,
                                                 ),
                                               ),
@@ -263,16 +282,21 @@ class _EditProfileState extends State<EditProfile> {
                             height: 120,
                             width: 120,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black54, width: 1),
-                              borderRadius: const BorderRadius.all(Radius.circular(120)),
+                              border:
+                                  Border.all(color: Colors.black54, width: 1),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(120)),
                               image: pickedImage == null
                                   ? widget.profile.pictureUrl == null
                                       ? const DecorationImage(
-                                          image: AssetImage('images/no_shop_image.png'),
+                                          image: AssetImage(
+                                              'images/no_shop_image.png'),
                                           fit: BoxFit.cover,
                                         )
                                       : DecorationImage(
-                                          image: NetworkImage(APIConfig.domain + widget.profile.pictureUrl.toString()),
+                                          image: NetworkImage(APIConfig.domain +
+                                              widget.profile.pictureUrl
+                                                  .toString()),
                                           fit: BoxFit.cover,
                                         )
                                   : DecorationImage(
@@ -288,8 +312,10 @@ class _EditProfileState extends State<EditProfile> {
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white, width: 2),
-                                borderRadius: const BorderRadius.all(Radius.circular(120)),
+                                border:
+                                    Border.all(color: Colors.white, width: 2),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(120)),
                                 color: kMainColor,
                               ),
                               child: const Icon(
@@ -312,8 +338,16 @@ class _EditProfileState extends State<EditProfile> {
                         child: FormField(
                           builder: (FormFieldState<dynamic> field) {
                             return InputDecorator(
-                              decoration: kInputDecoration.copyWith(floatingLabelBehavior: FloatingLabelBehavior.always, labelText: lang.S.of(context).businessCat, labelStyle: theme.textTheme.titleMedium, border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-                              child: DropdownButtonHideUnderline(child: getCategory(list: categoryList)),
+                              decoration: kInputDecoration.copyWith(
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  labelText: lang.S.of(context).businessCat,
+                                  labelStyle: theme.textTheme.titleMedium,
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0))),
+                              child: DropdownButtonHideUnderline(
+                                  child: getCategory(list: categoryList)),
                             );
                           },
                         ),
@@ -330,7 +364,9 @@ class _EditProfileState extends State<EditProfile> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   //return 'Please enter a valid business name';
-                                  return lang.S.of(context).pleaseEnterAValidBusinessName;
+                                  return lang.S
+                                      .of(context)
+                                      .pleaseEnterAValidBusinessName;
                                 }
                                 return null;
                               },
@@ -347,13 +383,24 @@ class _EditProfileState extends State<EditProfile> {
                               height: 60.0,
                               child: AppTextField(
                                 controller: phoneController,
+                                maxLength: 10,
                                 validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Phone number is required';
+                                  }
+                                  if (value.length != 10) {
+                                    return 'Phone number must be exactly 10 digits';
+                                  }
+                                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                                    return 'Phone number must contain only digits';
+                                  }
                                   return null;
                                 },
                                 textFieldType: TextFieldType.PHONE,
                                 decoration: kInputDecoration.copyWith(
                                   labelText: lang.S.of(context).phone,
                                   border: const OutlineInputBorder(),
+                                  counterText: '',
                                 ),
                               ),
                             ),
@@ -379,7 +426,8 @@ class _EditProfileState extends State<EditProfile> {
                               ///_______title__________________________________
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 10, bottom: 10),
                                   child: AppTextField(
                                     validator: (value) {
                                       return null;
@@ -403,7 +451,8 @@ class _EditProfileState extends State<EditProfile> {
                                     validator: (value) {
                                       return null;
                                     },
-                                    controller: vatGstNumberController, // Optional
+                                    controller:
+                                        vatGstNumberController, // Optional
                                     textFieldType: TextFieldType.NAME,
                                     decoration: kInputDecoration.copyWith(
                                       hintText: 'Enter shop VAT/GST number',

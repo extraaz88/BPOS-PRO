@@ -17,8 +17,17 @@ class ForgotPassRepo {
       'Accept': 'application/json',
     };
 
+    print('====== FORGOT PASSWORD API ======');
+    print('Request URL: $url');
+    print('Request Body: $body');
+    print('Request Headers: $headers');
+
     try {
       final response = await http.post(url, headers: headers, body: body);
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      print('====================================');
 
       final responseData = jsonDecode(response.body);
       EasyLoading.dismiss();
@@ -30,7 +39,7 @@ class ForgotPassRepo {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['message'])));
       }
     } catch (error) {
-      print(error);
+      print('Error: $error');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Network error: Please try again')));
     } finally {}
 
@@ -48,11 +57,19 @@ class ForgotPassRepo {
       'Accept': 'application/json',
     };
 
+    print('====== VERIFY OTP API ======');
+    print('Request URL: $url');
+    print('Request Body: $body');
+    print('Request Headers: $headers');
+
     try {
       final response = await http.post(url, headers: headers, body: body);
 
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      print('====================================');
+
       final responseData = jsonDecode(response.body);
-      print(response.body);
       EasyLoading.dismiss();
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['message'])));
@@ -62,7 +79,7 @@ class ForgotPassRepo {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['error'])));
       }
     } catch (error) {
-      print(error);
+      print('Error: $error');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Network error: Please try again')));
     } finally {}
 
@@ -80,8 +97,17 @@ class ForgotPassRepo {
       'Accept': 'application/json',
     };
 
+    print('====== RESET PASSWORD API ======');
+    print('Request URL: $url');
+    print('Request Body: $body');
+    print('Request Headers: $headers');
+
     try {
       final response = await http.post(url, headers: headers, body: body);
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      print('====================================');
 
       final responseData = jsonDecode(response.body);
       EasyLoading.dismiss();
@@ -93,7 +119,7 @@ class ForgotPassRepo {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData['message'])));
       }
     } catch (error) {
-      print(error);
+      print('Error: $error');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Network error: Please try again')));
     } finally {}
 

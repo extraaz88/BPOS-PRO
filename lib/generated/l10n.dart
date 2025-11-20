@@ -1642,7 +1642,7 @@ class S {
   /// `Please Add A Customer`
   String get addCustomer {
     return Intl.message(
-      'Please Add A Customer/Supplier',
+      'Please Add A Customer',
       name: 'addCustomer',
       desc: '',
       args: [],
@@ -1651,22 +1651,12 @@ class S {
 
   /// `Customers`
   String get customers {
-    return Intl.message(
-      'Customers',
-      name: 'customers',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Customers', name: 'customers', desc: '', args: []);
   }
 
   /// `Suppliers`
   String get suppliers {
-    return Intl.message(
-      'Suppliers',
-      name: 'suppliers',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Suppliers', name: 'suppliers', desc: '', args: []);
   }
 
   /// `Supplier Name`
@@ -1757,8 +1747,118 @@ class S {
   /// `Payment Type`
   String get paymentTypes {
     return Intl.message(
-      'Payment Type',
-      name: 'paymentTypes',
+      'Payment Method',
+      name: 'paymentMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment Mode`
+  String get paymentMode {
+    return Intl.message(
+      'Payment Mode',
+      name: 'paymentMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Full Payment`
+  String get fullPayment {
+    return Intl.message(
+      'Full Payment',
+      name: 'fullPayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Installment`
+  String get installment {
+    return Intl.message(
+      'Installment',
+      name: 'installment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Down Payment`
+  String get downPayment {
+    return Intl.message(
+      'Down Payment',
+      name: 'downPayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duration (Months)`
+  String get durationMonths {
+    return Intl.message(
+      'Duration (Months)',
+      name: 'durationMonths',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interest Rate (%)`
+  String get interestRate {
+    return Intl.message(
+      'Interest Rate (%)',
+      name: 'interestRate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter down payment`
+  String get enterDownPayment {
+    return Intl.message(
+      'Enter down payment',
+      name: 'enterDownPayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter duration in months`
+  String get enterDurationInMonths {
+    return Intl.message(
+      'Enter duration in months',
+      name: 'enterDurationInMonths',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter interest rate`
+  String get enterInterestRate {
+    return Intl.message(
+      'Enter interest rate',
+      name: 'enterInterestRate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remaining Amount`
+  String get remainingAmount {
+    return Intl.message(
+      'Remaining Amount',
+      name: 'remainingAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Installment`
+  String get monthlyInstallment {
+    return Intl.message(
+      'Monthly Installment',
+      name: 'monthlyInstallment',
       desc: '',
       args: [],
     );
@@ -4714,10 +4814,10 @@ class S {
     );
   }
 
-  /// `Received Amount`
+  /// `Partial Amount`
   String get receivedAmount {
     return Intl.message(
-      'Received Amount',
+      'Partial Amount',
       name: 'receivedAmount',
       desc: '',
       args: [],

@@ -13,6 +13,8 @@ class LogOutRepo {
   Future<void> signOut() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("token");
+    await prefs.remove("user_role");
+    await prefs.remove("user_visibility");
     await prefs.remove("hasShownExpiredDialog");
     CurrencyMethods().removeCurrencyFromLocalDatabase();
     EasyLoading.showSuccess('Successfully Logged Out');

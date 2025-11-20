@@ -25,7 +25,12 @@ class PaymentTypeSelectorDropdown extends ConsumerWidget {
         final _data = [...data.where((element) => element.status == 1)];
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (value == null) {
-            onChanged?.call(_data.firstOrNull?.id);
+            // Try to find Cash payment type first, otherwise use first available
+            final cashType = _data.firstWhere(
+              (element) => element.name?.toLowerCase() == 'cash',
+              orElse: () => _data.first,
+            );
+            onChanged?.call(cashType.id);
           }
         });
 
@@ -58,7 +63,7 @@ class PaymentTypeSelectorDropdown extends ConsumerWidget {
             Row(
               children: [
                 Text(
-                  lang.S.of(context).paymentTypes,
+                  lang.S.of(context).paymentMode,
                   style: const TextStyle(fontSize: 16, color: Colors.black54),
                 ),
                 const SizedBox(width: 5),

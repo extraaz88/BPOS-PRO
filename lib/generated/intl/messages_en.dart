@@ -193,6 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "customerSignature": MessageLookupByLibrary.simpleMessage(
       "Customer Signature",
     ),
+    "customers": MessageLookupByLibrary.simpleMessage("Customers"),
     "dailyTransaction": MessageLookupByLibrary.simpleMessage(
       "Daily Transaction",
     ),
@@ -330,6 +331,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "enterSize": MessageLookupByLibrary.simpleMessage("Enter Size"),
     "enterStock": MessageLookupByLibrary.simpleMessage("Enter stock"),
+    "enterSupplierPhoneNumber": MessageLookupByLibrary.simpleMessage(
+      "Enter supplier phone number",
+    ),
     "enterTaxRates": MessageLookupByLibrary.simpleMessage("Enter Tax Rate"),
     "enterType": MessageLookupByLibrary.simpleMessage("Enter Type"),
     "enterUserTitle": MessageLookupByLibrary.simpleMessage("Enter User Title"),
@@ -655,7 +659,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quantity": MessageLookupByLibrary.simpleMessage("Quantity"),
     "quickOverview": MessageLookupByLibrary.simpleMessage("Quick Overview"),
     "receipt": MessageLookupByLibrary.simpleMessage("Receipt"),
-    "receivedAmount": MessageLookupByLibrary.simpleMessage("Received Amount"),
+    "receivedAmount": MessageLookupByLibrary.simpleMessage("Partial Amount"),
     "recentTransaction": MessageLookupByLibrary.simpleMessage(
       "Recent Transactions",
     ),
@@ -790,6 +794,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "supplier": MessageLookupByLibrary.simpleMessage("Supplier"),
     "supplierDetails": MessageLookupByLibrary.simpleMessage("Supplier Details"),
     "supplierName": MessageLookupByLibrary.simpleMessage("Supplier Name"),
+    "supplierPhoneNumber": MessageLookupByLibrary.simpleMessage(
+      "Supplier Phone Number",
+    ),
+    "suppliers": MessageLookupByLibrary.simpleMessage("Suppliers"),
     "taxGroup": MessageLookupByLibrary.simpleMessage("Tax Group"),
     "taxPercent": MessageLookupByLibrary.simpleMessage("Tax percent"),
     "taxRates": MessageLookupByLibrary.simpleMessage("Tax Rates"),

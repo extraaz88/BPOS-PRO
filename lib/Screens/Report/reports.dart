@@ -10,6 +10,7 @@ import 'package:mobile_pos/generated/l10n.dart' as lang;
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../GlobalComponents/glonal_popup.dart';
+import '../../services/permission_service.dart';
 import '../Loss_Profit/loss_profit_screen.dart';
 import '../stock_list/stock_list_main.dart';
 import 'Screens/income_report.dart';
@@ -40,133 +41,294 @@ class _ReportsState extends State<Reports> {
           backgroundColor: Colors.white,
           elevation: 0.0,
         ),
-        body: SingleChildScrollView(
+        body: FutureBuilder<List<Widget>>(
+          future: _buildReportCards(context),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            
+            final reportCards = snapshot.data!;
+            if (reportCards.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    'No reports available. Contact admin for access.',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }
+            
+            return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [
-                ///__________Sales_report__________________________________________
+                  children: reportCards,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // Build report cards based on user permissions
+  Future<List<Widget>> _buildReportCards(BuildContext context) async {
+    final permissionService = PermissionService();
+    final role = await permissionService.getUserRole();
+    final visibility = await permissionService.getVisibilityPermissions();
+    
+    List<Widget> cards = [];
+    
+    // If role is not 'staff', show all reports
+    if (role != 'staff') {
+      return _getAllReportCards(context);
+    }
+    
+    // If no visibility data for staff, show all reports
+    if (visibility == null) {
+      return _getAllReportCards(context);
+    }
+    
+    // Sales Report - show ONLY if salePermission or salesListPermission is true
+    if (visibility[PermissionService.SALE_PERMISSION] == true || 
+        visibility[PermissionService.SALES_LIST_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          const SalesReportScreen().launch(context);
+        },
+        iconPath: 'assets/salesReport.svg',
+        title: lang.S.of(context).salesReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Purchase Report - show if purchasePermission or purchaseListPermission is true
+    if (visibility[PermissionService.PURCHASE_PERMISSION] == true || 
+        visibility[PermissionService.PURCHASE_LIST_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          const PurchaseReportScreen().launch(context);
+        },
+        iconPath: 'assets/purchaseReport.svg',
+        title: lang.S.of(context).purchaseReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Due Report - show if dueListPermission is true
+    if (visibility[PermissionService.DUE_LIST_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          const DueReportScreen().launch(context);
+        },
+        iconPath: 'assets/duereport.svg',
+        title: lang.S.of(context).dueReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Stock Report - show if stockPermission is true
+    if (visibility[PermissionService.STOCK_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const StockList(isFromReport: true),
+            ),
+          );
+        },
+        iconPath: 'assets/stock.svg',
+        title: lang.S.of(context).stockReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Expired List - show if stockPermission or productPermission is true
+    if (visibility[PermissionService.STOCK_PERMISSION] == true || 
+        visibility[PermissionService.PRODUCT_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpiredList()));
+        },
+        iconPath: 'assets/expenseReport.svg',
+        title: lang.S.of(context).expiredList,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Loss/Profit Report - show if lossProfitPermission is true
+    if (visibility[PermissionService.LOSS_PROFIT_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const LossProfitScreen()));
+        },
+        iconPath: 'assets/lossprofit.svg',
+        title: lang.S.of(context).lossProfitReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Income Report - show if addIncomePermission is true
+    if (visibility[PermissionService.ADD_INCOME_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const IncomeReport()));
+        },
+        iconPath: 'assets/incomeReport.svg',
+        title: lang.S.of(context).incomeReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Expense Report - show if addExpensePermission is true
+    if (visibility[PermissionService.ADD_EXPENSE_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpenseReport()));
+        },
+        iconPath: 'assets/expenseReport.svg',
+        title: lang.S.of(context).expenseReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    
+    // Sales Return Report - DON'T show for staff (only admin/owner can see)
+    // Staff ko sales return report nahi dikhega
+    // Commented out - only admin/owner will see this in _getAllReportCards()
+    
+    /* 
+    if (visibility[PermissionService.SALE_PERMISSION] == true || 
+        visibility[PermissionService.SALES_LIST_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          const SalesReturnReportScreen().launch(context);
+        },
+        iconPath: 'assets/salesReport.svg',
+        title: lang.S.of(context).salesReturnReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    */
+    
+    // Purchase Return Report - DON'T show for staff (only admin/owner can see)
+    // Staff ko purchase return report nahi dikhega
+    // Commented out - only admin/owner will see this in _getAllReportCards()
+    
+    /* 
+    if (visibility[PermissionService.PURCHASE_PERMISSION] == true || 
+        visibility[PermissionService.PURCHASE_LIST_PERMISSION] == true) {
+      cards.add(ReportCard(
+        pressed: () {
+          const PurchaseReturnReportScreen().launch(context);
+        },
+        iconPath: 'assets/purchaseReport.svg',
+        title: lang.S.of(context).purchaseReturnReport,
+      ));
+      cards.add(const SizedBox(height: 16));
+    }
+    */
+    
+    return cards;
+  }
+  
+  // Get all report cards (for admin/owner with full access)
+  List<Widget> _getAllReportCards(BuildContext context) {
+    return [
                 ReportCard(
                     pressed: () {
                       const SalesReportScreen().launch(context);
                     },
                     iconPath: 'assets/salesReport.svg',
-                    title: lang.S.of(context).salesReport),
+        title: lang.S.of(context).salesReport,
+      ),
                 const SizedBox(height: 16),
-
-                ///___________Purchase_report______________________________________
                 ReportCard(
                     pressed: () {
                       const PurchaseReportScreen().launch(context);
                     },
                     iconPath: 'assets/purchaseReport.svg',
-                    title: lang.S.of(context).purchaseReport),
+        title: lang.S.of(context).purchaseReport,
+      ),
                 const SizedBox(height: 16),
-
-                ///___________Due_report____________________________________________
                 ReportCard(
                     pressed: () {
                       const DueReportScreen().launch(context);
                     },
                     iconPath: 'assets/duereport.svg',
-                    title: lang.S.of(context).dueReport),
+        title: lang.S.of(context).dueReport,
+      ),
                 const SizedBox(height: 16),
-
-                ///_______________Stock_report________________________________________________________________
                 ReportCard(
                     pressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const StockList(
-                                    isFromReport: true,
-                                  )));
+              builder: (context) => const StockList(isFromReport: true),
+            ),
+          );
                     },
                     iconPath: 'assets/stock.svg',
-                    //title: 'Stock Report'
-                    title: lang.S.of(context).stockReport),
+        title: lang.S.of(context).stockReport,
+      ),
                 const SizedBox(height: 16),
-
-                ///_______________Expired_report________________________________________________________________
                 ReportCard(
                     pressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpiredList()));
                     },
                     iconPath: 'assets/expenseReport.svg',
-                    title: lang.S.of(context).expiredList),
+        title: lang.S.of(context).expiredList,
+      ),
                 const SizedBox(height: 16),
-
-                ///_______________Loss/Profit________________________________________________________________
                 ReportCard(
                     pressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const LossProfitScreen()));
                     },
                     iconPath: 'assets/lossprofit.svg',
-                    //title: 'Loss/Profit Report'
-                    title: lang.S.of(context).lossProfitReport),
-                const SizedBox(
-                  height: 16,
+        title: lang.S.of(context).lossProfitReport,
                 ),
-
-                ///_______________Income_report________________________________________________________________
+      const SizedBox(height: 16),
                 ReportCard(
                   pressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const IncomeReport()));
                   },
                   iconPath: 'assets/incomeReport.svg',
-                  // title: 'Income Report',
                   title: lang.S.of(context).incomeReport,
                 ),
                 const SizedBox(height: 16),
-
-                ///__________________Expense Report____________________________________________________________
                 ReportCard(
                   pressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpenseReport()));
                   },
                   iconPath: 'assets/expenseReport.svg',
-                  //title: 'Expense Report'
                   title: lang.S.of(context).expenseReport,
                 ),
                 const SizedBox(height: 16),
-
-                ///__________Sales_return_report__________________________________________
                 ReportCard(
                   pressed: () {
                     const SalesReturnReportScreen().launch(context);
                   },
                   iconPath: 'assets/salesReport.svg',
-                  // title: "Sales Return Report",
                   title: lang.S.of(context).salesReturnReport,
                 ),
                 const SizedBox(height: 16),
-
-                ///___________Purchase_return_report______________________________________
                 ReportCard(
                   pressed: () {
                     const PurchaseReturnReportScreen().launch(context);
                   },
                   iconPath: 'assets/purchaseReport.svg',
                   title: lang.S.of(context).purchaseReturnReport,
-                  // title: 'Purchase Return Report',
                 ),
                 const SizedBox(height: 16),
-
-                ///__________Deleted_Invoice_report______________________________________
-                // ReportCard(
-                //   pressed: () {
-                //     const PurchaseReportScreen().launch(context);
-                //   },
-                //   iconPath: 'assets/purchaseReport.svg',
-                //   title: 'Deleted Invoices',
-                // ),
-                // const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    ];
   }
 }
 

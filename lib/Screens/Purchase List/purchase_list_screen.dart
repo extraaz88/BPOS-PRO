@@ -298,6 +298,38 @@ class PurchaseReportState extends State<PurchaseListScreen> {
                                                       .textTheme.bodyMedium
                                                       ?.copyWith(fontSize: 16),
                                                 ),
+                                              if (purchaseTransactions[index].paymentType?.name != null)
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        '${lang.S.of(context).paymentTypes}: ',
+                                                        style: _theme.textTheme.bodyMedium?.copyWith(
+                                                          fontSize: 14,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                        decoration: BoxDecoration(
+                                                          color: kMainColor.withOpacity(0.1),
+                                                          borderRadius: BorderRadius.circular(4),
+                                                          border: Border.all(color: kMainColor.withOpacity(0.3)),
+                                                        ),
+                                                        child: Text(
+                                                          purchaseTransactions[index].paymentType?.name ?? 'N/A',
+                                                          style: _theme.textTheme.bodyMedium?.copyWith(
+                                                            fontSize: 14,
+                                                            color: kMainColor,
+                                                            fontWeight: FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               businessInfoData.when(
                                                   data: (data) {
                                                 return Row(

@@ -148,7 +148,7 @@ class BusinessRepository {
     if (type.toLowerCase() == 'custom date' && fromDate != null && toDate != null) {
       String fromDateStr = '${fromDate.year}-${fromDate.month.toString().padLeft(2, '0')}-${fromDate.day.toString().padLeft(2, '0')}';
       String toDateStr = '${toDate.year}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}';
-      url += '&from_date=$fromDateStr&to_date=$toDateStr';
+      url += '&from=$fromDateStr&to=$toDateStr';
     }
     
     final uri = Uri.parse(url);

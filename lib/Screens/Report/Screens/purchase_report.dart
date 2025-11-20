@@ -10,6 +10,7 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../../GlobalComponents/glonal_popup.dart';
 import '../../../GlobalComponents/returned_tag_widget.dart';
 import '../../../PDF Invoice/purchase_invoice_pdf.dart';
+import '../../../PDF Invoice/purchase_report_pdf.dart';
 import '../../../Provider/profile_provider.dart';
 import '../../../constant.dart';
 import '../../../core/theme/_app_colors.dart';
@@ -55,6 +56,35 @@ class PurchaseReportState extends State<PurchaseReportScreen> {
   ];
   String? dropdownValue = 'This Month';
 
+  // Format large numbers to K, Lac, Cr
+  String formatCurrency(num value) {
+    if (value < 0) {
+      return '-${formatCurrency(value.abs())}';
+    }
+    
+    if (value < 1000) {
+      return value.toStringAsFixed(2);
+    } else if (value < 100000) {
+      double thousands = value / 1000;
+      if (thousands == thousands.roundToDouble()) {
+        return '${thousands.toStringAsFixed(0)}K';
+      }
+      return '${thousands.toStringAsFixed(2)}K';
+    } else if (value < 10000000) {
+      double lacs = value / 100000;
+      if (lacs == lacs.roundToDouble()) {
+        return '${lacs.toStringAsFixed(0)} Lac';
+      }
+      return '${lacs.toStringAsFixed(2)} Lac';
+    } else {
+      double crores = value / 10000000;
+      if (crores == crores.roundToDouble()) {
+        return '${crores.toStringAsFixed(0)} Cr';
+      }
+      return '${crores.toStringAsFixed(2)} Cr';
+    }
+  }
+
   Map<String, String> getTranslateTime(BuildContext context) {
     return {
       'ToDay': lang.S.of(context).today,
@@ -91,6 +121,87 @@ class PurchaseReportState extends State<PurchaseReportScreen> {
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0.0,
+          actions: [
+            Consumer(builder: (context, ref, __) {
+              final purchaseData = ref.watch(purchaseTransactionProvider);
+              final personalData = ref.watch(businessInfoProvider);
+              final business = ref.watch(businessSettingProvider);
+              
+              return Row(
+                children: [
+                  // Export to PDF Button
+                  IconButton(
+                    icon: const Icon(Icons.picture_as_pdf, color: Colors.black),
+                    tooltip: 'Export to PDF',
+                    onPressed: () {
+                      purchaseData.when(
+                        data: (transactions) {
+                          personalData.when(
+                            data: (personalInfo) {
+                              business.when(
+                                data: (businessSetting) {
+                                  PurchaseReportPdf.generatePurchaseReport(
+                                    transactions: transactions,
+                                    personalInformation: personalInfo,
+                                    context: context,
+                                    businessSetting: businessSetting,
+                                    fromDate: fromDate,
+                                    toDate: toDate,
+                                    isShare: false,
+                                  );
+                                },
+                                error: (e, stack) => toast(e.toString()),
+                                loading: () => toast(lang.S.of(context).loading),
+                              );
+                            },
+                            error: (e, stack) => toast(e.toString()),
+                            loading: () => toast(lang.S.of(context).loading),
+                          );
+                        },
+                        error: (e, stack) => toast(e.toString()),
+                        loading: () => toast(lang.S.of(context).loading),
+                      );
+                    },
+                  ),
+                  // Share PDF Button
+                  IconButton(
+                    icon: const Icon(Icons.share, color: Colors.black),
+                    tooltip: 'Share PDF',
+                    onPressed: () {
+                      purchaseData.when(
+                        data: (transactions) {
+                          personalData.when(
+                            data: (personalInfo) {
+                              business.when(
+                                data: (businessSetting) {
+                                  PurchaseReportPdf.generatePurchaseReport(
+                                    transactions: transactions,
+                                    personalInformation: personalInfo,
+                                    context: context,
+                                    businessSetting: businessSetting,
+                                    fromDate: fromDate,
+                                    toDate: toDate,
+                                    isShare: true,
+                                  );
+                                },
+                                error: (e, stack) => toast(e.toString()),
+                                loading: () => toast(lang.S.of(context).loading),
+                              );
+                            },
+                            error: (e, stack) => toast(e.toString()),
+                            loading: () => toast(lang.S.of(context).loading),
+                          );
+                        },
+                        error: (e, stack) => toast(e.toString()),
+                        loading: () => toast(lang.S.of(context).loading),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              );
+            }),
+          ],
         ),
         body: Consumer(builder: (context, ref, __) {
           final purchaseData = ref.watch(purchaseTransactionProvider);
@@ -195,7 +306,7 @@ class PurchaseReportState extends State<PurchaseReportScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "$currency ${totalPurchase.toStringAsFixed(2)}",
+                                            "$currency${formatCurrency(totalPurchase)}",
                                             style: const TextStyle(
                                               color: Colors.green,
                                               fontSize: 20,
@@ -433,6 +544,39 @@ class PurchaseReportState extends State<PurchaseReportScreen> {
                                                     }),
                                                   ],
                                                 ),
+                                                ///_______Payment_Method_Below_Due_Amount_____________________
+                                                if (transaction[index].paymentType != null)
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          '${lang.S.of(context).paymentTypes}: ',
+                                                          style: _theme.textTheme.bodyMedium?.copyWith(
+                                                            fontSize: 14,
+                                                            color: DAppColors.kSecondary,
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                          decoration: BoxDecoration(
+                                                            color: kMainColor.withOpacity(0.1),
+                                                            borderRadius: BorderRadius.circular(4),
+                                                            border: Border.all(color: kMainColor.withOpacity(0.3)),
+                                                          ),
+                                                          child: Text(
+                                                            transaction[index].paymentType?.name ?? 'N/A',
+                                                            style: _theme.textTheme.bodyMedium?.copyWith(
+                                                              fontSize: 14,
+                                                              color: kMainColor,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                               ],
                                             ),
                                           ),

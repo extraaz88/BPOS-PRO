@@ -596,7 +596,7 @@ class _AnimatedSalesPurchaseGraphState extends State<AnimatedSalesPurchaseGraph>
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final dashboardInfo = ref.watch(dashboardInfoProvider(selectedTime.toLowerCase()));
+          final dashboardInfo = ref.watch(dashboardInfoProvider(DashboardParams(type: selectedTime.toLowerCase())));
           
           return dashboardInfo.when(
             data: (dashboard) {

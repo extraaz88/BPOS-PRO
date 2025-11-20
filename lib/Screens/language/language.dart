@@ -30,6 +30,9 @@ class _SelectLanguageState extends State<SelectLanguage> {
       selectedLanguage = savedLanguageCode;
     });
 
+    // Update the global selectedLanguage variable
+    updateSelectedLanguage(savedLanguageCode);
+
     // Update provider with the saved language code
     context.read<LanguageChangeProvider>().changeLocale(savedLanguageCode);
   }
@@ -105,26 +108,34 @@ class _SelectLanguageState extends State<SelectLanguage> {
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ElevatedButton(
-              onPressed: () async {
-                // Update locale in the provider
-                if (selectedLanguage != null) {
-                  // Save the selected language
-                  await saveData(selectedLanguage!);
-
-                  // Update locale in the provider
-                  context.read<LanguageChangeProvider>().changeLocale(selectedLanguage!);
-
-                  // Navigate to Home
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-              },
-              child: Text(lang.S.of(context).save)),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SafeArea(
+              child: ElevatedButton(
+                  onPressed: () async {
+                    // Update locale in the provider
+                    if (selectedLanguage != null) {
+                      // Save the selected language
+                      await saveData(selectedLanguage!);
+              
+                      // Update the global selectedLanguage variable in constant.dart
+                      // This ensures printing functions use the correct language
+                      updateSelectedLanguage(selectedLanguage!);
+              
+                      // Update locale in the provider
+                      context.read<LanguageChangeProvider>().changeLocale(selectedLanguage!);
+              
+                      // Navigate to Home
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Home()),
+                      );
+                    }
+                  },
+                  child: Text(lang.S.of(context).save)),
+            ),
+          ),
         ),
       ),
     );

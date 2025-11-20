@@ -8,6 +8,7 @@ class PurchaseTransaction {
     this.discountPercent,
     this.discountType,
     this.shippingCharge,
+    this.serviceCharge,
     this.dueAmount,
     this.paidAmount,
     this.changeAmount,
@@ -27,6 +28,9 @@ class PurchaseTransaction {
     this.vatId,
     this.vatPercent,
     this.vat,
+    this.isSplitPayment,
+    this.splitCashAmount,
+    this.splitOnlineAmount,
   });
 
   PurchaseTransaction.fromJson(dynamic json) {
@@ -37,6 +41,7 @@ class PurchaseTransaction {
     discountAmount = json['discountAmount'];
     discountPercent = json['discount_percent'];
     shippingCharge = json['shipping_charge'];
+    serviceCharge = json['service_charge'];
     discountType = json['discount_type'];
     dueAmount = json['dueAmount'];
     changeAmount = json['change_amount'];
@@ -48,6 +53,11 @@ class PurchaseTransaction {
     invoiceNumber = json['invoiceNumber'];
     isPaid = json['isPaid'];
     paymentTypeId = int.tryParse(json["payment_type_id"].toString());
+    
+    // Split Payment fields
+    isSplitPayment = json['is_split_payment'];
+    splitCashAmount = json['split_cash_amount'];
+    splitOnlineAmount = json['split_online_amount'];
 
     vat = json['vat'] != null ? PurchaseVat.fromJson(json['vat']) : null;
     purchaseDate = json['purchaseDate'];
@@ -77,6 +87,7 @@ class PurchaseTransaction {
   num? discountAmount;
   num? discountPercent;
   num? shippingCharge;
+  num? serviceCharge;
   String? discountType;
   num? dueAmount;
   num? paidAmount;
@@ -97,6 +108,11 @@ class PurchaseTransaction {
   List<PurchaseDetails>? details;
   List<PurchaseReturn>? purchaseReturns;
   PurchaseVat? vat;
+  
+  // Split Payment fields
+  bool? isSplitPayment;
+  num? splitCashAmount;
+  num? splitOnlineAmount;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -107,6 +123,7 @@ class PurchaseTransaction {
     map['discountAmount'] = discountAmount;
     map['discount_percent'] = discountPercent;
     map['shipping_charge'] = shippingCharge;
+    map['service_charge'] = serviceCharge;
     map['discount_type'] = discountType;
     map['dueAmount'] = dueAmount;
     map['paidAmount'] = paidAmount;

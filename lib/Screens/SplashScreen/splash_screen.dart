@@ -173,6 +173,27 @@ class SplashScreenState extends State<SplashScreen>
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const OnBoard()));
       } else {
+        // Check if shop category is already selected
+        final shopCategory = prefs.getString('shop_category');
+        if (shopCategory == null || shopCategory.isEmpty) {
+          // Set default to "All Category" with all features
+          await prefs.setString('shop_category', 'All Category');
+          await prefs.setStringList('shop_features', [
+            'sale',
+            'purchase',
+            'product',
+            'parties',
+            'dashboard',
+            'reports',
+            'stock',
+            'due_calculation',
+            'expense',
+            'income',
+            'order_booking',
+            'salon_service'
+          ]);
+        }
+        // Navigate directly to home
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => const Home()));
       }

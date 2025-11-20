@@ -54,25 +54,17 @@ class _CustomerListState extends State<CustomerList>
     if (_isRefreshing) return; // Prevent duplicate refresh calls
     _isRefreshing = true;
 
-    // ignore: unused_result
-    ref.refresh(partiesProvider);
+    // Refresh based on selected tab
+    if (_selectedIndex == 0) {
+      // ignore: unused_result
+      ref.refresh(customersProvider);
+    } else {
+      // ignore: unused_result
+      ref.refresh(suppliersProvider);
+    }
 
     await Future.delayed(const Duration(seconds: 1)); // Optional delay
     _isRefreshing = false;
-  }
-
-  List<dynamic> _filterCustomers(List<dynamic> allCustomers) {
-    if (_selectedIndex == 0) {
-      // Customer tab - show only Customer
-      return allCustomers
-          .where((customer) => customer.type == 'Customer')
-          .toList();
-    } else {
-      // Supplier tab - show only Supplier
-      return allCustomers
-          .where((customer) => customer.type == 'Supplier')
-          .toList();
-    }
   }
 
   @override
@@ -80,7 +72,8 @@ class _CustomerListState extends State<CustomerList>
     final _theme = Theme.of(context);
     return Consumer(
       builder: (context, ref, __) {
-        final providerData = ref.watch(partiesProvider);
+        final customersData = ref.watch(customersProvider);
+        final suppliersData = ref.watch(suppliersProvider);
         final businessInfo = ref.watch(businessInfoProvider);
         return businessInfo.when(data: (details) {
           return GlobalPopup(
@@ -140,8 +133,7 @@ class _CustomerListState extends State<CustomerList>
                     onRefresh: () => refreshData(ref),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      child: providerData.when(data: (allCustomers) {
-                        final customers = _filterCustomers(allCustomers);
+                      child: customersData.when(data: (customers) {
                         return customers.isNotEmpty
                             ? ListView.builder(
                                 itemCount: customers.length,
@@ -159,9 +151,12 @@ class _CustomerListState extends State<CustomerList>
                                         const VisualDensity(vertical: -2),
                                     contentPadding: EdgeInsets.zero,
                                     onTap: () {
-                                      CustomerDetails(
-                                        party: customers[index],
-                                      ).launch(context);
+                                      // Don't allow viewing details for Walk-in Customer
+                                      if (customers[index].id != -1) {
+                                        CustomerDetails(
+                                          party: customers[index],
+                                        ).launch(context);
+                                      }
                                     },
                                     leading: customers[index].image != null
                                         ? Container(
@@ -268,8 +263,7 @@ class _CustomerListState extends State<CustomerList>
                     onRefresh: () => refreshData(ref),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      child: providerData.when(data: (allCustomers) {
-                        final suppliers = _filterCustomers(allCustomers);
+                      child: suppliersData.when(data: (suppliers) {
                         return suppliers.isNotEmpty
                             ? ListView.builder(
                                 itemCount: suppliers.length,
@@ -393,43 +387,45 @@ class _CustomerListState extends State<CustomerList>
                   ),
                 ],
               ),
-              bottomNavigationBar: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: ElevatedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    maximumSize: const Size(double.infinity, 48),
-                    minimumSize: const Size(double.infinity, 48),
-                    disabledBackgroundColor:
-                        _theme.colorScheme.primary.withValues(alpha: 0.15),
-                    disabledForegroundColor:
-                        const Color(0xff567DF4).withOpacity(0.05),
-                  ),
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddParty()));
-
-                    // If a customer/supplier was added, refresh the current tab
-                    if (result != null) {
-                      // ignore: unused_result
-                      ref.refresh(partiesProvider);
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                  iconAlignment: IconAlignment.end,
-                  label: Text(
-                    "Add Customer/Supplier",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: _theme.textTheme.bodyMedium?.copyWith(
-                      color: _theme.colorScheme.primaryContainer,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+              bottomNavigationBar: SafeArea(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: ElevatedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      maximumSize: const Size(double.infinity, 48),
+                      minimumSize: const Size(double.infinity, 48),
+                      disabledBackgroundColor:
+                          _theme.colorScheme.primary.withValues(alpha: 0.15),
+                      disabledForegroundColor:
+                          const Color(0xff567DF4).withOpacity(0.05),
+                    ),
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddParty()));
+                
+                      // If a customer/supplier was added, refresh the current tab
+                      if (result != null) {
+                        // ignore: unused_result
+                        ref.refresh(partiesProvider);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                    iconAlignment: IconAlignment.end,
+                    label: Text(
+                      "Add Customer/Supplier",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: _theme.textTheme.bodyMedium?.copyWith(
+                        color: _theme.colorScheme.primaryContainer,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),

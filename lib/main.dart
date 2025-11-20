@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +23,7 @@ import 'package:mobile_pos/Screens/SplashScreen/on_board.dart';
 import 'package:mobile_pos/Screens/SplashScreen/splash_screen.dart';
 import 'package:mobile_pos/Screens/vat_&_tax/tax_report.dart';
 import 'package:provider/provider.dart' as pro;
+import 'package:showcaseview/showcaseview.dart';
 import 'firebase_options.dart';
 
 import 'Screens/Due Calculation/due_list_screen.dart';
@@ -38,27 +41,31 @@ import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  // Initialize database factory for desktop platforms (Windows, Linux, macOS)
+  // Note: If you're using sqflite on desktop, you need to add sqflite_common_ffi
+  // to pubspec.yaml and uncomment the code below
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    try {
+      // Uncomment these lines if you add sqflite_common_ffi to pubspec.yaml:
+      // import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+      // databaseFactory = databaseFactoryFfi;
+      print('⚠️ Running on desktop - ensure sqflite_common_ffi is configured if using database');
+    } catch (e) {
+      print('⚠️ Database initialization note: $e');
+    }
+  }
+
   try {
-    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Firebase initialized successfully');
-    
-    // Test Firebase Auth
-    try {
-      final auth = FirebaseAuth.instance;
-      print('Firebase Auth instance created successfully');
-    } catch (e) {
-      print('Firebase Auth error: $e');
-    }
+    print('✅ Firebase initialized successfully');
+    FirebaseAuth.instance;
   } catch (e) {
-    print('Firebase initialization error: $e');
-    // Continue running the app even if Firebase fails to initialize
-    // This allows the app to work without Firebase features
+    print('⚠️ Firebase initialization error: $e');
   }
-  
+
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -73,10 +80,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return pro.ChangeNotifierProvider<LanguageChangeProvider>(
       create: (context) => LanguageChangeProvider(),
-      child: Builder(
-          builder: (context) => MaterialApp(
+      child: pro.Consumer<LanguageChangeProvider>(
+        builder: (context, languageProvider, child) {
+          return ShowCaseWidget(
+            builder: (context) {
+              return MaterialApp(
                 debugShowCheckedModeBanner: false,
-                locale: pro.Provider.of<LanguageChangeProvider>(context, listen: true).currentLocale,
+                locale: languageProvider.currentLocale,
                 localizationsDelegates: const [
                   S.delegate,
                   GlobalMaterialLocalizations.delegate,
@@ -84,14 +94,15 @@ class MyApp extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 supportedLocales: S.delegate.supportedLocales,
-                title: 'POSPro',
+                title: 'BHARAT BILL',
                 initialRoute: '/',
                 builder: EasyLoading.init(),
                 routes: {
-                  '/': (context) => const SplashScreen(),
+                   '/': (context) => const SplashScreen(),
                   '/onBoard': (context) => const OnBoard(),
                   '/signIn': (context) => const SignInScreen(),
-                  '/loginForm': (context) => const LoginForm(isEmailLogin: true),
+                  '/loginForm': (context) =>
+                      const LoginForm(isEmailLogin: true),
                   '/signup': (context) => const RegisterScreen(),
                   '/forgotPassword': (context) => const ForgotPassword(),
                   '/home': (context) => const Home(),
@@ -113,10 +124,15 @@ class MyApp extends StatelessWidget {
                   '/Sales List': (context) => const SalesListScreen(),
                   '/Purchase List': (context) => const PurchaseListScreen(),
                   '/Loss/Profit': (context) => const LossProfitScreen(),
-                  '/AnimatedGraphs': (context) => const AnimatedSalesPurchaseGraph(),
+                  '/AnimatedGraphs': (context) =>
+                      const AnimatedSalesPurchaseGraph(),
                 },
                 theme: AcnooTheme.kLightTheme(context),
-              )),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

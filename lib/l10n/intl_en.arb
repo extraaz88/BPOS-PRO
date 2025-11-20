@@ -605,5 +605,5 @@
   "purchasedBy" : "Purchased By",
   "collectedBys" : "Collected By",
   "payableAmount" : "Payable Amount",
-  "receivedAmount" : "Received Amount"
+  "receivedAmount" : "Partial Amount"
 }

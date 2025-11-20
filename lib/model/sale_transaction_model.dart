@@ -7,6 +7,7 @@ class SalesTransactionModel {
     this.discountAmount,
     this.discountPercent,
     this.shippingCharge,
+    this.serviceCharge,
     this.dueAmount,
     this.isPaid,
     this.vatAmount,
@@ -33,6 +34,9 @@ class SalesTransactionModel {
     this.roundingAmount,
     this.actualTotalAmount,
     this.roundingOption,
+    this.isSplitPayment,
+    this.splitCashAmount,
+    this.splitOnlineAmount,
   });
 
   SalesTransactionModel.fromJson(dynamic json) {
@@ -43,6 +47,7 @@ class SalesTransactionModel {
     discountAmount = json['discountAmount'];
     discountPercent = num.tryParse(json['discount_percent'].toString()) ?? 0;
     shippingCharge = num.tryParse(json['shipping_charge'].toString()) ?? 0;
+    serviceCharge = num.tryParse(json['service_charge'].toString()) ?? 0;
     dueAmount = json['dueAmount'];
     isPaid = json['isPaid'];
     vatAmount = json['vat_amount'];
@@ -79,6 +84,11 @@ class SalesTransactionModel {
       });
     }
     image = json['image'];
+    
+    // Split Payment fields
+    isSplitPayment = json['is_split_payment'];
+    splitCashAmount = json['split_cash_amount'];
+    splitOnlineAmount = json['split_online_amount'];
   }
 
   num? id;
@@ -88,6 +98,7 @@ class SalesTransactionModel {
   num? discountAmount;
   num? discountPercent;
   num? shippingCharge;
+  num? serviceCharge;
   num? dueAmount;
   bool? isPaid;
   num? vatAmount;
@@ -114,6 +125,11 @@ class SalesTransactionModel {
   List<SalesDetails>? salesDetails;
   List<SalesReturn>? salesReturns;
   String? image;
+  
+  // Split Payment fields
+  bool? isSplitPayment;
+  num? splitCashAmount;
+  num? splitOnlineAmount;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -124,6 +140,7 @@ class SalesTransactionModel {
     map['discountAmount'] = discountAmount;
     map['discount_percent'] = discountPercent;
     map['shipping_charge'] = shippingCharge;
+    map['service_charge'] = serviceCharge;
     map['dueAmount'] = dueAmount;
     map['isPaid'] = isPaid;
     map['vat_amount'] = vatAmount;

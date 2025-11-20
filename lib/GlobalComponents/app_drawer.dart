@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_pos/Combo/combo_list_screen.dart';
 import 'package:mobile_pos/Screens/Customers/customer_list.dart';
 import 'package:mobile_pos/Screens/Expense/expense_list.dart';
 import 'package:mobile_pos/Screens/Income/income_list.dart';
@@ -11,13 +12,21 @@ import 'package:mobile_pos/Screens/Sales%20List/sales_list_screen.dart';
 import 'package:mobile_pos/Screens/Sales/add_sales.dart';
 import 'package:mobile_pos/Screens/Settings/settings_screen.dart';
 import 'package:mobile_pos/Screens/stock_list/stock_list_main.dart';
+import 'package:mobile_pos/Screens/saloon_service_list.dart';
+import 'package:mobile_pos/Screens/Waste_management/waste_management_screen.dart';
+import 'package:mobile_pos/Screens/HoldOrders/hold_orders_screen.dart';
+//import 'package:mobile_pos/Screens/Combo/combo_list_screen.dart';
 import 'package:mobile_pos/constant.dart';
 import 'package:mobile_pos/extraazwebview.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:mobile_pos/Const/api_config.dart';
 import 'package:mobile_pos/Screens/DashBoard/dashboard.dart';
+import 'package:mobile_pos/services/permission_service.dart';
+import 'package:mobile_pos/Screens/Settings/dashboard_toggle_settings_dialog.dart';
+import 'package:mobile_pos/thermal priting invoices/provider/print_thermal_invoice_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends ConsumerWidget {
   final dynamic businessDetails;
 
   const AppDrawer({
@@ -26,7 +35,7 @@ class AppDrawer extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
       child: Container(
         decoration: BoxDecoration(
@@ -39,204 +48,661 @@ class AppDrawer extends StatelessWidget {
             ],
           ),
         ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            // Drawer Header with Profile Icon
-            _buildDrawerHeader(context),
+        child: FutureBuilder<List<Widget>>(
+          future: _buildDrawerItems(context, ref),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-            // Main Modules Section
-            _buildDrawerItem(
-              icon: Icons.shopping_cart,
-              title: 'Sales',
-              subtitle: '',
-              color: Colors.green,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          AddSalesScreen(customerModel: null)),
-                );
-              },
-            ),
-            _buildDrawerItem(
-              icon: Icons.shopping_bag,
-              title: 'Purchase',
-              subtitle: '',
-              color: Colors.blue,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          AddAndUpdatePurchaseScreen(supplierModel: null)),
-                );
-              },
-              // icon: Icons.people,
-              // title: 'Parties',
-              // subtitle: '',
-              // color: Colors.orange,
-              // onTap: () {
-              //   Navigator.pop(context);
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => CustomerList()),
-              //   );
-              // },
-            ),
-            _buildDrawerItem(
-              icon: Icons.inventory,
-              title: 'Products',
-              subtitle: '',
-              color: Colors.purple,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProductList()),
-                );
-              },
-            ),
-
-            // Lists Section
-            _buildDrawerItem(
-              icon: Icons.list_alt,
-              title: 'Sales List',
-              subtitle: '',
-              color: Colors.teal,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SalesListScreen()),
-                );
-              },
-            ),
-            _buildDrawerItem(
-              icon: Icons.shopping_basket,
-              title: 'Purchase List',
-              subtitle: '',
-              color: Colors.indigo,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PurchaseListScreen()),
-                );
-              },
-            ),
-            _buildDrawerItem(
-              icon: Icons.people_outline,
-              title: 'Customer/Supplier List',
-              subtitle: '',
-              color: Colors.cyan,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CustomerList()),
-                );
-              },
-            ),
-
-            // Analytics Section
-            _buildDrawerItem(
-              icon: Icons.analytics,
-              title: 'Dashboard',
-              subtitle: '',
-              color: Colors.red,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardScreen()),
-                );
-              },
-            ),
-            _buildDrawerItem(
-              icon: Icons.assessment,
-              title: 'Reports',
-              subtitle: '',
-              color: Colors.deepPurple,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reports()),
-                );
-              },
-            ),
-            _buildDrawerItem(
-              icon: Icons.inventory_2,
-              title: 'Stock List',
-              subtitle: '',
-              color: Colors.brown,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => StockList(isFromReport: false)),
-                );
-              },
-            ),
-
-            // Financial Section
-            _buildDrawerItem(
-              icon: Icons.money_off,
-              title: 'Expenses',
-              subtitle: '',
-              color: Colors.red[600]!,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExpenseList()),
-                );
-              },
-            ),
-            _buildDrawerItem(
-              icon: Icons.attach_money,
-              title: 'Income',
-              subtitle: '',
-              color: Colors.green[600]!,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => IncomeList()),
-                );
-              },
-            ),
-
-            // Settings Section
-            _buildDrawerItem(
-              icon: Icons.settings,
-              title: 'Settings',
-              subtitle: '',
-              color: Colors.grey[600]!,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingScreen()),
-                );
-              },
-            ),
-
-            SizedBox(height: 8),
-
-            // Extraaaz Branding
-            _buildExtraaazBranding(context),
-
-            SizedBox(height: 8),
-          ],
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                // Drawer Header with Profile Icon
+                _buildDrawerHeader(context),
+                ...snapshot.data!,
+                SizedBox(height: 8),
+                // Extraaaz Branding
+                _buildExtraaazBranding(context),
+                SizedBox(height: 8),
+              ],
+            );
+          },
         ),
       ),
     );
+  }
+
+  // Build drawer items dynamically based on permissions and shop features
+  Future<List<Widget>> _buildDrawerItems(BuildContext context, WidgetRef ref) async {
+    final permissionService = PermissionService();
+    final role = await permissionService.getUserRole();
+    final visibility = await permissionService.getVisibilityPermissions();
+
+    // Get shop features
+    final prefs = await SharedPreferences.getInstance();
+    final shopFeatures = prefs.getStringList('shop_features') ?? [];
+
+    List<Widget> items = [];
+
+    // If role is not 'staff', show all screens based on shop features
+    if (role != 'staff') {
+      return _getAllDrawerItems(context, shopFeatures, ref);
+    }
+
+    // If no visibility data for staff, show all screens based on shop features
+    if (visibility == null) {
+      return _getAllDrawerItems(context, shopFeatures, ref);
+    }
+
+    // Add Sales item if permission granted and feature enabled
+    if (visibility[PermissionService.SALE_PERMISSION] == true &&
+        shopFeatures.contains('sale')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.shopping_cart,
+        title: 'Sales',
+        subtitle: '',
+        color: Colors.green,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddSalesScreen(customerModel: null)),
+          );
+        },
+      ));
+    }
+
+    // Add Purchase item if permission granted and feature enabled
+    if (visibility[PermissionService.PURCHASE_PERMISSION] == true &&
+        shopFeatures.contains('purchase')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.shopping_bag,
+        title: 'Purchase',
+        subtitle: '',
+        color: Colors.blue,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AddAndUpdatePurchaseScreen(supplierModel: null)),
+          );
+        },
+      ));
+    }
+
+    // Add Products item if permission granted and feature enabled
+    if (visibility[PermissionService.PRODUCT_PERMISSION] == true &&
+        shopFeatures.contains('product')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.inventory,
+        title: 'Products',
+        subtitle: '',
+        color: Colors.purple,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProductList()),
+          );
+        },
+      ));
+    }
+
+    // Add Sales List item if permission granted and feature enabled
+    if (visibility[PermissionService.SALES_LIST_PERMISSION] == true &&
+        shopFeatures.contains('sale')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.list_alt,
+        title: 'Sales List',
+        subtitle: '',
+        color: Colors.teal,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SalesListScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Purchase List item if permission granted and feature enabled
+    if (visibility[PermissionService.PURCHASE_LIST_PERMISSION] == true &&
+        shopFeatures.contains('purchase')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.shopping_basket,
+        title: 'Purchase List',
+        subtitle: '',
+        color: Colors.indigo,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PurchaseListScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Customer/Supplier List item if permission granted and feature enabled
+    if (visibility[PermissionService.PARTIES_PERMISSION] == true &&
+        shopFeatures.contains('parties')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.people_outline,
+        title: 'Customer/Supplier List',
+        subtitle: '',
+        color: Colors.cyan,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CustomerList()),
+          );
+        },
+      ));
+    }
+
+    // Add Hold Orders - Always visible for staff
+    items.add(_buildDrawerItem(
+      icon: Icons.pending_actions,
+      title: 'Hold Orders',
+      subtitle: '',
+      color: Colors.orange,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HoldOrdersScreen()),
+        );
+      },
+    ));
+
+    // Add Dashboard item if permission granted and feature enabled
+    if (visibility[PermissionService.DASHBOARD_PERMISSION] == true &&
+        shopFeatures.contains('dashboard')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.analytics,
+        title: 'Dashboard',
+        subtitle: '',
+        color: Colors.red,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Reports item if permission granted and feature enabled
+    if (visibility[PermissionService.REPORTS_PERMISSION] == true &&
+        shopFeatures.contains('reports')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.assessment,
+        title: 'Reports',
+        subtitle: '',
+        color: Colors.deepPurple,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Reports()),
+          );
+        },
+      ));
+    }
+
+    // Add Stock List item if permission granted and feature enabled
+    if (visibility[PermissionService.STOCK_PERMISSION] == true &&
+        shopFeatures.contains('stock')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.inventory_2,
+        title: 'Stock List',
+        subtitle: '',
+        color: Colors.brown,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StockList(isFromReport: false)),
+          );
+        },
+      ));
+    }
+
+    // Add Waste Management item if permission granted and feature enabled
+    if (visibility[PermissionService.STOCK_PERMISSION] == true &&
+        shopFeatures.contains('stock')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.delete_outline,
+        title: 'Waste Management',
+        subtitle: '',
+        color: Colors.red[600]!,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const WasteManagementScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Expenses item if permission granted and feature enabled
+    if (visibility[PermissionService.ADD_EXPENSE_PERMISSION] == true &&
+        shopFeatures.contains('expense')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.money_off,
+        title: 'Expenses',
+        subtitle: '',
+        color: Colors.red[600]!,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ExpenseList()),
+          );
+        },
+      ));
+    }
+
+    // Add Income item if permission granted and feature enabled
+    if (visibility[PermissionService.ADD_INCOME_PERMISSION] == true &&
+        shopFeatures.contains('income')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.attach_money,
+        title: 'Income',
+        subtitle: '',
+        color: Colors.green[600]!,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => IncomeList()),
+          );
+        },
+      ));
+    }
+
+    // Add Saloon Service List - Only for salon category
+    if (visibility[PermissionService.SALE_PERMISSION] == true &&
+        shopFeatures.contains('salon_service')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.content_cut,
+        title: 'Saloon Service List',
+        subtitle: '',
+        color: Colors.orange,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SaloonServiceListScreen()),
+          );
+        },
+      ));
+    }
+
+    // Printer Connect - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.print,
+      title: 'Connect Printer',
+      subtitle: '',
+      color: Colors.blue[700]!,
+      onTap: () async {
+        Navigator.pop(context);
+        final thermalPrinter = ref.read(thermalPrinterProvider);
+        await thermalPrinter.getBluetooth();
+        await thermalPrinter.listOfBluDialog(context: context);
+      },
+    ));
+
+    // Toggle Settings - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.toggle_on,
+      title: 'Toggle Settings',
+      subtitle: '',
+      color: Colors.blue[600]!,
+      onTap: () {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) => const DashboardToggleSettingsDialog(),
+        );
+      },
+    ));
+
+    // Settings - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.settings,
+      title: 'Settings',
+      subtitle: '',
+      color: Colors.grey[600]!,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingScreen()),
+        );
+      },
+    ));
+
+    return items;
+  }
+
+  // Get all drawer items (for admin/owner with full access) filtered by shop features
+  List<Widget> _getAllDrawerItems(
+      BuildContext context, List<String> shopFeatures, WidgetRef ref) {
+    List<Widget> items = [];
+
+    // Add Sales if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('sale')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.shopping_cart,
+        title: 'Sales',
+        subtitle: '',
+        color: Colors.green,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddSalesScreen(customerModel: null)),
+          );
+        },
+      ));
+    }
+
+    // Add Purchase if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('purchase')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.shopping_bag,
+        title: 'Purchase',
+        subtitle: '',
+        color: Colors.blue,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AddAndUpdatePurchaseScreen(supplierModel: null)),
+          );
+        },
+      ));
+    }
+
+    // Add Products if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('product')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.inventory,
+        title: 'Products',
+        subtitle: '',
+        color: Colors.purple,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProductList()),
+          );
+        },
+      ));
+    }
+
+    // Add Combo
+    items.add(_buildDrawerItem(
+      icon: Icons.shopping_basket_outlined,
+      title: 'Combo',
+      subtitle: '',
+      color: Colors.indigo,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ComboListScreen()),
+        );
+      },
+    ));
+
+    // Add Sales List if sale feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('sale')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.list_alt,
+        title: 'Sales List',
+        subtitle: '',
+        color: Colors.teal,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SalesListScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Purchase List if purchase feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('purchase')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.shopping_basket,
+        title: 'Purchase List',
+        subtitle: '',
+        color: Colors.indigo,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PurchaseListScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Customer/Supplier List if parties feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('parties')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.people_outline,
+        title: 'Customer/Supplier List',
+        subtitle: '',
+        color: Colors.cyan,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CustomerList()),
+          );
+        },
+      ));
+    }
+
+    // Add Hold Orders - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.pending_actions,
+      title: 'Hold Orders',
+      subtitle: '',
+      color: Colors.orange,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HoldOrdersScreen()),
+        );
+      },
+    ));
+
+    // Add Dashboard if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('dashboard')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.analytics,
+        title: 'Dashboard',
+        subtitle: '',
+        color: Colors.red,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Reports if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('reports')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.assessment,
+        title: 'Reports',
+        subtitle: '',
+        color: Colors.deepPurple,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Reports()),
+          );
+        },
+      ));
+    }
+
+    // Add Stock List if stock feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('stock')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.inventory_2,
+        title: 'Stock List',
+        subtitle: '',
+        color: Colors.brown,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StockList(isFromReport: false)),
+          );
+        },
+      ));
+    }
+
+    // Add Waste Management if stock feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('stock')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.delete_outline,
+        title: 'Waste Management',
+        subtitle: '',
+        color: Colors.red[600]!,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const WasteManagementScreen()),
+          );
+        },
+      ));
+    }
+
+    // Add Expenses if expense feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('expense')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.money_off,
+        title: 'Expenses',
+        subtitle: '',
+        color: Colors.red[600]!,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ExpenseList()),
+          );
+        },
+      ));
+    }
+
+    // Add Income if income feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('income')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.attach_money,
+        title: 'Income',
+        subtitle: '',
+        color: Colors.green[600]!,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => IncomeList()),
+          );
+        },
+      ));
+    }
+
+    // Add Saloon Service List - Only for salon category
+    if (shopFeatures.isEmpty || shopFeatures.contains('salon_service')) {
+      items.add(_buildDrawerItem(
+        icon: Icons.content_cut,
+        title: 'Saloon Service List',
+        subtitle: '',
+        color: Colors.orange,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SaloonServiceListScreen()),
+          );
+        },
+      ));
+    }
+
+    // Printer Connect - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.print,
+      title: 'Connect Printer',
+      subtitle: '',
+      color: Colors.blue[700]!,
+      onTap: () async {
+        Navigator.pop(context);
+        final thermalPrinter = ref.read(thermalPrinterProvider);
+        await thermalPrinter.getBluetooth();
+        await thermalPrinter.listOfBluDialog(context: context);
+      },
+    ));
+
+    // Toggle Settings - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.toggle_on,
+      title: 'POS Feature Controls',
+      subtitle: '',
+      color: Colors.blue[600]!,
+      onTap: () {
+        Navigator.pop(context);
+        showDialog(
+         // fullscreenDialog: true,
+          context: context,
+          builder: (context) => const DashboardToggleSettingsDialog(),
+        );
+      },
+    ));
+
+    // Settings - Always visible
+    items.add(_buildDrawerItem(
+      icon: Icons.settings,
+      title: 'Settings',
+      subtitle: '',
+      color: Colors.grey[600]!,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingScreen()),
+        );
+      },
+    ));
+
+    return items;
   }
 
   Widget _buildDrawerHeader(BuildContext context) {
@@ -520,7 +986,6 @@ class AppDrawer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                
                 const SizedBox(width: 8),
                 Text(
                   "Powered by Extraaaz",

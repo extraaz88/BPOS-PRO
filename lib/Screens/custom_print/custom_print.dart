@@ -53,7 +53,12 @@ class _CustomPrintScreenState extends State<CustomPrintScreen> {
                     onPressed: () async {
                       await printerData.getBluetooth();
                       if (connected) {
-                        await printerData.printCustomTicket(printTransactionModel: PrintPurchaseTransactionModel(personalInformationModel: data, purchaseTransitionModel: null), data: textEditingController.text);
+                        await printerData.printCustomTicket(
+                            printTransactionModel:
+                                PrintPurchaseTransactionModel(
+                                    personalInformationModel: data,
+                                    purchaseTransitionModel: null),
+                            data: textEditingController.text);
                       } else {
                         showDialog(
                             context: context,
@@ -67,31 +72,57 @@ class _CustomPrintScreenState extends State<CustomPrintScreen> {
                                       children: [
                                         ListView.builder(
                                           shrinkWrap: true,
-                                          itemCount: printerData.availableBluetoothDevices.isNotEmpty ? printerData.availableBluetoothDevices.length : 0,
+                                          itemCount: printerData
+                                                  .availableBluetoothDevices
+                                                  .isNotEmpty
+                                              ? printerData
+                                                  .availableBluetoothDevices
+                                                  .length
+                                              : 0,
                                           itemBuilder: (context, index) {
                                             return ListTile(
                                               onTap: () async {
-                                                BluetoothInfo select = printerData.availableBluetoothDevices[index];
-                                                bool isConnect = await printerData.setConnect(select.macAdress);
+                                                BluetoothInfo select = printerData
+                                                        .availableBluetoothDevices[
+                                                    index];
+                                                bool isConnect =
+                                                    await printerData
+                                                        .setConnect(
+                                                            select.macAdress);
                                                 isConnect
                                                     // ignore: use_build_context_synchronously
                                                     ? finish(context)
-                                                    : toast(l.S.of(context).tryAgain);
+                                                    : toast(l.S
+                                                        .of(context)
+                                                        .tryAgain);
                                               },
-                                              title: Text(printerData.availableBluetoothDevices[index].name),
-                                              subtitle: Text(l.S.of(context).clickToConnect),
+                                              title: Text(printerData
+                                                  .availableBluetoothDevices[
+                                                      index]
+                                                  .name),
+                                              subtitle: Text(l.S
+                                                  .of(context)
+                                                  .clickToConnect),
                                             );
                                           },
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                          padding: const EdgeInsets.only(
+                                              top: 20, bottom: 10),
                                           child: Text(
-                                            l.S.of(context).pleaseConnectYourBlutohPrinter,
-                                            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                            l.S
+                                                .of(context)
+                                                .pleaseConnectYourBlutohPrinter,
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         const SizedBox(height: 10),
-                                        Container(height: 1, width: double.infinity, color: Colors.grey),
+                                        Container(
+                                            height: 1,
+                                            width: double.infinity,
+                                            color: Colors.grey),
                                         const SizedBox(height: 15),
                                         GestureDetector(
                                           onTap: () {
@@ -100,7 +131,8 @@ class _CustomPrintScreenState extends State<CustomPrintScreen> {
                                           child: Center(
                                             child: Text(
                                               l.S.of(context).cancel,
-                                              style: const TextStyle(color: kMainColor),
+                                              style: const TextStyle(
+                                                  color: kMainColor),
                                             ),
                                           ),
                                         ),

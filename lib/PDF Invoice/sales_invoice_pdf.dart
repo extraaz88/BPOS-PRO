@@ -108,6 +108,8 @@ class SalesInvoicePdf {
         return arabicFont;
       } else if (selectedLanguage == 'hi') {
         return hindiFont;
+      } else if (selectedLanguage == 'mr') {
+        return hindiFont; // Marathi uses Devanagari script like Hindi
       } else if (selectedLanguage == 'fr') {
         return frenchFont;
       } else {
@@ -125,6 +127,8 @@ class SalesInvoicePdf {
         return arabicFont;
       } else if (detectedLanguage == 'hi') {
         return hindiFont;
+      } else if (detectedLanguage == 'mr') {
+        return hindiFont; // Marathi uses Devanagari script like Hindi
       } else if (detectedLanguage == 'fr') {
         return frenchFont;
       } else {
@@ -139,293 +143,308 @@ class SalesInvoicePdf {
         margin: pw.EdgeInsets.zero,
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         header: (pw.Context context) {
-          return pw.Padding(
-            padding: const pw.EdgeInsets.all(20.0),
-            child: pw.Column(
-              children: [
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Row(children: [
-                        // image section
-                        if (imageData is Uint8List)
-                          pw.Container(
-                            height: 54.12,
-                            width: 52,
-                            child: pw.Image(
-                              pw.MemoryImage(imageData),
-                              fit: pw.BoxFit.cover,
-                            ),
-                          )
-                        else if (imageData is String)
-                          pw.Container(
-                            height: 54.12,
-                            width: 52,
-                            child: pw.SvgImage(
-                              svg: imageData,
-                              fit: pw.BoxFit.cover,
-                            ),
-                          )
-                        else
-                          pw.Container(
-                            height: 54.12,
-                            width: 52,
-                            child: pw.Image(pw.MemoryImage(imageData)),
-                          ),
-                        pw.SizedBox(width: 10.0),
-                        pw.Column(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              getLocalizedPdfTextWithLanguage(
-                                  personalInformation.companyName ?? '',
-                                  pw.TextStyle(
-                                      color: PdfColors.black,
-                                      fontSize: 24.0,
-                                      fontWeight: pw.FontWeight.bold,
-                                      fontFallback: [englishFont],
-                                      font: getFontWithLangMatching(
-                                          personalInformation.companyName ??
-                                              ''))),
-                              getLocalizedPdfText(
-                                  '${_lang.mobile}: ${personalInformation.phoneNumber ?? ''}',
-                                  pw.TextStyle(
-                                    color: PdfColors.black,
-                                    font: getFont(),
-                                    fontFallback: [englishFont],
-                                  )),
-                            ]),
-                      ]),
-                      pw.Container(
-                        alignment: pw.Alignment.center,
-                        height: 52,
-                        width: 192,
-                        decoration: const pw.BoxDecoration(
-                          color: PdfColors.black,
-                          borderRadius: pw.BorderRadius.only(
-                            topLeft: pw.Radius.circular(25),
-                            bottomLeft: pw.Radius.circular(25),
-                          ),
-                        ),
-                        child: getLocalizedPdfText(
-                          _lang.INVOICE,
-                          pw.TextStyle(
-                            color: PdfColors.white,
-                            fontWeight: pw.FontWeight.bold,
-                            fontSize: 35,
-                            font: getFont(),
-                            fontFallback: [englishFont],
-                          ),
-                        ),
-                      ),
-                    ]),
-                pw.SizedBox(height: 35.0),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Column(children: [
-                        pw.Row(children: [
-                          pw.SizedBox(
-                            width: 50.0,
-                            child: getLocalizedPdfText(
-                                _lang.billTO,
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFont(),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                          pw.SizedBox(
-                            width: 10.0,
-                            child: pw.Text(
-                              ':',
-                              style: pw.Theme.of(context)
-                                  .defaultTextStyle
-                                  .copyWith(color: PdfColors.black),
-                            ),
-                          ),
-                          pw.SizedBox(
-                            width: 100.0,
-                            child: getLocalizedPdfTextWithLanguage(
-                                transactions.party?.name ?? '',
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFontWithLangMatching(
-                                      transactions.party?.name ?? ''),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                        ]),
-                        pw.Row(children: [
-                          pw.SizedBox(
-                            width: 50.0,
-                            child: getLocalizedPdfText(
-                                _lang.mobile,
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFont(),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                          pw.SizedBox(
-                            width: 10.0,
-                            child: pw.Text(
-                              ':',
-                              style: pw.Theme.of(context)
-                                  .defaultTextStyle
-                                  .copyWith(color: PdfColors.black),
-                            ),
-                          ),
-                          pw.SizedBox(
-                            width: 100.0,
-                            child: getLocalizedPdfText(
-                                transactions.party?.phone ??
-                                    (transactions.meta?.customerPhone ??
-                                        _lang.guest),
-                                pw.TextStyle(
-                                    font: getFont(),
-                                    fontFallback: [englishFont])),
-                          ),
-                        ]),
-                      ]),
-                      pw.Column(children: [
-                        pw.Row(children: [
-                          pw.SizedBox(
-                            width: 100.0,
-                            child: getLocalizedPdfText(
-                                _lang.sellsBy,
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFont(),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                          pw.SizedBox(
-                            width: 10.0,
-                            child: pw.Text(
-                              ':',
-                              style: pw.Theme.of(context)
-                                  .defaultTextStyle
-                                  .copyWith(color: PdfColors.black),
-                            ),
-                          ),
-                          pw.SizedBox(
-                            width: 70.0,
-                            child: getLocalizedPdfTextWithLanguage(
-                                transactions.user?.role == "shop-owner"
-                                    ? _lang.admin
-                                    : transactions.user?.name ?? '',
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFontWithLangMatching(
-                                      transactions.user?.role == "shop-owner"
-                                          ? _lang.admin
-                                          : transactions.user?.name ?? ''),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                        ]),
-                        pw.Row(children: [
-                          pw.SizedBox(
-                            width: 100.0,
-                            child: getLocalizedPdfText(
-                                _lang.invoiceNumber,
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFont(),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                          pw.SizedBox(
-                            width: 10.0,
-                            child: pw.Text(
-                              ':',
-                              style: pw.Theme.of(context)
-                                  .defaultTextStyle
-                                  .copyWith(color: PdfColors.black),
-                            ),
-                          ),
-                          pw.SizedBox(
-                            width: 70.0,
-                            child: pw.Text(
-                              '#${transactions.invoiceNumber}',
-                              style: pw.Theme.of(context)
-                                  .defaultTextStyle
-                                  .copyWith(color: PdfColors.black),
-                            ),
-                          ),
-                        ]),
-                        pw.Row(children: [
-                          pw.SizedBox(
-                            width: 100.0,
-                            child: getLocalizedPdfText(
-                                _lang.date,
-                                pw.TextStyle(
-                                  color: PdfColors.black,
-                                  font: getFont(),
-                                  fontFallback: [englishFont],
-                                )),
-                          ),
-                          pw.SizedBox(
-                            width: 10.0,
-                            child: pw.Text(
-                              ':',
-                              style: pw.Theme.of(context)
-                                  .defaultTextStyle
-                                  .copyWith(color: PdfColors.black),
-                            ),
-                          ),
-                          pw.SizedBox(
-                            width: 70.0,
-                            child: getLocalizedPdfText(
-                              DateFormat('d MMM, yyyy').format(
-                                  DateTime.parse(transactions.saleDate ?? '')),
-                              // DateTimeFormat.format(DateTime.parse(transactions.saleDate ?? ''), format: 'D, M j'),
-                              pw.TextStyle(
-                                  font: getFont(), fontFallback: [englishFont]),
-                            ),
-                          ),
-                        ]),
-                        if (personalInformation.vatNumber != null)
-                          pw.Row(
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: [
-                                pw.SizedBox(
-                                  width: 100.0,
-                                  child: getLocalizedPdfTextWithLanguage(
-                                      personalInformation.vatName ??
-                                          _lang.vatNumber,
+          return pw.Container(
+              decoration: const pw.BoxDecoration(
+                gradient: pw.LinearGradient(
+                  begin: pw.Alignment.topLeft,
+                  end: pw.Alignment.bottomRight,
+                  colors: [
+                    PdfColor.fromInt(0xffE3F2FD), // Light blue
+                    PdfColor.fromInt(0xffBBDEFB), // Medium blue
+                  ],
+                ),
+              ),
+              child: pw.Padding(
+                padding: const pw.EdgeInsets.all(20.0),
+                child: pw.Column(
+                  children: [
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Row(children: [
+                            // image section
+                            if (imageData is Uint8List)
+                              pw.Container(
+                                height: 54.12,
+                                width: 52,
+                                child: pw.Image(
+                                  pw.MemoryImage(imageData),
+                                  fit: pw.BoxFit.cover,
+                                ),
+                              )
+                            else if (imageData is String)
+                              pw.Container(
+                                height: 54.12,
+                                width: 52,
+                                child: pw.SvgImage(
+                                  svg: imageData,
+                                  fit: pw.BoxFit.cover,
+                                ),
+                              )
+                            else
+                              pw.Container(
+                                height: 54.12,
+                                width: 52,
+                                child: pw.Image(pw.MemoryImage(imageData)),
+                              ),
+                            pw.SizedBox(width: 10.0),
+                            pw.Column(
+                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                children: [
+                                  getLocalizedPdfTextWithLanguage(
+                                      personalInformation.companyName ?? '',
+                                      pw.TextStyle(
+                                          color: PdfColors.black,
+                                          fontSize: 24.0,
+                                          fontWeight: pw.FontWeight.bold,
+                                          fontFallback: [englishFont],
+                                          font: getFontWithLangMatching(
+                                              personalInformation.companyName ??
+                                                  ''))),
+                                  getLocalizedPdfText(
+                                      '${_lang.mobile}: ${personalInformation.phoneNumber ?? ''}',
                                       pw.TextStyle(
                                         color: PdfColors.black,
-                                        font: getFontWithLangMatching(
-                                            personalInformation.vatName ??
-                                                _lang.vatNumber),
+                                        font: getFont(),
                                         fontFallback: [englishFont],
                                       )),
+                                ]),
+                          ]),
+                          pw.Container(
+                            alignment: pw.Alignment.center,
+                            height: 52,
+                            width: 192,
+                            decoration: const pw.BoxDecoration(
+                              color: PdfColors.black,
+                              borderRadius: pw.BorderRadius.only(
+                                topLeft: pw.Radius.circular(25),
+                                bottomLeft: pw.Radius.circular(25),
+                              ),
+                            ),
+                            child: getLocalizedPdfText(
+                              _lang.INVOICE,
+                              pw.TextStyle(
+                                color: PdfColors.white,
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 35,
+                                font: getFont(),
+                                fontFallback: [englishFont],
+                              ),
+                            ),
+                          ),
+                        ]),
+                    pw.SizedBox(height: 35.0),
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Column(children: [
+                            pw.Row(children: [
+                              pw.SizedBox(
+                                width: 50.0,
+                                child: getLocalizedPdfText(
+                                    _lang.billTO,
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFont(),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                              pw.SizedBox(
+                                width: 10.0,
+                                child: pw.Text(
+                                  ':',
+                                  style: pw.Theme.of(context)
+                                      .defaultTextStyle
+                                      .copyWith(color: PdfColors.black),
                                 ),
-                                pw.SizedBox(
-                                  width: 10.0,
-                                  child: pw.Text(
-                                    ':',
-                                    style: pw.Theme.of(context)
-                                        .defaultTextStyle
-                                        .copyWith(color: PdfColors.black),
-                                  ),
+                              ),
+                              pw.SizedBox(
+                                width: 100.0,
+                                child: getLocalizedPdfTextWithLanguage(
+                                    transactions.party?.name ?? '',
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFontWithLangMatching(
+                                          transactions.party?.name ?? ''),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                            ]),
+                            pw.Row(children: [
+                              pw.SizedBox(
+                                width: 50.0,
+                                child: getLocalizedPdfText(
+                                    _lang.mobile,
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFont(),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                              pw.SizedBox(
+                                width: 10.0,
+                                child: pw.Text(
+                                  ':',
+                                  style: pw.Theme.of(context)
+                                      .defaultTextStyle
+                                      .copyWith(color: PdfColors.black),
                                 ),
-                                pw.SizedBox(
-                                  width: 70.0,
-                                  child: pw.Text(
-                                    personalInformation.vatNumber ?? '',
-                                    style: pw.Theme.of(context)
-                                        .defaultTextStyle
-                                        .copyWith(color: PdfColors.black),
-                                  ),
+                              ),
+                              pw.SizedBox(
+                                width: 100.0,
+                                child: getLocalizedPdfText(
+                                    transactions.party?.phone ??
+                                        (transactions.meta?.customerPhone ??
+                                            _lang.guest),
+                                    pw.TextStyle(
+                                        font: getFont(),
+                                        fontFallback: [englishFont])),
+                              ),
+                            ]),
+                          ]),
+                          pw.Column(children: [
+                            pw.Row(children: [
+                              pw.SizedBox(
+                                width: 100.0,
+                                child: getLocalizedPdfText(
+                                    _lang.sellsBy,
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFont(),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                              pw.SizedBox(
+                                width: 10.0,
+                                child: pw.Text(
+                                  ':',
+                                  style: pw.Theme.of(context)
+                                      .defaultTextStyle
+                                      .copyWith(color: PdfColors.black),
                                 ),
-                              ]),
-                      ]),
-                    ]),
-              ],
-            ),
-          );
+                              ),
+                              pw.SizedBox(
+                                width: 70.0,
+                                child: getLocalizedPdfTextWithLanguage(
+                                    transactions.user?.role == "shop-owner"
+                                        ? _lang.admin
+                                        : transactions.user?.name ?? '',
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFontWithLangMatching(
+                                          transactions.user?.role ==
+                                                  "shop-owner"
+                                              ? _lang.admin
+                                              : transactions.user?.name ?? ''),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                            ]),
+                            pw.Row(children: [
+                              pw.SizedBox(
+                                width: 100.0,
+                                child: getLocalizedPdfText(
+                                    _lang.invoiceNumber,
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFont(),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                              pw.SizedBox(
+                                width: 10.0,
+                                child: pw.Text(
+                                  ':',
+                                  style: pw.Theme.of(context)
+                                      .defaultTextStyle
+                                      .copyWith(color: PdfColors.black),
+                                ),
+                              ),
+                              pw.SizedBox(
+                                width: 70.0,
+                                child: pw.Text(
+                                  '#${transactions.invoiceNumber}',
+                                  style: pw.Theme.of(context)
+                                      .defaultTextStyle
+                                      .copyWith(color: PdfColors.black),
+                                ),
+                              ),
+                            ]),
+                            pw.Row(children: [
+                              pw.SizedBox(
+                                width: 100.0,
+                                child: getLocalizedPdfText(
+                                    _lang.date,
+                                    pw.TextStyle(
+                                      color: PdfColors.black,
+                                      font: getFont(),
+                                      fontFallback: [englishFont],
+                                    )),
+                              ),
+                              pw.SizedBox(
+                                width: 10.0,
+                                child: pw.Text(
+                                  ':',
+                                  style: pw.Theme.of(context)
+                                      .defaultTextStyle
+                                      .copyWith(color: PdfColors.black),
+                                ),
+                              ),
+                              pw.SizedBox(
+                                width: 70.0,
+                                child: getLocalizedPdfText(
+                                  DateFormat('d MMM, yyyy').format(
+                                      DateTime.parse(
+                                          transactions.saleDate ?? '')),
+                                  // DateTimeFormat.format(DateTime.parse(transactions.saleDate ?? ''), format: 'D, M j'),
+                                  pw.TextStyle(
+                                      font: getFont(),
+                                      fontFallback: [englishFont]),
+                                ),
+                              ),
+                            ]),
+                            if (personalInformation.vatNumber != null)
+                              pw.Row(
+                                  crossAxisAlignment:
+                                      pw.CrossAxisAlignment.start,
+                                  children: [
+                                    pw.SizedBox(
+                                      width: 100.0,
+                                      child: getLocalizedPdfTextWithLanguage(
+                                          personalInformation.vatName ??
+                                              _lang.vatNumber,
+                                          pw.TextStyle(
+                                            color: PdfColors.black,
+                                            font: getFontWithLangMatching(
+                                                personalInformation.vatName ??
+                                                    _lang.vatNumber),
+                                            fontFallback: [englishFont],
+                                          )),
+                                    ),
+                                    pw.SizedBox(
+                                      width: 10.0,
+                                      child: pw.Text(
+                                        ':',
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(color: PdfColors.black),
+                                      ),
+                                    ),
+                                    pw.SizedBox(
+                                      width: 70.0,
+                                      child: pw.Text(
+                                        personalInformation.vatNumber ?? '',
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(color: PdfColors.black),
+                                      ),
+                                    ),
+                                  ]),
+                          ]),
+                        ]),
+                  ],
+                ),
+              ));
         },
         footer: (pw.Context context) {
           return pw.Column(children: [
@@ -482,7 +501,7 @@ class SalesInvoicePdf {
             ),
             pw.Container(
               width: double.infinity,
-              color: const PdfColor.fromInt(0xffF18A23),
+              color: const PdfColor.fromInt(0xff2196F3),
               padding: const pw.EdgeInsets.all(10.0),
               child: pw.Center(
                   child: pw.Text('Powered by $companyName',
@@ -519,9 +538,13 @@ class SalesInvoicePdf {
                       children: [
                         pw.Container(
                           decoration: const pw.BoxDecoration(
-                            color: PdfColor.fromInt(0xffF18A23),
-                          ), // Red background
-                          padding: const pw.EdgeInsets.all(8.0),
+                            color: PdfColor.fromInt(0xff2196F3),
+                            borderRadius: pw.BorderRadius.only(
+                              topLeft: pw.Radius.circular(8),
+                              topRight: pw.Radius.circular(8),
+                            ),
+                          ), // Blue background with rounded corners
+                          padding: const pw.EdgeInsets.all(12.0),
                           child: getLocalizedPdfText(
                             _lang.sl,
                             pw.TextStyle(
@@ -533,9 +556,14 @@ class SalesInvoicePdf {
                           ),
                         ),
                         pw.Container(
-                          color: const PdfColor.fromInt(
-                              0xffF18A23), // Red background
-                          padding: const pw.EdgeInsets.all(8.0),
+                          decoration: const pw.BoxDecoration(
+                            color: PdfColor.fromInt(0xff2196F3),
+                            borderRadius: pw.BorderRadius.only(
+                              topLeft: pw.Radius.circular(8),
+                              topRight: pw.Radius.circular(8),
+                            ),
+                          ), // Blue background with rounded corners
+                          padding: const pw.EdgeInsets.all(12.0),
                           child: getLocalizedPdfText(
                             _lang.item,
                             pw.TextStyle(
@@ -698,6 +726,15 @@ class SalesInvoicePdf {
                             )),
                         pw.SizedBox(height: 5.0),
                         getLocalizedPdfText(
+                            "Service Charge: ${formatPointNumber(transactions.serviceCharge ?? 0.00)}",
+                            pw.TextStyle(
+                              color: PdfColors.black,
+                              fontWeight: pw.FontWeight.bold,
+                              font: getFont(),
+                              fontFallback: [englishFont],
+                            )),
+                        pw.SizedBox(height: 5.0),
+                        getLocalizedPdfText(
                             "${transactions.vat?.name ?? _lang.vat}: ${formatPointNumber(transactions.vatAmount ?? 0.00)}",
                             pw.TextStyle(
                               color: PdfColors.black,
@@ -782,7 +819,7 @@ class SalesInvoicePdf {
                             pw.TableRow(
                               children: [
                                 pw.Container(
-                                  color: const PdfColor.fromInt(0xffF18A23),
+                                  color: const PdfColor.fromInt(0xff2196F3),
                                   padding: const pw.EdgeInsets.all(8.0),
                                   child: getLocalizedPdfText(
                                     _lang.sl,
@@ -795,7 +832,7 @@ class SalesInvoicePdf {
                                   ),
                                 ),
                                 pw.Container(
-                                  color: const PdfColor.fromInt(0xffF18A23),
+                                  color: const PdfColor.fromInt(0xff2196F3),
                                   padding: const pw.EdgeInsets.all(8.0),
                                   child: getLocalizedPdfText(
                                     _lang.date,
@@ -1001,12 +1038,12 @@ class SalesInvoicePdf {
                                 pw.MainAxisAlignment.spaceBetween,
                             children: [
                               pw.Text(
-                                "${_lang.paidVia}: ${transactions.paymentType?.name ?? 'N/A'}",
+                                "${_lang.paidVia}: ${(transactions.isSplitPayment == true) ? 'Split' : (transactions.paymentType?.name ?? 'N/A')}",
                                 style:
                                     const pw.TextStyle(color: PdfColors.black),
                               ),
                               pw.Container(
-                                color: const PdfColor.fromInt(0xffF18A23),
+                                color: const PdfColor.fromInt(0xff2196F3),
                                 padding: const pw.EdgeInsets.all(5.0),
                                 child: pw.Text(
                                   "${_lang.payableAmount}: ${formatPointNumber(transactions.totalAmount ?? 0)}",
@@ -1039,13 +1076,21 @@ class SalesInvoicePdf {
                               pw.Column(
                                 crossAxisAlignment: pw.CrossAxisAlignment.end,
                                 children: [
-                                  pw.Text(
-                                    "${_lang.receivedAmount}: ${formatPointNumber(((transactions.totalAmount ?? 0) - (transactions.dueAmount ?? 0)) + (transactions.changeAmount ?? 0))}",
-                                    style: pw.TextStyle(
-                                        color: PdfColors.black,
-                                        fontWeight: pw.FontWeight.bold),
-                                  ),
-                                  pw.SizedBox(height: 5.0),
+                                  if ((transactions.dueAmount ?? 0) > 0 ||
+                                      (transactions.changeAmount ?? 0) > 0)
+                                    pw.Column(
+                                      crossAxisAlignment:
+                                          pw.CrossAxisAlignment.end,
+                                      children: [
+                                        pw.Text(
+                                          "${_lang.receivedAmount}: ${formatPointNumber(((transactions.totalAmount ?? 0) - (transactions.dueAmount ?? 0)) + (transactions.changeAmount ?? 0))}",
+                                          style: pw.TextStyle(
+                                              color: PdfColors.black,
+                                              fontWeight: pw.FontWeight.bold),
+                                        ),
+                                        pw.SizedBox(height: 5.0),
+                                      ],
+                                    ),
                                   pw.Text(
                                     (transactions.dueAmount ?? 0) > 0
                                         ? "${_lang.due}: ${formatPointNumber(transactions.dueAmount ?? 0)}"
@@ -1056,6 +1101,21 @@ class SalesInvoicePdf {
                                         color: PdfColors.black,
                                         fontWeight: pw.FontWeight.bold),
                                   ),
+
+                                  ///_______Payment_Method_Below_Due_Amount_____________________
+                                  if (transactions.isSplitPayment == true || transactions.paymentType?.name != null)
+                                    pw.Padding(
+                                      padding:
+                                          const pw.EdgeInsets.only(top: 5.0),
+                                      child: pw.Text(
+                                        "${_lang.paymentTypes}: ${(transactions.isSplitPayment == true) ? 'Split' : (transactions.paymentType?.name ?? 'N/A')}",
+                                        style: pw.TextStyle(
+                                          color: PdfColors.black,
+                                          fontSize: 11,
+                                          fontWeight: pw.FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ],

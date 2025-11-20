@@ -9,6 +9,7 @@ import '../../Const/api_config.dart';
 import '../../GlobalComponents/glonal_popup.dart';
 import '../../Provider/profile_provider.dart';
 import '../../constant.dart';
+import '../../services/permission_service.dart';
 import '../Authentication/change password/change_password_screen.dart';
 
 class ProfileDetails extends StatefulWidget {
@@ -19,6 +20,45 @@ class ProfileDetails extends StatefulWidget {
 }
 
 class ProfileDetailsState extends State<ProfileDetails> {
+  final TextEditingController _roleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserRole();
+  }
+
+  Future<void> _loadUserRole() async {
+    final permissionService = PermissionService();
+    final role = await permissionService.getUserRole();
+    if (!mounted) return;
+    _roleController.text = _formatRole(role);
+    setState(() {});
+  }
+
+  String _formatRole(String? role) {
+    if (role == null || role.isEmpty) {
+      return 'Admin';
+    }
+    final normalized = role.toLowerCase();
+    if (normalized == 'shop-owner' || normalized == 'shop_owner') {
+      return 'Admin';
+    }
+    if (normalized == 'admin') {
+      return 'Admin';
+    }
+    if (normalized == 'staff') {
+      return 'Staff';
+    }
+    return role[0].toUpperCase() + role.substring(1);
+  }
+
+  @override
+  void dispose() {
+    _roleController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -83,17 +123,19 @@ class ProfileDetailsState extends State<ProfileDetails> {
               backgroundColor: Colors.white,
               elevation: 0.0,
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ElevatedButton.icon(
-                label: Text(lang.S.of(context).changePassword),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChangePasswordScreen(),
-                      ));
-                },
+            bottomNavigationBar: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton.icon(
+                  label: Text(lang.S.of(context).changePassword),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChangePasswordScreen(),
+                        ));
+                  },
+                ),
               ),
             ),
             body: Padding(
@@ -128,6 +170,26 @@ class ProfileDetailsState extends State<ProfileDetails> {
                         decoration: kInputDecoration.copyWith(
                           labelText: lang.S.of(context).name,
                           border: const OutlineInputBorder().copyWith(borderSide: const BorderSide(color: kGreyTextColor)),
+                          hoverColor: kGreyTextColor,
+                          fillColor: kGreyTextColor,
+                        ),
+                        textFieldType: TextFieldType.NAME,
+                      ),
+                    ),
+
+                    ///________Role___________________________________
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: AppTextField(
+                        readOnly: true,
+                        cursorColor: kGreyTextColor,
+                        controller: _roleController,
+                        decoration: kInputDecoration.copyWith(
+                          labelText: lang.S.of(context).userRole,
+                          border: const OutlineInputBorder().copyWith(
+                              borderSide: const BorderSide(
+                            color: kGreyTextColor,
+                          )),
                           hoverColor: kGreyTextColor,
                           fillColor: kGreyTextColor,
                         ),

@@ -195,13 +195,29 @@ class DashboardChart extends StatefulWidget {
 //   }
 // }
 
-class _DashboardChartState extends State<DashboardChart> {
+class _DashboardChartState extends State<DashboardChart> with TickerProviderStateMixin {
   List<ChartData> chartData = [];
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
     getData(widget.model);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -287,7 +303,16 @@ class _DashboardChartState extends State<DashboardChart> {
       print('Sorted dates: $sortedDates');
       print('Dashboard Chart: Processing ${sortedDates.length} dates with actual data');
       
-      for (String date in sortedDates) {
+      // Get only the latest 4 days
+      List<String> latest4Days = sortedDates.length > 4 
+          ? sortedDates.sublist(sortedDates.length - 4) 
+          : sortedDates;
+      
+      print('=== LATEST 4 DAYS FILTER ===');
+      print('Original dates count: ${sortedDates.length}');
+      print('Latest 4 days: $latest4Days');
+      
+      for (String date in latest4Days) {
         var data = combinedData[date]!;
         chartData.add(ChartData(
           date,
@@ -411,11 +436,20 @@ class _DashboardChartState extends State<DashboardChart> {
       print('=== CHART DATA CREATION ===');
       print('All dates: $sortedDates');
       
+      // Get only the latest 4 days from API data
+      List<String> latest4Days = sortedDates.length > 4 
+          ? sortedDates.sublist(sortedDates.length - 4) 
+          : sortedDates;
+      
+      print('=== API DATA - LATEST 4 DAYS FILTER ===');
+      print('Original API dates count: ${sortedDates.length}');
+      print('Latest 4 days from API: $latest4Days');
+      
       // Convert to chart data
       setState(() {
         chartData = [];
         
-        for (String date in sortedDates) {
+        for (String date in latest4Days) {
           chartData.add(ChartData(
             date,
             dailySales[date] ?? 0.0,
@@ -427,6 +461,9 @@ class _DashboardChartState extends State<DashboardChart> {
         print('Final chart data count: ${chartData.length}');
       });
       
+      // Start animation after data is loaded
+      _animationController.forward();
+      
     } catch (e) {
       print('Error fetching real sales and purchase data: $e');
     }
@@ -434,84 +471,184 @@ class _DashboardChartState extends State<DashboardChart> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    
+    // Responsive sizing
+    final isTablet = screenWidth > 800;
+    final chartHeight = isTablet ? 320.0 : screenHeight * 0.35; // Increased height
+    final headerPadding = isTablet ? 0.0 : 16.0;
+    final chartPadding = isTablet ? 10.0 : 8.0;
+    
     return Container(
-      height: 250,
-      padding: const EdgeInsets.all(16),
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: _getMaxY(),
-          barTouchData: BarTouchData(
-            enabled: true,
-            touchTooltipData: BarTouchTooltipData(
-              tooltipPadding: const EdgeInsets.all(8),
-              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                String label = '';
-                double value = 0;
-
-                if (rodIndex == 0) {
-                  label = 'Sales';
-                  value = rod.toY;
-                } else {
-                  label = 'Purchase';
-                  value = rod.toY;
-                }
-
-                return BarTooltipItem(
-                  '$label\n₹${value.toStringAsFixed(2)}',
-                  TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                );
-              },
-            ),
-          ),
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: _getBottomTitles,
-                reservedSize: 30,
-                interval: 1,
-              ),
-            ),
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: _getLeftTitles,
-                reservedSize: 50,
-                interval: _getMaxY() / 4, // Show 4 horizontal lines for better readability
-              ),
-            ),
-          ),
-          borderData: FlBorderData(
-            show: false,
-          ),
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            drawHorizontalLine: true,
-            horizontalInterval: _getMaxY() / 4, // Match with left titles interval
-            getDrawingHorizontalLine: (value) {
-              return FlLine(
-                color: const Color(0xFFE5E7EB),
-                strokeWidth: 1,
-                dashArray: [5, 5],
-              );
-            },
-          ),
-          barGroups: _buildBarGroups(),
-        ),
+      height: chartHeight,
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(
+        horizontal: isTablet ? 5 : 4,
+        vertical: isTablet ? 20 : 16,
       ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Title
+          Container(
+            padding: EdgeInsets.fromLTRB(headerPadding, headerPadding, headerPadding, 8),
+            child: Text(
+              'Sales & Purchase Analytics (Last 4 Days)',
+              style: TextStyle(
+                fontSize: isTablet ? 18 : 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          // Legend
+          Container(
+            padding: EdgeInsets.fromLTRB(headerPadding, 0, headerPadding, headerPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildLegendItem('Sales', const Color(0xFF10B981), isTablet),
+                SizedBox(width: isTablet ? 20 : 16),
+                _buildLegendItem('Purchase', const Color(0xFF3B82F6), isTablet),
+              ],
+            ),
+          ),
+          // Chart
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: chartPadding, vertical: 4),
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) {
+                  return BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: _getMaxY(),
+                  barTouchData: BarTouchData(
+                    enabled: true,
+                    touchTooltipData: BarTouchTooltipData(
+                      tooltipPadding: const EdgeInsets.all(12),
+                      tooltipMargin: 8,
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        String label = '';
+                        double value = 0;
+
+                        if (rodIndex == 0) {
+                          label = 'Sales';
+                          value = rod.toY;
+                        } else {
+                          label = 'Purchase';
+                          value = rod.toY;
+                        }
+
+                        return BarTooltipItem(
+                          '$label\n₹${value.toStringAsFixed(0)}',
+                          TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) => _getBottomTitles(value, meta, isTablet),
+                        reservedSize: isTablet ? 50 : 40,
+                        interval: 1,
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) => _getLeftTitles(value, meta, isTablet),
+                        reservedSize: isTablet ? 80 : 60,
+                        interval: _getMaxY() / 5,
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                      left: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    drawHorizontalLine: true,
+                    horizontalInterval: _getMaxY() / 5,
+                    getDrawingHorizontalLine: (value) {
+                      return FlLine(
+                        color: Colors.grey[200]!,
+                        strokeWidth: 1,
+                        dashArray: [3, 3],
+                      );
+                    },
+                  ),
+                      barGroups: _buildBarGroups(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color, bool isTablet) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: isTablet ? 14 : 12,
+          height: isTablet ? 14 : 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(isTablet ? 3 : 2),
+          ),
+        ),
+        SizedBox(width: isTablet ? 8 : 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: isTablet ? 14 : 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+          ),
+        ),
+      ],
     );
   }
 
@@ -532,42 +669,65 @@ class _DashboardChartState extends State<DashboardChart> {
   }
 
   List<BarChartGroupData> _buildBarGroups() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth > 600;
+    
     return chartData.asMap().entries.map((entry) {
       int index = entry.key;
       ChartData data = entry.value;
+
+      // Apply animation to bar heights
+      double animatedSales = data.y * _animation.value;
+      double animatedPurchase = data.y1 * _animation.value;
 
       return BarChartGroupData(
         x: index,
         barRods: [
           BarChartRodData(
-            toY: data.y,
-            color: const Color(0xFF10B981), // Green color for sales
-            width: 12,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4),
-              topRight: Radius.circular(4),
+            toY: animatedSales,
+            color: data.y > 0 ? const Color(0xFF10B981) : Colors.grey[300]!,
+            width: isTablet ? 24 : 20,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(isTablet ? 8 : 6),
+              topRight: Radius.circular(isTablet ? 8 : 6),
             ),
+            gradient: data.y > 0 ? LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                const Color(0xFF10B981).withOpacity(0.8),
+                const Color(0xFF10B981),
+              ],
+            ) : null,
           ),
           BarChartRodData(
-            toY: data.y1,
-            color: const Color(0xFFEF4444), // Red color for purchases
-            width: 12,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4),
-              topRight: Radius.circular(4),
+            toY: animatedPurchase,
+            color: data.y1 > 0 ? const Color(0xFF3B82F6) : Colors.grey[300]!,
+            width: isTablet ? 24 : 20,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(isTablet ? 8 : 6),
+              topRight: Radius.circular(isTablet ? 8 : 6),
             ),
+            gradient: data.y1 > 0 ? LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                const Color(0xFF3B82F6).withOpacity(0.8),
+                const Color(0xFF3B82F6),
+              ],
+            ) : null,
           ),
         ],
-        barsSpace: 4,
+        barsSpace: isTablet ? 8 : 6,
       );
     }).toList();
   }
 
-  Widget _getBottomTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xFF6B7280),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
+  Widget _getBottomTitles(double value, TitleMeta meta, bool isTablet) {
+    final style = TextStyle(
+      color: const Color(0xFF374151),
+      fontSize: isTablet ? 13 : 11,
+      fontWeight: FontWeight.w600,
     );
 
     // Add null safety check
@@ -592,16 +752,30 @@ class _DashboardChartState extends State<DashboardChart> {
 
     return SideTitleWidget(
       meta: meta,
-      space: 8,
-      child: Text(formattedText, style: style),
+      space: isTablet ? 12 : 8,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isTablet ? 12 : 8, 
+          vertical: isTablet ? 6 : 4,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(isTablet ? 10 : 8),
+        ),
+        child: Text(
+          formattedText, 
+          style: style,
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 
-  Widget _getLeftTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xFF6B7280),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
+  Widget _getLeftTitles(double value, TitleMeta meta, bool isTablet) {
+    final style = TextStyle(
+      color: const Color(0xFF374151),
+      fontSize: isTablet ? 13 : 11,
+      fontWeight: FontWeight.w600,
     );
 
     // Format the value with currency symbol
@@ -616,9 +790,19 @@ class _DashboardChartState extends State<DashboardChart> {
 
     return SideTitleWidget(
       meta: meta,
-      child: Text(
-        formattedValue,
-        style: style,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isTablet ? 8 : 6, 
+          vertical: isTablet ? 4 : 2,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(isTablet ? 8 : 6),
+        ),
+        child: Text(
+          formattedValue,
+          style: style,
+        ),
       ),
     );
   }
