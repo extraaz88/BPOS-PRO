@@ -6,3 +6,4 @@ class APIConfig {
   static String businessCategoriesUrl = '/business-categories';
 }
 
+

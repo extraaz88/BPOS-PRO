@@ -9,6 +9,7 @@ import 'package:mobile_pos/Screens/Settings/sales%20settings/sales_settings_scre
 import 'package:mobile_pos/Screens/Settings/upi_settings_screen.dart';
 import 'package:mobile_pos/Screens/User%20Roles/user_role_screen.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
+import 'package:mobile_pos/label1/ui/label_home_page.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../GlobalComponents/glonal_popup.dart';
@@ -286,7 +287,8 @@ class SettingScreenState extends ConsumerState<SettingScreen> {
     items.add(PageNavigationNavTile(
       title: lang.S.of(context).barcodeGenerator,
       svgIconPath: 'assets/barcode.svg',
-      route: const BarcodeGeneratorScreen(),
+      route: const LabelHomePage(),
+       // route: const BarcodeGeneratorScreen(),
     ));
     
     // Language - Always visible

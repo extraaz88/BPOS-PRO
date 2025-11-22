@@ -1105,7 +1105,13 @@ class _SaleProductsListState extends State<SaleProductsList> {
                               builder: (context) => BarcodeScannerWidget(
                                 onBarcodeFound: (String code) {
                                   setState(() {
-                                    productCode = code;
+                                    // Remove barcode scanner prefix (e.g., ]C1001989 -> 001989)
+                                    // Barcode scanners often add a 3-character prefix like ]C1
+                                    if (code.length > 3 && code.startsWith(']')) {
+                                      productCode = code.substring(3);
+                                    } else {
+                                      productCode = code;
+                                    }
                                     codeController.text = productCode;
                                   });
                                 },
