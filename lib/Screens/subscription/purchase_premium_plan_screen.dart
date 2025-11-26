@@ -412,12 +412,19 @@ class _PurchasePremiumPlanScreenState extends State<PurchasePremiumPlanScreen> {
                         child: GestureDetector(
                           onTap: () async {
                             if (selectedPlan != null) {
+                              // Calculate the amount to pay
+                              final amountToPay = (selectedPlan?.offerPrice != null && (selectedPlan!.offerPrice ?? 0) > 0)
+                                  ? selectedPlan!.offerPrice!.toDouble()
+                                  : (selectedPlan?.subscriptionPrice ?? 0).toDouble();
+                              
                               bool success = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => PaymentScreen(
                                       planId: selectedPlan?.id.toString() ?? '',
                                       businessId: businessInfo.value?.id.toString() ?? '',
+                                      amount: amountToPay,
+                                      // Set to true for Razorpay, false for WebView
                                     ),
                                   ));
 

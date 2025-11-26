@@ -1,210 +1,85 @@
-// import 'package:flutter/material.dart';
-// import 'package:barcode_widget/barcode_widget.dart' as bw;
-// import 'package:mobile_scanner/mobile_scanner.dart' as ms;
-// import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/material.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:get/get.dart';
 
-// class BarcodeGeneratorScreen extends StatefulWidget {
-//   const BarcodeGeneratorScreen({super.key});
+class TestRazorpayScreen extends StatefulWidget {
+  @override
+  _TestRazorpayScreenState createState() => _TestRazorpayScreenState();
+}
 
-//   @override
-//   State<BarcodeGeneratorScreen> createState() => _BarcodeGeneratorScreenState();
-// }
+class _TestRazorpayScreenState extends State<TestRazorpayScreen> {
+  late Razorpay _razorpay;
 
-// class _BarcodeGeneratorScreenState extends State<BarcodeGeneratorScreen> {
-//   final TextEditingController nameController = TextEditingController();
-//   final TextEditingController priceController = TextEditingController();
-//   final TextEditingController createDateController = TextEditingController();
-//   final TextEditingController expireDateController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
 
-//   String? barcodeData;
-//   bool showScanner = false;
-//   String? scannedData;
+    _razorpay = Razorpay();
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.blue.shade50,
-//       appBar: AppBar(
-//         backgroundColor: Colors.blue.shade700,
-//         title: const Text(
-//           'Barcode Creator & Scanner',
-//           style: TextStyle(color: Colors.white),
-//         ),
-//         centerTitle: true,
-//       ),
-//       body: AnimatedSwitcher(
-//         duration: const Duration(milliseconds: 500),
-//         child: showScanner ? buildScannerView() : buildFormView(),
-//       ),
-//     );
-//   }
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
 
-//   /// ================= FORM VIEW =====================
-//   Widget buildFormView() {
-//     return SingleChildScrollView(
-//       padding: const EdgeInsets.all(16),
-//       child: Column(
-//         children: [
-//           AnimatedTextKit(
-//             animatedTexts: [
-//               ColorizeAnimatedText(
-//                 'Enter Product Details',
-//                 textStyle:
-//                     const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-//                 colors: [Colors.blue, Colors.deepPurple, Colors.cyan],
-//               ),
-//             ],
-//             repeatForever: true,
-//           ),
-//           const SizedBox(height: 20),
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
 
-//           buildTextField(nameController, 'Product Name'),
-//           buildTextField(priceController, 'Product Price'),
-//           buildTextField(createDateController, 'Create Date (DD/MM/YYYY)'),
-//           buildTextField(expireDateController, 'Expire Date (DD/MM/YYYY)'),
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Get.snackbar("Success 🎉", "Payment ID: ${response.paymentId}",
+        backgroundColor: Colors.green, colorText: Colors.white);
+  }
 
-//           const SizedBox(height: 20),
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Get.snackbar("Failed ❌", response.message ?? "Error",
+        backgroundColor: Colors.red, colorText: Colors.white);
+  }
 
-//           ElevatedButton.icon(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: Colors.blue.shade700,
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(12)),
-//               padding:
-//                   const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-//             ),
-//             onPressed: () {
-//               if (nameController.text.isNotEmpty) {
-//                 final data =
-//                     "Name: ${nameController.text}\nPrice: ${priceController.text}\nCreated: ${createDateController.text}\nExpire: ${expireDateController.text}";
-//                 setState(() => barcodeData = data);
-//               }
-//             },
-//             icon: const Icon(Icons.qr_code_2, color: Colors.white),
-//             label: const Text(
-//               "Generate Barcode",
-//               style: TextStyle(color: Colors.white),
-//             ),
-//           ),
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Get.snackbar("Wallet", "Wallet: ${response.walletName}",
+        backgroundColor: Colors.blue, colorText: Colors.white);
+  }
 
-//           const SizedBox(height: 20),
+  void openRazorpay() {
+    var options = {
+      'key': 'rzp_test_1DP5mmOlF5G5ag', // TEST KEY SAME AS YOUR CODE
+      'amount': 100, // ₹1.00 TEST
+      'name': 'Extraaaz Innovative Tech Solutions Pvt. Ltd.',
+      'description': 'Test Payment',
+      'timeout': 300,
+      'prefill': {
+        'contact': '9999999999',
+        'email': 'test@spos.com',
+      },
+      'theme': {'color': '#6C63FF'}
+    };
 
-//           if (barcodeData != null)
-//             AnimatedContainer(
-//               duration: const Duration(milliseconds: 500),
-//               padding: const EdgeInsets.all(16),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(16),
-//                 boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
-//               ),
-//               child: Column(
-//                 children: [
-//                   bw.BarcodeWidget(
-//                     data: barcodeData!,
-//                     barcode: bw.Barcode.code128(),
-//                     width: 250,
-//                     height: 100,
-//                   ),
-//                   const SizedBox(height: 10),
-//                   const Text(
-//                     'Scan this barcode to view details',
-//                     style: TextStyle(fontSize: 14),
-//                   ),
-//                 ],
-//               ),
-//             ),
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      Get.snackbar("Error", "Unable to open Razorpay",
+          backgroundColor: Colors.red, colorText: Colors.white);
+      print(e);
+    }
+  }
 
-//           const SizedBox(height: 30),
-
-//           ElevatedButton.icon(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: Colors.deepPurple,
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(12)),
-//               padding:
-//                   const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-//             ),
-//             onPressed: () => setState(() => showScanner = true),
-//             icon: const Icon(Icons.camera_alt, color: Colors.white),
-//             label: const Text(
-//               "Open Scanner",
-//               style: TextStyle(color: Colors.white),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   /// ================= SCANNER VIEW =====================
-//   Widget buildScannerView() {
-//     return Stack(
-//       children: [
-//         ms.MobileScanner(
-//           onDetect: (capture) {
-//             final List<ms.Barcode> barcodes = capture.barcodes;
-//             for (final barcode in barcodes) {
-//               if (barcode.rawValue != null) {
-//                 setState(() {
-//                   scannedData = barcode.rawValue;
-//                   showScanner = false;
-//                 });
-//                 break;
-//               }
-//             }
-//           },
-//         ),
-//         Positioned(
-//           top: 40,
-//           left: 10,
-//           child: IconButton(
-//             icon: const Icon(Icons.arrow_back, color: Colors.white),
-//             onPressed: () => setState(() => showScanner = false),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   /// ================= Text Field UI =====================
-//   Widget buildTextField(TextEditingController controller, String label) {
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 15),
-//       child: TextField(
-//         controller: controller,
-//         decoration: InputDecoration(
-//           labelText: label,
-//           filled: true,
-//           fillColor: Colors.white,
-//           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-//         ),
-//       ),
-//     );
-//   }
-
-//   /// ================= SCANNED RESULT DIALOG =====================
-//   @override
-//   void didUpdateWidget(covariant BarcodeGeneratorScreen oldWidget) {
-//     super.didUpdateWidget(oldWidget);
-//     if (scannedData != null) {
-//       WidgetsBinding.instance.addPostFrameCallback((_) {
-//         showDialog(
-//           context: context,
-//           builder: (_) => AlertDialog(
-//             shape:
-//                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//             title: const Text('Scanned Product Details'),
-//             content: Text(scannedData!),
-//             actions: [
-//               TextButton(
-//                 onPressed: () => Navigator.pop(context),
-//                 child: const Text('Close'),
-//               ),
-//             ],
-//           ),
-//         );
-//       });
-//     }
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Razorpay Test Button")),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: openRazorpay,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+          ),
+          child: Text("Open Razorpay Test",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+        ),
+      ),
+    );
+  }
+}

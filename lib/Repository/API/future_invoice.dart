@@ -6,10 +6,13 @@ import '../constant_functions.dart';
 class FutureInvoice {
   Future<String> getFutureInvoice({required String tag}) async {
     try {
+      final token = await getAuthToken();
+      final url = '${APIConfig.url}/new-invoice?platform=$tag';
+
       final response = await http.get(
-        Uri.parse('${APIConfig.url}/new-invoice?platform=$tag'),
+        Uri.parse(url),
         headers: {
-          'Authorization': 'Bearer ${await getAuthToken()}',
+          'Authorization': token,
           'Accept': 'application/json',
         },
       );

@@ -1,125 +1,126 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mobile_pos/generated/l10n.dart' as lang;
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-
-import '../../Const/api_config.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key, required this.planId, required this.businessId});
+  const PaymentScreen({
+    super.key,
+    required this.planId,
+    required this.businessId,
+    this.amount,
+  });
 
   final String planId;
   final String businessId;
+  final double? amount;
 
   @override
   PaymentScreenState createState() => PaymentScreenState();
 }
 
-String paymentUrl = 'https://pospro.acnoo.com/payments-gateways/plan_id/business_id?platform=app';
-const String successUrl = 'order-status?status=success';
-const String failureUrl = 'order-status?status=failed';
-
 class PaymentScreenState extends State<PaymentScreen> {
-  late WebViewController controller;
-  final ImagePicker _imagePicker = ImagePicker();
+  late Razorpay _razorpay;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    paymentUrl = paymentUrl.replaceAll('https://pospro.acnoo.com/', APIConfig.domain).replaceAll('plan_id', widget.planId).replaceAll('business_id', widget.businessId);
+    _razorpay = Razorpay();
 
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (String url) {
-            if (url.contains(successUrl)) {
-              Navigator.pop(context, true);
-              return;
-            }
-            if (url.contains(failureUrl)) {
-              Navigator.pop(context, false);
-              return;
-            }
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(paymentUrl));
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
-    // For image picker
-    if (Platform.isAndroid) {
-      final androidController = controller.platform as AndroidWebViewController;
-      androidController.setOnShowFileSelector(_androidImagePicker);
+    Future.delayed(Duration(milliseconds: 300), () {
+      _openRazorpay();
+    });
+  }
+
+  void _openRazorpay() {
+    final amountPaise = ((widget.amount ?? 100) * 100).round();
+
+    var options = {
+      'key': 'rzp_test_1DP5mmOlF5G5ag',    
+      'amount': amountPaise,
+      'name': 'Extraaaz Innovative Tech Solutions Pvt. Ltd.',
+      'description': 'Subscription Plan Payment',
+      'timeout': 300,
+      'prefill': {
+        'contact': '7709040699',
+        'email': 'info@extraaaz.com',
+      },
+      'theme': {'color': '#6C63FF'},
+      'external': {
+        'wallets': ['paytm', 'phonepe', 'gpay'],
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error opening Razorpay!",
+        backgroundColor: Colors.red,
+      );
+      print("Razorpay Error: $e");
+      Navigator.pop(context, false);
     }
   }
 
-  Future<List<String>> _androidImagePicker(FileSelectorParams params) async {
-    final XFile? pickedFile = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+      msg: "Payment Successful!",
+      backgroundColor: Colors.green,
     );
-    if (pickedFile != null) {
-      String filePath = pickedFile.path;
-      final fileUri = Uri.file(filePath);
-      return [fileUri.toString()];
-    }
-    return [];
+    Navigator.pop(context, true);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+      msg: "Payment Failed!",
+      backgroundColor: Colors.red,
+    );
+    Navigator.pop(context, false);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+      msg: "Wallet: ${response.walletName}",
+      backgroundColor: Colors.blue,
+    );
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          lang.S.of(context).paymentGateway,
-          // 'Payment Gateway'
-        ),
-      ),
-      body: WebViewWidget(
-        controller: controller,
-      ),
-    );
-  }
-}
-
-class SuccessScreen extends StatelessWidget {
-  const SuccessScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          lang.S.of(context).paymentSuccess,
-          // 'Payment Success'
-        ),
-      ),
+      backgroundColor: Colors.black.withOpacity(0.3),
       body: Center(
-        child: Text(
-          lang.S.of(context).paymentWasSuccessful,
-          // 'Payment was successful!'
-        ),
-      ),
-    );
-  }
-}
-
-class FailureScreen extends StatelessWidget {
-  const FailureScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(lang.S.of(context).paymentFailed),
-      ),
-      body: Center(
-        child: Text(
-          lang.S.of(context).paymentFailedPleaseTryAgain,
+        child: Card(
+          margin: EdgeInsets.all(40),
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text(
+                  "Opening Razorpay...",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Amount: ₹${widget.amount ?? 0}",
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

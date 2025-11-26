@@ -21,6 +21,7 @@ import 'package:mobile_pos/Screens/Sales/add_promo_code.dart';
 import 'package:mobile_pos/Screens/Sales/sales_contact.dart';
 import 'package:mobile_pos/Screens/SplashScreen/on_board.dart';
 import 'package:mobile_pos/Screens/SplashScreen/splash_screen.dart';
+import 'package:mobile_pos/Screens/subscription/purchase_premium_plan_screen.dart';
 import 'package:mobile_pos/Screens/vat_&_tax/tax_report.dart';
 import 'package:provider/provider.dart' as pro;
 import 'package:showcaseview/showcaseview.dart';
@@ -99,10 +100,11 @@ class MyApp extends StatelessWidget {
                 builder: EasyLoading.init(),
                 routes: {
                    '/': (context) => const SplashScreen(),
+                   // PurchasePremiumPlanScreen( isCameBack: true,),
                   '/onBoard': (context) => const OnBoard(),
                   '/signIn': (context) => const SignInScreen(),
                   '/loginForm': (context) =>
-                      const LoginForm(isEmailLogin: true),
+                      const LoginForm(isEmailLogin: true),  
                   '/signup': (context) => const RegisterScreen(),
                   '/forgotPassword': (context) => const ForgotPassword(),
                   '/home': (context) => const Home(),

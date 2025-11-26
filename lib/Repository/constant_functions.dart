@@ -3,9 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<String> getAuthToken() async {
   final prefs = await SharedPreferences.getInstance();
+  final storedToken = prefs.getString('token') ?? '';
 
-  print("AUTHToken: Bearer ${prefs.getString('token')}");
-  return "Bearer ${prefs.getString('token') ?? ''}";
+  if (storedToken.isEmpty) {
+    print('Auth token not found in prefs');
+    return '';
+  }
+
+  final normalizedToken = storedToken.toLowerCase().startsWith('bearer ')
+      ? storedToken
+      : 'Bearer $storedToken';
+
+  print('Auth token loaded: $normalizedToken');
+  return normalizedToken;
 }
 
 Future<void> saveUserData({

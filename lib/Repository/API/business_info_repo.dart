@@ -17,16 +17,29 @@ class BusinessRepository {
     final uri = Uri.parse('${APIConfig.url}/business');
     final token = await getAuthToken();
 
+    print('📡 [Business Info API] Request URL: $uri');
+    print('📡 [Business Info API] Token: $token');
+
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
+    
+    print('📡 [Business Info API] Response Status: ${response.statusCode}');
+    print('📡 [Business Info API] Response Body: ${response.body}');
+    
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body);
       final BusinessInformation businessInformation = BusinessInformation.fromJson(parsedData['data']);
 
+      print('✅ [Business Info API] Company Name: ${businessInformation.companyName}');
+      print('✅ [Business Info API] Plan Expire Date: ${businessInformation.willExpire}');
+      print('✅ [Business Info API] Subscription Date: ${businessInformation.subscriptionDate}');
+      print('✅ [Business Info API] Enrolled Plan: ${businessInformation.enrolledPlan?.plan?.subscriptionName}');
+
       return businessInformation;
     } else {
+      print('❌ [Business Info API] Failed with status: ${response.statusCode}');
       throw Exception('Failed to fetch business data');
     }
   }
@@ -35,16 +48,35 @@ class BusinessRepository {
     final uri = Uri.parse('${APIConfig.url}/business');
     final token = await getAuthToken();
 
+    print('📡 [Subscription Expire API] Request URL: $uri');
+    print('📡 [Subscription Expire API] Token: $token');
+
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
+    
+    print('📡 [Subscription Expire API] Response Status: ${response.statusCode}');
+    print('📡 [Subscription Expire API] Response Body: ${response.body}');
+    
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body);
       final BusinessInformation businessInformation = BusinessInformation.fromJson(parsedData['data']);
+      
+      print('✅ [Subscription Expire API] Will Expire: ${businessInformation.willExpire}');
+      print('✅ [Subscription Expire API] Current Date: ${DateTime.now()}');
+      
+      if (businessInformation.willExpire != null) {
+        DateTime expireDate = DateTime.parse(businessInformation.willExpire!);
+        bool isExpired = DateTime.now().isAfter(expireDate.add(const Duration(days: 1)));
+        print('✅ [Subscription Expire API] Is Expired: $isExpired');
+        print('✅ [Subscription Expire API] Days Remaining: ${expireDate.difference(DateTime.now()).inDays}');
+      }
+      
       ref.read(subscriptionProvider.notifier).updateSubscription(businessInformation.willExpire);
       // ref.read(subscriptionProvider.notifier).updateSubscription("2025-01-05");
     } else {
+      print('❌ [Subscription Expire API] Failed with status: ${response.statusCode}');
       throw Exception('Failed to fetch business data');
     }
   }
@@ -71,14 +103,23 @@ class BusinessRepository {
     final uri = Uri.parse('${APIConfig.url}/business');
     final token = await getAuthToken();
 
+    print('📡 [Check Business API] Request URL: $uri');
+    print('📡 [Check Business API] Token: $token');
+
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
+    
+    print('📡 [Check Business API] Response Status: ${response.statusCode}');
+    print('📡 [Check Business API] Response Body: ${response.body}');
+    
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body);
+      print('✅ [Check Business API] Data fetched successfully');
       return BusinessInformation.fromJson(parsedData['data']); // Extract the "data" object from the response
     } else {
+      print('❌ [Check Business API] Failed with status: ${response.statusCode}');
       return null;
     }
   }
