@@ -21,7 +21,6 @@ import 'package:mobile_pos/Screens/Sales/add_promo_code.dart';
 import 'package:mobile_pos/Screens/Sales/sales_contact.dart';
 import 'package:mobile_pos/Screens/SplashScreen/on_board.dart';
 import 'package:mobile_pos/Screens/SplashScreen/splash_screen.dart';
-import 'package:mobile_pos/Screens/subscription/purchase_premium_plan_screen.dart';
 import 'package:mobile_pos/Screens/vat_&_tax/tax_report.dart';
 import 'package:provider/provider.dart' as pro;
 import 'package:showcaseview/showcaseview.dart';

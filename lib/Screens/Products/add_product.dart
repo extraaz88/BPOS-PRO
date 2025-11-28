@@ -72,6 +72,7 @@ class AddProductState extends State<AddProduct> {
 
   bool isVariantProduct = false;
   final List<VariantFormData> variantForms = [];
+  int productNameCharCount = 0;
 
   void initializeControllers() {
     if (widget.productModel != null) {
@@ -514,6 +515,11 @@ class AddProductState extends State<AddProduct> {
   @override
   void initState() {
     initializeControllers();
+    // Initialize character count
+    final initialText = nameController.text;
+    if (initialText.isNotEmpty) {
+      productNameCharCount = initialText.length;
+    }
     super.initState();
   }
 
@@ -545,13 +551,45 @@ class AddProductState extends State<AddProduct> {
                 child: Column(
                   children: [
                     ///___________Name_____________________________
-                    _buildTextField(
-                      controller: nameController,
-                      label: '${lang.S.of(context).productName} *',
-                      hint: lang.S.of(context).enterProductName,
-                      validator: (value) => value!.isEmpty
-                          ? lang.S.of(context).pleaseEnterAValidProductName
-                          : null,
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            controller: nameController,
+                            decoration: kInputDecoration.copyWith(
+                              labelText: '${lang.S.of(context).productName} *',
+                              hintText: lang.S.of(context).enterProductName,
+                            ),
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(15),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                productNameCharCount = value.length;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return lang.S.of(context).pleaseEnterAValidProductName;
+                              }
+                              if (value.length > 15) {
+                                return 'Product name should not exceed 15 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '$productNameCharCount / 15 characters',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: productNameCharCount > 15 ? Colors.red : Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
 
                     ///_______Category__________________________________
@@ -2158,6 +2196,7 @@ Widget _buildTextField({
     ),
   );
 }
+
 
 class VariantPricingSummary {
   final double totalStock;

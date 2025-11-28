@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +31,8 @@ class _EditProductFormState extends State<EditProductForm> {
   late TextEditingController dealerPriceController;
   late TextEditingController discountController;
   late TextEditingController manufacturerController;
+  
+  int productNameCharCount = 0;
 
   @override
   void initState() {
@@ -45,6 +48,12 @@ class _EditProductFormState extends State<EditProductForm> {
     dealerPriceController = TextEditingController(text: widget.product.productDealerPrice?.toString() ?? '0');
     discountController = TextEditingController(text: widget.product.productDiscount?.toString() ?? '0');
     manufacturerController = TextEditingController(text: widget.product.productManufacturer ?? '');
+    
+    // Initialize character count
+    final initialText = productNameController.text;
+    if (initialText.isNotEmpty) {
+      productNameCharCount = initialText.length;
+    }
   }
 
   @override
@@ -276,22 +285,46 @@ class _EditProductFormState extends State<EditProductForm> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextFormField(
-                    controller: productNameController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter product name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: productNameController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter product name',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                        ),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(15),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            productNameCharCount = value.length;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter product name';
+                          }
+                          if (value.length > 15) {
+                            return 'Product name should not exceed 15 characters';
+                          }
+                          return null;
+                        },
                       ),
-                      filled: true,
-                      fillColor: Colors.grey.shade50,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter product name';
-                      }
-                      return null;
-                    },
+                      const SizedBox(height: 4),
+                      Text(
+                        '$productNameCharCount / 15 characters',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: productNameCharCount > 15 ? Colors.red : Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
 
@@ -597,4 +630,5 @@ class _EditProductFormState extends State<EditProductForm> {
     );
   }
 }
+
 
