@@ -84,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ټول سوداګریز حلونه",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill د سټاک، حساب، پلور، لګښت او زیان / ګټې سره یو بشپړ سوداګریز حل دی.",
+      "PosPro د سټاک، حساب، پلور، لګښت او زیان / ګټې سره یو بشپړ سوداګریز حل دی.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("ټول وخت"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("دمخه اضافه شوی"),
@@ -148,7 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "خپل ځانګړتیاوې غوره کړئ",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "ځانګړتیاوې هغه مهمه برخه ده چې BharatBill دودیز حلونو څخه توپیر لري.",
+      "ځانګړتیاوې هغه مهمه برخه ده چې POSpro دودیز حلونو څخه توپیر لري.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("کلیرنس"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -249,7 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "د کارولو لپاره اسانه موبایل POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill اپلیکیشن وړیا او کارولو لپاره اسانه دی. په حقیقت کې، دا د نړۍ په کچه یو له غوره POS سیسټمونو څخه دی.",
+      "POSpro اپلیکیشن وړیا او کارولو لپاره اسانه دی. په حقیقت کې، دا د نړۍ په کچه یو له غوره POS سیسټمونو څخه دی.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("ایډیټ"),
     "editPhone": MessageLookupByLibrary.simpleMessage("تلیفون نمبر ایډیټ کړئ؟"),

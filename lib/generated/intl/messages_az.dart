@@ -147,7 +147,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Xüsusiyyətlərinizi Seçin",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Xüsusiyyətlər əsas hissəsidir və BharatBill-u ənənəvi həllərdən fərqləndirir.",
+      "Xüsusiyyətlər əsas hissəsidir və POSpro-u ənənəvi həllərdən fərqləndirir.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Klarens"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(

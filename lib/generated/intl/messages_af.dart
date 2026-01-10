@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Alle besigheidsoplossings",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill is \'n volledige besigheidsoplossing met voorraad, rekening, verkope, uitgawes en verlies/wins.",
+      "POSpro is \'n volledige besigheidsoplossing met voorraad, rekening, verkope, uitgawes en verlies/wins.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Altyd"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Reeds Toegevoeg"),
@@ -152,7 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Kies Jou Funksies",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Funksies is die belangrike deel wat BharatBill van tradisionele oplossings onderskei.",
+      "Funksies is die belangrike deel wat POSpro van tradisionele oplossings onderskei.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -269,7 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maklik om die mobiele pos te gebruik",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill-app is gratis, maklik om te gebruik. Werklik, dit is een van die beste POS-stelsels regoor die wêreld.",
+      "POSpro-app is gratis, maklik om te gebruik. Werklik, dit is een van die beste POS-stelsels regoor die wêreld.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Wysig"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Wysig Telefoonnommer?"),

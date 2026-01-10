@@ -62,7 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ሁሉም የንግድ መፍትሄዎች",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill ለአክሲዮን፣ ሂሳብ፣ ሽያጭ፣ ወጪ እና ኪሳራ/ትርፍ ሙሉ የንግድ መፍትሄ ነው።",
+      "PosPro ለአክሲዮን፣ ሂሳብ፣ ሽያጭ፣ ወጪ እና ኪሳራ/ትርፍ ሙሉ የንግድ መፍትሄ ነው።",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("ሁሉም ጊዜ"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("ቀድሞ የተጨመረ"),
@@ -114,7 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseSupplier": MessageLookupByLibrary.simpleMessage("አቅራቢ ይምረጡ"),
     "choseYourFeature": MessageLookupByLibrary.simpleMessage("ባህሪያትዎን ይምረጡ"),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "ባህሪያት BharatBill ን ከባህላዊ መፍትሄዎች የሚለየው አስፈላጊ ክፍል ናቸው።",
+      "ባህሪያት POSpro ን ከባህላዊ መፍትሄዎች የሚለየው አስፈላጊ ክፍል ናቸው።",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("ክላረንስ"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage("ለማገናኘት ይጫኑ"),
@@ -205,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ለመጠቀም ቀላል የሞባይል ፒኦኤስ",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill መተግበሪያ ነፃ እና ለመጠቀም ቀላል ነው። በእርግጥ በዓለም ላይ ካሉ ምርጥ POS ስርዓቶች አንዱ ነው።",
+      "POSpro መተግበሪያ ነፃ እና ለመጠቀም ቀላል ነው። በእርግጥ በዓለም ላይ ካሉ ምርጥ POS ስርዓቶች አንዱ ነው።",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("አርትዕ"),
     "editPhone": MessageLookupByLibrary.simpleMessage("የስልክ ቁጥር ያርትዑ?"),

@@ -62,7 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "すべてのビジネスソリューション",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBillは在庫、アカウント、売上、経費、損益を備えた完全なビジネスソリューションです。",
+      "PosProは在庫、アカウント、売上、経費、損益を備えた完全なビジネスソリューションです。",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("全期間"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("追加済み"),
@@ -112,7 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseSupplier": MessageLookupByLibrary.simpleMessage("サプライヤーを選ぶ"),
     "choseYourFeature": MessageLookupByLibrary.simpleMessage("機能を選択"),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "機能はBharatBillを伝統的なソリューションとは異なるものにする重要な要素です。",
+      "機能はPosProを伝統的なソリューションとは異なるものにする重要な要素です。",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("クラレンス"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage("クリックして接続"),
@@ -197,7 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dueReport": MessageLookupByLibrary.simpleMessage("期日報告"),
     "easyToUseThePos": MessageLookupByLibrary.simpleMessage("簡単に使用できるモバイルPOS"),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBillアプリは無料で、使いやすいです。実際、世界中で最も優れたPOSシステムの1つです。",
+      "PosProアプリは無料で、使いやすいです。実際、世界中で最も優れたPOSシステムの1つです。",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("編集"),
     "editPhone": MessageLookupByLibrary.simpleMessage("電話番号を編集しますか?"),

@@ -90,7 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Visi biznesa risinājumi",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill ir pilnīgs biznesa risinājums ar krājumu, grāmatvedību, pārdošanu, izdevumiem un peļņu/zaudējumiem.",
+      "PosPro ir pilnīgs biznesa risinājums ar krājumu, grāmatvedību, pārdošanu, izdevumiem un peļņu/zaudējumiem.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Visu laiku"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Jau pievienots"),
@@ -160,7 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Izvēlieties savas funkcijas",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Funkcijas ir svarīga daļa, kas atšķir BharatBill no tradicionālajiem risinājumiem.",
+      "Funkcijas ir svarīga daļa, kas atšķir POSpro no tradicionālajiem risinājumiem.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Viegli lietojams mobilais POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill lietotne ir bezmaksas un viegli lietojama. Patiesībā tā ir viena no labākajām POS sistēmām pasaulē.",
+      "POSpro lietotne ir bezmaksas un viegli lietojama. Patiesībā tā ir viena no labākajām POS sistēmām pasaulē.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Rediģēt"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

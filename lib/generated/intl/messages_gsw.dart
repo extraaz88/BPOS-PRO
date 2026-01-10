@@ -86,7 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Alli Geschäftslösunge",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill isch e vollständig Geschäftslösung mit Lager, Buchhaltung, Verchaufe, Usgaben und Verlust/Gwinn.",
+      "PosPro isch e vollständig Geschäftslösung mit Lager, Buchhaltung, Verchaufe, Usgaben und Verlust/Gwinn.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Alle Zeit"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Bereits hinzugefügt"),
@@ -152,7 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wähl dini Features",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Features si dä wichtigi Deil, wo BharatBill vo traditionelle Lösunge unterschaidet.",
+      "Features si dä wichtigi Deil, wo POSpro vo traditionelle Lösunge unterschaidet.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Einfach z\'bediendes mobiles Kassesystäm",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "D\'BharatBill App isch gratis und einfach z\'bediene. Eigentlig isch s eis vo de beschte Kassesystäm uf der ganze Wält.",
+      "D\'POSpro App isch gratis und einfach z\'bediene. Eigentlig isch s eis vo de beschte Kassesystäm uf der ganze Wält.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Bearbeite"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Telefonnummer ändern?"),

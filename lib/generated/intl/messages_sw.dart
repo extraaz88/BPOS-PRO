@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Suluhisho Zote za Biashara",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill ni suluhisho kamili la biashara lenye hisa, akaunti, mauzo, matumizi na hasara/faida.",
+      "PosPro ni suluhisho kamili la biashara lenye hisa, akaunti, mauzo, matumizi na hasara/faida.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Wakati Wote"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Tayari Imeongezwa"),
@@ -148,7 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Chagua Huduma Zako",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Huduma ni sehemu muhimu inayofanya BharatBill kuwa tofauti na suluhisho za jadi.",
+      "Huduma ni sehemu muhimu inayofanya PosPro kuwa tofauti na suluhisho za jadi.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -261,7 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Rahisi kutumia POS ya simu",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Programu ya BharatBill ni bure, rahisi kutumia. Kwa kweli, ni moja ya mfumo bora wa POS duniani.",
+      "Programu ya PosPro ni bure, rahisi kutumia. Kwa kweli, ni moja ya mfumo bora wa POS duniani.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Hariri"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Hariri Namba ya Simu?"),

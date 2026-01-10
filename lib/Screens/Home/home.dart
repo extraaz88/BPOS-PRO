@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_pos/Screens/DashBoard/dashboard.dart';
 import 'package:mobile_pos/Screens/Home/home_screen.dart';
+import 'package:mobile_pos/Screens/Home/components/bottom_nav.dart';
 import 'package:mobile_pos/Screens/Report/reports.dart';
 import 'package:mobile_pos/Screens/Settings/settings_screen.dart';
-import 'package:mobile_pos/constant.dart';
+import 'package:mobile_pos/Screens/Calendar/calendar_screen.dart';
 import 'package:mobile_pos/generated/l10n.dart' as lang;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../GlobalComponents/glonal_popup.dart';
 import '../../Provider/profile_provider.dart';
@@ -38,6 +39,61 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pageController = PageController(initialPage: _tabIndex);
+  }
+
+  // Build bottom navigation items based on permissions
+  List<BottomNavigationBarItem> _buildBottomNavItems(
+      bool hasDashboardPermission, bool hasCalendarFeature) {
+    List<BottomNavigationBarItem> items = [
+      BottomNavigationBarItem(
+        icon: _buildNavIcon(Icons.home_outlined, Icons.home_rounded, 0),
+        label: 'Home',
+      ),
+    ];
+
+    if (hasDashboardPermission) {
+      items.add(
+        BottomNavigationBarItem(
+          icon: _buildNavIcon(
+              Icons.dashboard_outlined, Icons.dashboard_rounded, items.length),
+          label: 'Dashboard',
+        ),
+      );
+    }
+
+    if (hasCalendarFeature) {
+      items.add(
+        BottomNavigationBarItem(
+          icon: _buildNavIcon(Icons.calendar_month_outlined,
+              Icons.calendar_month_rounded, items.length),
+          label: 'Calendar',
+        ),
+      );
+    }
+
+    items.addAll([
+      BottomNavigationBarItem(
+        icon: _buildNavIcon(
+            Icons.analytics_outlined, Icons.analytics_rounded, items.length),
+        label: 'Reports',
+      ),
+      BottomNavigationBarItem(
+        icon: _buildNavIcon(
+            Icons.settings_outlined, Icons.settings_rounded, items.length),
+        label: 'Settings',
+      ),
+    ]);
+
+    return items;
+  }
+
+  // Build navigation icon with animation support
+  Widget _buildNavIcon(IconData inactiveIcon, IconData activeIcon, int index) {
+    final isSelected = _tabIndex == index;
+    return Icon(
+      isSelected ? activeIcon : inactiveIcon,
+      size: isSelected ? 26 : 24,
+    );
   }
 
   @override
@@ -79,313 +135,52 @@ class _HomeState extends State<Home> {
       child: Consumer(builder: (context, ref, __) {
         final profile = ref.watch(businessInfoProvider);
         ref.watch(getExpireDateProvider(ref));
-        return GlobalPopup(
-          child: Scaffold(
-            body: PageView(
-              controller: pageController,
-              onPageChanged: (v) {
-                tabIndex = v;
-              },
-              children:
-                  (profile.value?.user?.visibility?.dashboardPermission ?? true)
-                      ? const [
-                          HomeScreen(),
-                          DashboardScreen(),
-                          Reports(),
-                          SettingScreen()
-                        ]
-                      : const [HomeScreen(), Reports(), SettingScreen()],
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _tabIndex,
-              backgroundColor: Colors.white,
-              onTap: (index) {
-                setState(() {
-                  _tabIndex = index;
-                  pageController.jumpToPage(index);
-                });
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 0
-                      ? SvgPicture.asset(
-                          'assets/cHome.svg',
-                          fit: BoxFit.scaleDown,
-                          height: 28,
-                          width: 28,
-                        )
-                      : SvgPicture.asset(
-                          'assets/home.svg',
-                          colorFilter: const ColorFilter.mode(
-                              kGreyTextColor, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                        ),
-                  label: lang.S.of(context).home,
+
+        // Determine which tabs to show based on permissions
+        // If role is not 'staff', show all tabs
+        final userRole = profile.value?.user?.role ?? '';
+        final hasDashboardPermission = userRole != 'staff'
+            ? true
+            : (profile.value?.user?.visibility?.dashboardPermission ?? true);
+
+        return FutureBuilder<List<String>>(
+          future: SharedPreferences.getInstance().then((prefs) => prefs.getStringList('shop_features') ?? []),
+          builder: (context, snapshot) {
+            final shopFeatures = snapshot.data ?? [];
+            final hasCalendarFeature = shopFeatures.isEmpty || shopFeatures.contains('salon_service');
+
+            // Build the list of screens
+            List<Widget> screens = [const HomeScreen()];
+            if (hasDashboardPermission) {
+              screens.add(const DashboardScreen());
+            }
+            if (hasCalendarFeature) {
+              screens.add(const CalendarScreen());
+            }
+            screens.addAll([const Reports(), const SettingScreen()]);
+
+            return GlobalPopup(
+              child: Scaffold(
+                body: PageView(
+                  controller: pageController,
+                  onPageChanged: (v) {
+                    tabIndex = v;
+                  },
+                  children: screens,
                 ),
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 1
-                      ? SvgPicture.asset(
-                          'assets/dashbord1.svg',
-                          height: 28,
-                          width: 28,
-                          fit: BoxFit.scaleDown,
-                        )
-                      : SvgPicture.asset(
-                          'assets/dashbord.svg',
-                          height: 24,
-                          colorFilter: const ColorFilter.mode(
-                              kGreyTextColor, BlendMode.srcIn),
-                          width: 24,
-                        ),
-                  label: lang.S.of(context).dashboard,
+                bottomNavigationBar: CustomBottomNav(
+                  currentIndex: _tabIndex,
+                  onTap: (index) {
+                    setState(() {
+                      _tabIndex = index;
+                      pageController.jumpToPage(index);
+                    });
+                  },
+                  items: _buildBottomNavItems(hasDashboardPermission, hasCalendarFeature),
                 ),
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 2
-                      ? SvgPicture.asset(
-                          'assets/cFile.svg',
-                          height: 28,
-                          width: 28,
-                          fit: BoxFit.scaleDown,
-                        )
-                      : SvgPicture.asset(
-                          'assets/file.svg',
-                          colorFilter: const ColorFilter.mode(
-                              kGreyTextColor, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                        ),
-                  label: lang.S.of(context).reports,
-                ),
-                BottomNavigationBarItem(
-                  icon: _tabIndex == 3
-                      ? SvgPicture.asset(
-                          'assets/cSetting.svg',
-                          height: 28,
-                          width: 28,
-                          fit: BoxFit.scaleDown,
-                        )
-                      : SvgPicture.asset(
-                          'assets/setting.svg',
-                          colorFilter: const ColorFilter.mode(
-                              kGreyTextColor, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                          color: kGreyTextColor,
-                        ),
-                  label: lang.S.of(context).setting,
-                ),
-              ],
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: kMainColor,
-              unselectedItemColor: kGreyTextColor,
-              selectedLabelStyle: const TextStyle(fontSize: 14),
-              unselectedLabelStyle: const TextStyle(fontSize: 14),
-            ),
-            // bottomNavigationBar: (profile.value?.user?.visibility?.dashboardPermission ?? true)
-            //     ? Directionality(
-            //         textDirection: TextDirection.ltr,
-            //         child: CircleNavBar(
-            //           activeIcons: [
-            //             SvgPicture.asset(
-            //               'assets/cHome.svg',
-            //               fit: BoxFit.scaleDown,
-            //               height: 28,
-            //               width: 28,
-            //             ),
-            //             SvgPicture.asset(
-            //               'assets/dashbord1.svg',
-            //               height: 28,
-            //               width: 28,
-            //               fit: BoxFit.scaleDown,
-            //             ),
-            //             SvgPicture.asset(
-            //               'assets/cFile.svg',
-            //               height: 28,
-            //               width: 28,
-            //               fit: BoxFit.scaleDown,
-            //             ),
-            //             SvgPicture.asset(
-            //               'assets/cSetting.svg',
-            //               height: 28,
-            //               width: 28,
-            //               fit: BoxFit.scaleDown,
-            //             ),
-            //           ],
-            //           inactiveIcons: [
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/home.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).home,
-            //                   //  "Home",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/dashbord.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).dashboard,
-            //                   //"Dashboard",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/file.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).reports,
-            //                   // "Reports",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/setting.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).setting,
-            //                   //"Setting",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //           ],
-            //           color: Colors.white,
-            //           height: 65,
-            //           circleWidth: 60,
-            //           activeIndex: tabIndex,
-            //           onTap: (index) {
-            //             tabIndex = index;
-            //             pageController.jumpToPage(tabIndex);
-            //           },
-            //           padding: EdgeInsets.zero,
-            //           cornerRadius: const BorderRadius.only(
-            //             topLeft: Radius.circular(8),
-            //             topRight: Radius.circular(8),
-            //           ),
-            //           shadowColor: kBorderColorTextField,
-            //           elevation: 2,
-            //         ),
-            //       )
-            //     : Directionality(
-            //         textDirection: TextDirection.ltr,
-            //         child: CircleNavBar(
-            //           activeIcons: [
-            //             SvgPicture.asset(
-            //               'assets/cHome.svg',
-            //               fit: BoxFit.scaleDown,
-            //               height: 28,
-            //               width: 28,
-            //             ),
-            //             SvgPicture.asset(
-            //               'assets/cFile.svg',
-            //               height: 28,
-            //               width: 28,
-            //               fit: BoxFit.scaleDown,
-            //             ),
-            //             SvgPicture.asset(
-            //               'assets/cSetting.svg',
-            //               height: 28,
-            //               width: 28,
-            //               fit: BoxFit.scaleDown,
-            //             ),
-            //           ],
-            //           inactiveIcons: [
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/home.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).home,
-            //                   //  "Home",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/file.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).reports,
-            //                   // "Reports",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //             Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 SvgPicture.asset(
-            //                   'assets/setting.svg',
-            //                   height: 24,
-            //                   width: 24,
-            //                   color: kGreyTextColor,
-            //                 ),
-            //                 Text(
-            //                   lang.S.of(context).setting,
-            //                   //"Setting",
-            //                   style: const TextStyle(color: kGreyTextColor),
-            //                 ),
-            //               ],
-            //             ),
-            //           ],
-            //           color: Colors.white,
-            //           height: 65,
-            //           circleWidth: 60,
-            //           activeIndex: tabIndex,
-            //           onTap: (index) {
-            //             tabIndex = index;
-            //             pageController.jumpToPage(tabIndex);
-            //           },
-            //           padding: EdgeInsets.zero,
-            //           cornerRadius: const BorderRadius.only(
-            //             topLeft: Radius.circular(8),
-            //             topRight: Radius.circular(8),
-            //           ),
-            //           shadowColor: kBorderColorTextField,
-            //           elevation: 2,
-            //         ),
-            //       ),
-          ),
+              ),
+            );
+          },
         );
       }),
     );

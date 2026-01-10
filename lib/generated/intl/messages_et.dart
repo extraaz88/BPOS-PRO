@@ -70,7 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Kõik ärilahendused",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill on täielik ärilahendus koos laoseisuga, arvestuse, müügiga, kulude ja kahjumi/kasumiga.",
+      "PosPro on täielik ärilahendus koos laoseisuga, arvestuse, müügiga, kulude ja kahjumi/kasumiga.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Kogu aeg"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Already Added"),
@@ -132,7 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Valige oma funktsioonid",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Funktsioonid on oluline osa, mis eristab BharatBill traditsioonilistest lahendustest.",
+      "Funktsioonid on oluline osa, mis eristab POSpro traditsioonilistest lahendustest.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -241,7 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Lihtne kasutada mobiilset kassapunkti",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill rakendus on tasuta ja lihtne kasutada. Tegelikult on see üks parimaid kassapunktisüsteeme üle maailma.",
+      "POSpro rakendus on tasuta ja lihtne kasutada. Tegelikult on see üks parimaid kassapunktisüsteeme üle maailma.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Muuda Telefoninumbrit?"),

@@ -84,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Усе бізнес-рашэнні",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill з\'яўляецца поўным бізнес-рашэннем са складам, улікам, продажамі, выдаткамі і прыбыткамі/стратамі.",
+      "PosPro з\'яўляецца поўным бізнес-рашэннем са складам, улікам, продажамі, выдаткамі і прыбыткамі/стратамі.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("За ўвесь час"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Ужо дададзена"),
@@ -150,7 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Абярыце свае функцыі",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Асаблівасці з\'яўляюцца важнай часткай, якая адрознівае BharatBill ад традыцыйных рашэнняў.",
+      "Асаблівасці з\'яўляюцца важнай часткай, якая адрознівае POSpro ад традыцыйных рашэнняў.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Кларанс"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -267,7 +267,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Просты ў выкарыстанні мабільны POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Дадатак BharatBill бясплатнае і простае ў выкарыстанні. На самай справе, гэта адна з лепшых POS-сістэм у свеце.",
+      "Дадатак POSpro бясплатнае і простае ў выкарыстанні. На самай справе, гэта адна з лепшых POS-сістэм у свеце.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Рэдагаваць"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

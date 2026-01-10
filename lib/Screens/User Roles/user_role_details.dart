@@ -56,6 +56,70 @@ class _UserRoleDetailsState extends State<UserRoleDetails> {
   TextEditingController titleController = TextEditingController();
   bool isMailSent = false;
 
+  // Email validation function
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return lang.S.of(context).emailCannotBeEmpty;
+    }
+    
+    value = value.trim().toLowerCase();
+    
+    // Comprehensive email regex pattern
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    
+    if (!emailRegex.hasMatch(value)) {
+      return lang.S.of(context).pleaseEnterAValidEmail;
+    }
+    
+    // Check domain validity
+    final parts = value.split('@');
+    if (parts.length != 2) {
+      return lang.S.of(context).pleaseEnterAValidEmail;
+    }
+    
+    final domain = parts[1];
+    
+    // Valid top-level domains
+    final validTLDs = ['com', 'org', 'net', 'edu', 'gov', 'in', 'co', 'io', 'info', 'biz', 'me'];
+    
+    // Common email providers - exact match required
+    final exactDomains = {
+      'gmail.com', 'googlemail.com',
+      'yahoo.com', 'yahoo.co.in', 'yahoo.in',
+      'outlook.com', 'outlook.in',
+      'hotmail.com', 'hotmail.in',
+      'live.com', 'live.in',
+      'icloud.com',
+      'rediffmail.com',
+      'ymail.com',
+      'aol.com'
+    };
+    
+    // If it's a known provider, must match exactly
+    if (domain.startsWith('gmail') || domain.startsWith('yahoo') || 
+        domain.startsWith('hotmail') || domain.startsWith('outlook') || 
+        domain.startsWith('live') || domain.startsWith('icloud')) {
+      if (!exactDomains.contains(domain)) {
+        return 'Please enter a valid email address (e.g., name@gmail.com)';
+      }
+    } else {
+      // For other domains, validate TLD
+      final domainParts = domain.split('.');
+      if (domainParts.length < 2) {
+        return lang.S.of(context).pleaseEnterAValidEmail;
+      }
+      
+      final tld = domainParts.last;
+      if (!validTLDs.contains(tld)) {
+        return 'Please enter a valid email address with proper domain (e.g., .com, .in, .org)';
+      }
+    }
+    
+    return null;
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -528,16 +592,7 @@ class _UserRoleDetailsState extends State<UserRoleDetails> {
                             controller: emailController,
                             // initialValue: widget.userRoleModel.email,
                             // cursorColor: kTitleColor,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                //return 'Email can\'n be empty';
-                                return lang.S.of(context).emailCannotBeEmpty;
-                              } else if (!value.contains('@')) {
-                                //return 'Please enter a valid email';
-                                return lang.S.of(context).pleaseEnterAValidEmail;
-                              }
-                              return null;
-                            },
+                            validator: validateEmail,
                             decoration: kInputDecoration.copyWith(
                               //labelText: 'Email',
                               labelText: lang.S.of(context).email,

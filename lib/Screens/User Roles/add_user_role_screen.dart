@@ -53,6 +53,70 @@ class _AddUserRoleState extends State<AddUserRole> {
   String? phoneNumber;
   String? phoneCode;
 
+  // Email validation function
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return lang.S.of(context).emailCannotBeEmpty;
+    }
+    
+    value = value.trim().toLowerCase();
+    
+    // Comprehensive email regex pattern
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    
+    if (!emailRegex.hasMatch(value)) {
+      return lang.S.of(context).pleaseEnterAValidEmail;
+    }
+    
+    // Check domain validity
+    final parts = value.split('@');
+    if (parts.length != 2) {
+      return lang.S.of(context).pleaseEnterAValidEmail;
+    }
+    
+    final domain = parts[1];
+    
+    // Valid top-level domains
+    final validTLDs = ['com', 'org', 'net', 'edu', 'gov', 'in', 'co', 'io', 'info', 'biz', 'me'];
+    
+    // Common email providers - exact match required
+    final exactDomains = {
+      'gmail.com', 'googlemail.com',
+      'yahoo.com', 'yahoo.co.in', 'yahoo.in',
+      'outlook.com', 'outlook.in',
+      'hotmail.com', 'hotmail.in',
+      'live.com', 'live.in',
+      'icloud.com',
+      'rediffmail.com',
+      'ymail.com',
+      'aol.com'
+    };
+    
+    // If it's a known provider, must match exactly
+    if (domain.startsWith('gmail') || domain.startsWith('yahoo') || 
+        domain.startsWith('hotmail') || domain.startsWith('outlook') || 
+        domain.startsWith('live') || domain.startsWith('icloud')) {
+      if (!exactDomains.contains(domain)) {
+        return 'Please enter a valid email address (e.g., name@gmail.com)';
+      }
+    } else {
+      // For other domains, validate TLD
+      final domainParts = domain.split('.');
+      if (domainParts.length < 2) {
+        return lang.S.of(context).pleaseEnterAValidEmail;
+      }
+      
+      final tld = domainParts.last;
+      if (!validTLDs.contains(tld)) {
+        return 'Please enter a valid email address with proper domain (e.g., .com, .in, .org)';
+      }
+    }
+    
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -429,16 +493,7 @@ class _AddUserRoleState extends State<AddUserRole> {
 
                           ///__________email_________________________________________________________
                           AppTextField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                // return 'Email can\'n be empty';
-                                return lang.S.of(context).emailCannotBeEmpty;
-                              } else if (!value.contains('@')) {
-                                //return 'Please enter a valid email';
-                                return lang.S.of(context).pleaseEnterAValidEmail;
-                              }
-                              return null;
-                            },
+                            validator: validateEmail,
                             showCursor: true,
                             controller: emailController,
                             // cursorColor: kTitleColor,
@@ -574,47 +629,49 @@ class _AddUserRoleState extends State<AddUserRole> {
           ),
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: ElevatedButton(
-                onPressed: (() async {
-                  if (salePermission || partiesPermission || purchasePermission || productPermission || profileEditPermission || addExpensePermission || addIncomePermission || dashBoardPermission || lossProfitPermission || dueListPermission || stockPermission || reportsPermission || salesListPermission || purchaseListPermission) {
-                    if (validateAndSave()) {
-                      EasyLoading.show();
-                      user.Permission permission = user.Permission(
-                        salePermission: salePermission,
-                        partiesPermission: partiesPermission,
-                        purchasePermission: purchasePermission,
-                        productPermission: productPermission,
-                        profileEditPermission: profileEditPermission,
-                        addExpensePermission: addExpensePermission,
-                        lossProfitPermission: lossProfitPermission,
-                        dueListPermission: dueListPermission,
-                        stockPermission: stockPermission,
-                        reportsPermission: reportsPermission,
-                        salesListPermission: salesListPermission,
-                        purchaseListPermission: purchaseListPermission,
-                        addIncomePermission: addIncomePermission,
-                        dashboardPermission: dashBoardPermission,
-                      );
-
-                      UserRoleRepo userRepo = UserRoleRepo();
-
-                      await userRepo.addUser(
-                        ref: ref,
-                        context: context,
-                        name: titleController.text,
-                        email: emailController.text,
-                        password: passwordController.text,
-                        permission: permission,
+            child: SafeArea(
+              child: ElevatedButton(
+                  onPressed: (() async {
+                    if (salePermission || partiesPermission || purchasePermission || productPermission || profileEditPermission || addExpensePermission || addIncomePermission || dashBoardPermission || lossProfitPermission || dueListPermission || stockPermission || reportsPermission || salesListPermission || purchaseListPermission) {
+                      if (validateAndSave()) {
+                        EasyLoading.show();
+                        user.Permission permission = user.Permission(
+                          salePermission: salePermission,
+                          partiesPermission: partiesPermission,
+                          purchasePermission: purchasePermission,
+                          productPermission: productPermission,
+                          profileEditPermission: profileEditPermission,
+                          addExpensePermission: addExpensePermission,
+                          lossProfitPermission: lossProfitPermission,
+                          dueListPermission: dueListPermission,
+                          stockPermission: stockPermission,
+                          reportsPermission: reportsPermission,
+                          salesListPermission: salesListPermission,
+                          purchaseListPermission: purchaseListPermission,
+                          addIncomePermission: addIncomePermission,
+                          dashboardPermission: dashBoardPermission,
+                        );
+              
+                        UserRoleRepo userRepo = UserRoleRepo();
+              
+                        await userRepo.addUser(
+                          ref: ref,
+                          context: context,
+                          name: titleController.text,
+                          email: emailController.text,
+                          password: passwordController.text,
+                          permission: permission,
+                        );
+                      }
+                    } else {
+                      EasyLoading.showError(
+                        lang.S.of(context).youHaveToGivePermission,
+                        //'You Have To Give Permission'
                       );
                     }
-                  } else {
-                    EasyLoading.showError(
-                      lang.S.of(context).youHaveToGivePermission,
-                      //'You Have To Give Permission'
-                    );
-                  }
-                }),
-                child: Text(lang.S.of(context).create)),
+                  }),
+                  child: Text(lang.S.of(context).create)),
+            ),
           ),
         ),
       );

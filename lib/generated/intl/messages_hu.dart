@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Minden üzleti megoldás",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "A BharatBill egy teljes üzleti megoldás raktárkészlettel, számlával, értékesítéssel, költséggel és veszteség/nyereség számítással.",
+      "A PosPro egy teljes üzleti megoldás raktárkészlettel, számlával, értékesítéssel, költséggel és veszteség/nyereség számítással.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Minden időben"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Már hozzáadva"),
@@ -145,7 +145,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Válassza ki a funkciókat",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "A funkciók fontos részét képezik annak, hogy a BharatBill más legyen, mint a hagyományos megoldások.",
+      "A funkciók fontos részét képezik annak, hogy a PosPro más legyen, mint a hagyományos megoldások.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -259,7 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Könnyen használható mobil POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "A BharatBill alkalmazás ingyenes, könnyen használható. Valójában ez az egyik legjobb értékesítési pontrendszer a világon.",
+      "A PosPro alkalmazás ingyenes, könnyen használható. Valójában ez az egyik legjobb értékesítési pontrendszer a világon.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Szerkesztés"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

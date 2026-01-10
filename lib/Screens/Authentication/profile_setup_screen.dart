@@ -289,7 +289,17 @@ class _ProfileSetupState extends State<ProfileSetup> {
                             height: 60.0,
                             child: AppTextField(
                               controller: phoneController,
+                              maxLength: 10,
                               validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Phone number is required';
+                                }
+                                if (value.length != 10) {
+                                  return 'Phone number must be exactly 10 digits';
+                                }
+                                if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                                  return 'Phone number must contain only digits';
+                                }
                                 return null;
                               },
                               textFieldType: TextFieldType.PHONE,
@@ -297,6 +307,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
                                 labelText: lang.S.of(context).phone,
                                 hintText: lang.S.of(context).enterYourPhoneNumber,
                                 border: const OutlineInputBorder(),
+                                counterText: '',
                               ),
                             ),
                           ),

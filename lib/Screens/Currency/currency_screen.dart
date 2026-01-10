@@ -104,16 +104,18 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   EasyLoading.dismiss();
                 }
               },
-              child: Container(
-                height: 50,
-                decoration: const BoxDecoration(
-                  color: kMainColor,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Center(
-                  child: Text(
-                    lang.S.of(context).save,
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
+              child: SafeArea(
+                child: Container(
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: kMainColor,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: Center(
+                    child: Text(
+                      lang.S.of(context).save,
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
                 ),
               ),

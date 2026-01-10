@@ -80,7 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Zonke izixazululo zebhizinisi",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "I-BharatBill iyisixazululo esiphelele se-business esinezitoko, ama-akhawunti, ukuthengisa, izindleko kanye noklahleka/nenzuzo.",
+      "I-PosPro iyisixazululo esiphelele se-business esinezitoko, ama-akhawunti, ukuthengisa, izindleko kanye noklahleka/nenzuzo.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Sonke Isikhathi"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Sesivele Sengezwe"),
@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Khetha Izici Zakho",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Izici ziyingxenye ebalulekile eyenza i-BharatBill ihluke kwezinye izixazululo zesiko.",
+      "Izici ziyingxenye ebalulekile eyenza i-POSpro ihluke kwezinye izixazululo zesiko.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Ukucaphuna"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -253,7 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Kulula ukusebenzisa i-POS yeselula",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Uhlelo lokusebenza lwe-BharatBill lumahhala, kulula ukusebenzisa. Eqinisweni, ingenye yezinhlelo ze-POS ezinhle kakhulu emhlabeni jikelele.",
+      "Uhlelo lokusebenza lwe-POSpro lumahhala, kulula ukusebenzisa. Eqinisweni, ingenye yezinhlelo ze-POS ezinhle kakhulu emhlabeni jikelele.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Hlela"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

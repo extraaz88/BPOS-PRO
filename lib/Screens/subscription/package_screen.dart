@@ -74,49 +74,51 @@ class _PackageScreenState extends State<PackageScreen> {
             ),
             bottomNavigationBar: Visibility(
               visible: info.user?.role != 'staff',
-              child: SizedBox(
-                height: 115,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Text(
-                        lang.S.of(context).unlimitedUsagesOfOurPackage,
-                        //'Unlimited Usages of Our Package👇 ',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
+              child: SafeArea(
+                child: SizedBox(
+                  height: 115,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Text(
+                          lang.S.of(context).unlimitedUsagesOfOurPackage,
+                          //'Unlimited Usages of Our Package👇 ',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          PurchasePremiumPlanScreen(
-                            isCameBack: true,
-                            enrolledPlan: info.enrolledPlan,
-                            willExpire: info.willExpire,
-                          ).launch(context);
-                        },
-                        child: Container(
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: kMainColor,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Center(
-                            child: Text(
-                              lang.S.of(context).updateNow,
-                              style: const TextStyle(fontSize: 18, color: Colors.white),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            PurchasePremiumPlanScreen(
+                              isCameBack: true,
+                              enrolledPlan: info.enrolledPlan,
+                              willExpire: info.willExpire,
+                            ).launch(context);
+                          },
+                          child: Container(
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              color: kMainColor,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Center(
+                              child: Text(
+                                lang.S.of(context).updateNow,
+                                style: const TextStyle(fontSize: 18, color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

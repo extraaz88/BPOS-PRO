@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Бардык бизнес чечимдери",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill - бул толук кандуу бизнес чечими, анда запастар, эсептер, сатуулар, чыгымдар жана киреше/чыгым камтылган.",
+      "PosPro - бул толук кандуу бизнес чечими, анда запастар, эсептер, сатуулар, чыгымдар жана киреше/чыгым камтылган.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Бардык убакыт"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Мурун кошулган"),
@@ -150,7 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Өзүңүздүн өзгөчөлүктөрүңүздү тандаңыз",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Өзгөчөлүктөр BharatBill\'ну салттуу чечимдерден айырмалап турган маанилүү бөлүгү болуп саналат.",
+      "Өзгөчөлүктөр POSpro\'ну салттуу чечимдерден айырмалап турган маанилүү бөлүгү болуп саналат.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Клэрэнс"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -265,7 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Колдонууга оңой мобилдик POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill колдонмосу акысыз, колдонууга оңой. Чындыгында, ал дүйнө жүзү боюнча эң мыкты POS системаларынын бири болуп саналат.",
+      "POSpro колдонмосу акысыз, колдонууга оңой. Чындыгында, ал дүйнө жүзү боюнча эң мыкты POS системаларынын бири болуп саналат.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Түзөтүү"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

@@ -90,7 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "සියළු ව්‍යාපාර වින්‍යාස",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill අඩුවට සම්පූර්ණ ව්‍යාපෘතියක් සහයෝග, ගිණුම, විකුණුම්, වාර්තාව සහ මුද්‍රණ/අස්වාදය සමග සම්පූර්ණ ව්‍යාපෘතියක් වේ.",
+      "PosPro අඩුවට සම්පූර්ණ ව්‍යාපෘතියක් සහයෝග, ගිණුම, විකුණුම්, වාර්තාව සහ මුද්‍රණ/අස්වාදය සමග සම්පූර්ණ ව්‍යාපෘතියක් වේ.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("සියලුම කාලය"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("දැනටමත් එක් කර ඇත"),
@@ -161,7 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ඔබේ විශේෂිත සේවාවන් තෝරන්න",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "විශේෂිත සේවාවන් වලට උච්චාරණ වේගයක් අතුලකු කරයි, එවිට BharatBill වෙනුවට වෙනස් වේ.",
+      "විශේෂිත සේවාවන් වලට උච්චාරණ වේගයක් අතුලකු කරයි, එවිට PosPro වෙනුවට වෙනස් වේ.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("ක්ලරන්ස්"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -273,7 +273,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ප්‍රවාණ බිම් පැහැදිලි භාවිතා කිරීම සුළු",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill යෙදුම නිර්මාණය කළහොත් නොමිලයෙක් සහ ප්‍රවයින්ට භාවිතා කිරීම සුදු වේ. මෙය, ලෝකයේ දැනටමත් පවතින පුවරුවක් POS පද්ධතියක් වන විට, එවක් අතුරු වනවිට හොඳයි.",
+      "PosPro යෙදුම නිර්මාණය කළහොත් නොමිලයෙක් සහ ප්‍රවයින්ට භාවිතා කිරීම සුදු වේ. මෙය, ලෝකයේ දැනටමත් පවතින පුවරුවක් POS පද්ධතියක් වන විට, එවක් අතුරු වනවිට හොඳයි.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("සංස්කරණය කරන්න"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

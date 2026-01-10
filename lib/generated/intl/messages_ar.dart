@@ -66,7 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "جميع حلول الأعمال",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill هو حلاً شاملاً للأعمال مع الأسهم والحسابات والمبيعات والمصروفات والخسائر / الأرباح.",
+      "POSpro هو حلاً شاملاً للأعمال مع الأسهم والحسابات والمبيعات والمصروفات والخسائر / الأرباح.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("كل الوقت"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("اسم التصنيف"),
@@ -124,7 +124,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseSupplier": MessageLookupByLibrary.simpleMessage("اختر موردًا"),
     "choseYourFeature": MessageLookupByLibrary.simpleMessage("اختر ميزاتك"),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "الميزات هي الجزء الهام الذي يجعلBharatBill مختلفًا عن الحلول التقليدية.",
+      "الميزات هي الجزء الهام الذي يجعلPosPro مختلفًا عن الحلول التقليدية.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("كلارنس"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage("انقر للاتصال"),
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "سهولة استخدام نقاط البيع المحمولة",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "تطبيق BharatBill مجاني وسهل الاستخدام. في الواقع، إنه واحد من أفضل أنظمة نقاط البيع حول العالم.",
+      "تطبيق POSpro مجاني وسهل الاستخدام. في الواقع، إنه واحد من أفضل أنظمة نقاط البيع حول العالم.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("يحرر"),
     "editPhone": MessageLookupByLibrary.simpleMessage("تحرير رقم الهاتف؟"),

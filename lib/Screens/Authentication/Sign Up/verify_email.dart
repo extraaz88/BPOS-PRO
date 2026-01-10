@@ -11,11 +11,24 @@ import '../../../GlobalComponents/glonal_popup.dart';
 import '../forgot password/repo/forgot_pass_repo.dart';
 import '../forgot password/set_new_password.dart';
 import '../profile_setup_screen.dart';
+import '../../Home/home.dart';
 
 class VerifyEmail extends StatefulWidget {
-  const VerifyEmail({Key? key, required this.email, required this.isFormForgotPass}) : super(key: key);
+  const VerifyEmail({
+    Key? key, 
+    required this.email, 
+    required this.isFormForgotPass,
+    this.name,
+    this.password,
+    this.businessName,
+    this.category,
+  }) : super(key: key);
   final String email;
   final bool isFormForgotPass;
+  final String? name;
+  final String? password;
+  final String? businessName;
+  final String? category;
 
   @override
   State<VerifyEmail> createState() => _VerifyEmailState();
@@ -220,13 +233,32 @@ class _VerifyEmailState extends State<VerifyEmail> {
                           isClicked = true;
                           EasyLoading.show();
                           SignUpRepo repo = SignUpRepo();
-                          if (await repo.verifyOTP(email: widget.email, otp: pinController.text, context: context)) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ProfileSetup(),
-                              ),
-                            );
+                          if (await repo.verifyOTP(
+                            email: widget.email, 
+                            otp: pinController.text, 
+                            context: context,
+                            name: widget.name,
+                            password: widget.password,
+                            businessName: widget.businessName,
+                            category: widget.category,
+                          )) {
+                            // If name and password are provided, navigate to Home (dashboard)
+                            // Otherwise navigate to ProfileSetup (for other flows)
+                            if (widget.name != null && widget.password != null) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Home(),
+                                ),
+                              );
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ProfileSetup(),
+                                ),
+                              );
+                            }
                           } else {
                             isClicked = false;
                           }

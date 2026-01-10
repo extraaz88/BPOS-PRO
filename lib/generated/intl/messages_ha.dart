@@ -73,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Duk Ma\'aunin Kasuwanci",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill cikakken mafita ne na kasuwanci tare da kaya, asusun, tallace-tallace, kashewa da asara / riba.",
+      "POSPro cikakken mafita ne na kasuwanci tare da kaya, asusun, tallace-tallace, kashewa da asara / riba.",
     ),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("An riga an ƙara"),
     "alreadyHaveAnAccount": MessageLookupByLibrary.simpleMessage(
@@ -129,7 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "choseYourFeature": MessageLookupByLibrary.simpleMessage("Zaɓi Fasalinku"),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Fasalolin sune ɓangaren mahimmanci wanda ke sanya BharatBill ya bambanta da mafita na gargajiya.",
+      "Fasalolin sune ɓangaren mahimmanci wanda ke sanya POSpro ya bambanta da mafita na gargajiya.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage("Danna don Haɗa"),
@@ -228,7 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Mai sauƙin amfani da POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Aikace-aikacen BharatBill kyauta ne, mai sauƙin amfani. A zahiri, ɗaya daga cikin mafi kyawun tsarin POS a duniya.",
+      "Aikace-aikacen POSpro kyauta ne, mai sauƙin amfani. A zahiri, ɗaya daga cikin mafi kyawun tsarin POS a duniya.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Gyara"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Gyara Lamban Wayar?"),

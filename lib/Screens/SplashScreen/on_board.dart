@@ -24,18 +24,18 @@ class _OnBoardState extends State<OnBoard> {
     List<Map<String, dynamic>> sliderList = [
       {
         "icon": onboard1,
-        "title": lang.S.of(context).easyToUseThePos,
-        "description": lang.S.of(context).easytheusedesciption,
+        "title": "Smart Billing Made Simple",
+        "description": "Say goodbye to messy registers. Manage sales, stock, and payments in just a few taps."
       },
       {
         "icon": onboard2,
-        "title": lang.S.of(context).choseYourFeature,
-        "description": lang.S.of(context).choseyourfeatureDesciption,
+        "title": "Stay on Top of Your Business",
+        "description": "From stock alerts to daily sales reports—get everything you need to grow your business, anytime, anywhere.",
       },
       {
         "icon": onboard3,
-        "title": lang.S.of(context).allBusinessSolutions,
-        "description": lang.S.of(context).allBusinessolutionDescrip,
+        "title": "Fast, Secure Payments",
+        "description": "Accept UPI, card, and cash with ease. Keep your business trusted and customers happy.",
       },
     ];
     return sliderList;
@@ -79,16 +79,12 @@ class _OnBoardState extends State<OnBoard> {
                 PageView.builder(
                   itemCount: sliderList.length,
                   controller: pageController,
-                  onPageChanged: (int index) =>
-                      setState(() => currentIndexPage = index),
+                  onPageChanged: (int index) => setState(() => currentIndexPage = index),
                   itemBuilder: (_, index) {
                     return Column(
                       children: [
                         const SizedBox(height: 30),
-                        Image.asset(sliderList[index]['icon'],
-                            fit: BoxFit.fill,
-                            width: context.width() - 100,
-                            height: context.width() - 100),
+                        Image.asset(sliderList[index]['icon'], fit: BoxFit.fill, width: context.width() - 100, height: context.width() - 100),
                         const SizedBox(height: 30),
                         Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -102,8 +98,7 @@ class _OnBoardState extends State<OnBoard> {
                         ),
                         // ignore: sized_box_for_whitespace
                         Padding(
-                          padding:
-                              const EdgeInsets.only(left: 20.0, right: 20.0),
+                          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                           // ignore: sized_box_for_whitespace
                           child: Container(
                             width: context.width(),
@@ -129,11 +124,7 @@ class _OnBoardState extends State<OnBoard> {
             child: SmoothPageIndicator(
               controller: pageController,
               count: sliderList.length,
-              effect: ExpandingDotsEffect(
-                  dotColor: kMainColor.withOpacity(0.2),
-                  activeDotColor: kMainColor,
-                  dotHeight: 8,
-                  dotWidth: 8),
+              effect: ExpandingDotsEffect(dotColor: kMainColor.withOpacity(0.2), activeDotColor: kMainColor, dotHeight: 8, dotWidth: 8),
             ),
           ),
           // DotIndicator(
@@ -151,18 +142,14 @@ class _OnBoardState extends State<OnBoard> {
               style: OutlinedButton.styleFrom(
                 maximumSize: const Size(double.infinity, 48),
                 minimumSize: const Size(double.infinity, 48),
-                disabledBackgroundColor:
-                    _theme.colorScheme.primary.withValues(alpha: 0.15),
-                disabledForegroundColor:
-                    const Color(0xff567DF4).withOpacity(0.05),
+                disabledBackgroundColor: _theme.colorScheme.primary.withValues(alpha: 0.15),
+                disabledForegroundColor: const Color(0xff567DF4).withOpacity(0.05),
               ),
               onPressed: () {
                 setState(
                   () {
                     currentIndexPage < 2
-                        ? pageController.nextPage(
-                            duration: const Duration(microseconds: 1000),
-                            curve: Curves.bounceInOut)
+                        ? pageController.nextPage(duration: const Duration(microseconds: 1000), curve: Curves.bounceInOut)
                         : Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

@@ -67,10 +67,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "admin": MessageLookupByLibrary.simpleMessage("ผู้ดูแลระบบ"),
     "all": MessageLookupByLibrary.simpleMessage("ทั้งหมด"),
     "allBusinessSolutions": MessageLookupByLibrary.simpleMessage(
-      "สิ่งที่ BharatBill มีให้ทั้งหมด",
+      "สิ่งที่ PosPro มีให้ทั้งหมด",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill เป็นสิ่งที่สมบูรณ์แบบสำหรับธุรกิจด้วยคลังสินค้า บัญชี การขาย ค่าใช้จ่ายและขาดทุน / กำไร",
+      "PosPro เป็นสิ่งที่สมบูรณ์แบบสำหรับธุรกิจด้วยคลังสินค้า บัญชี การขาย ค่าใช้จ่ายและขาดทุน / กำไร",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("ตลอดเวลา"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("เพิ่มแล้ว"),
@@ -132,7 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "เลือกคุณสมบัติของคุณ",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "คุณสมบัติเป็นส่วนสำคัญที่ทำให้ BharatBill แตกต่างจากแบบแผนดั้งเดิม",
+      "คุณสมบัติเป็นส่วนสำคัญที่ทำให้ PosPro แตกต่างจากแบบแผนดั้งเดิม",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("คลาร์เรนซ์"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -235,7 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ใช้งาน POS บนมือถือได้ง่าย",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "แอป BharatBill ฟรีและใช้งานง่าย ในความเป็นจริง เป็นหนึ่งในระบบ POS ที่ดีที่สุดทั่วโลก",
+      "แอป PosPro ฟรีและใช้งานง่าย ในความเป็นจริง เป็นหนึ่งในระบบ POS ที่ดีที่สุดทั่วโลก",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("แก้ไข"),
     "editPhone": MessageLookupByLibrary.simpleMessage("แก้ไขหมายเลขโทรศัพท์?"),

@@ -78,7 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sva poslovna rešenja",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill je potpuno poslovno rešenje sa skladištem, računima, prodajom, troškovima i gubitkom/profitom.",
+      "PosPro je potpuno poslovno rešenje sa skladištem, računima, prodajom, troškovima i gubitkom/profitom.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Sve vreme"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Već dodato"),
@@ -144,7 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Izaberite vaše mogućnosti",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Mogućnosti su važan deo koji čini BharatBill drugačijim od tradicionalnih rešenja.",
+      "Mogućnosti su važan deo koji čini PosPro drugačijim od tradicionalnih rešenja.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Klerens"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -253,7 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Lako korišćenje mobilnog POS sistema",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill aplikacija je besplatna i laka za korišćenje. Zapravo, to je jedan od najboljih POS sistema širom sveta.",
+      "PosPro aplikacija je besplatna i laka za korišćenje. Zapravo, to je jedan od najboljih POS sistema širom sveta.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Uredi"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Uredite broj telefona?"),

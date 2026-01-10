@@ -76,7 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ਸਾਰੇ ਕਾਰੋਬਾਰੀ ਹੱਲ",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill ਸਟਾਕ, ਖਾਤਾ, ਵਿਕਰੀ, ਖ਼ਰਚ ਅਤੇ ਨੁਕਸਾਨ/ਮੁਨਾਫ਼ੇ ਵਾਲਾ ਇੱਕ ਪੂਰਾ ਕਾਰੋਬਾਰੀ ਹੱਲ ਹੈ।",
+      "PosPro ਸਟਾਕ, ਖਾਤਾ, ਵਿਕਰੀ, ਖ਼ਰਚ ਅਤੇ ਨੁਕਸਾਨ/ਮੁਨਾਫ਼ੇ ਵਾਲਾ ਇੱਕ ਪੂਰਾ ਕਾਰੋਬਾਰੀ ਹੱਲ ਹੈ।",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("ਸਾਰੇ ਸਮੇਂ"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage(
@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ਆਪਣੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਚੁਣੋ",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਮਹੱਤਵਪੂਰਨ ਹਿੱਸਾ ਹਨ ਜੋ BharatBill ਨੂੰ ਰਵਾਇਤੀ ਹੱਲਾਂ ਤੋਂ ਵੱਖਰਾ ਬਣਾਉਂਦਾ ਹੈ।",
+      "ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਮਹੱਤਵਪੂਰਨ ਹਿੱਸਾ ਹਨ ਜੋ POSpro ਨੂੰ ਰਵਾਇਤੀ ਹੱਲਾਂ ਤੋਂ ਵੱਖਰਾ ਬਣਾਉਂਦਾ ਹੈ।",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("ਕਲੇਰੈਂਸ"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -247,7 +247,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ਮੋਬਾਈਲ ਪੋਸ ਦੀ ਵਰਤੋਂ ਕਰਨਾ ਆਸਾਨ ਹੈ",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill ਐਪ ਮੁਫ਼ਤ ਹੈ, ਵਰਤੋਂ ਵਿੱਚ ਆਸਾਨ ਹੈ. ਦਰਅਸਲ, ਇਹ ਦੁਨੀਆ ਭਰ ਵਿੱਚ ਸਭ ਤੋਂ ਵਧੀਆ POS ਸਿਸਟਮਾਂ ਵਿੱਚੋਂ ਇੱਕ ਹੈ।",
+      "POSpro ਐਪ ਮੁਫ਼ਤ ਹੈ, ਵਰਤੋਂ ਵਿੱਚ ਆਸਾਨ ਹੈ. ਦਰਅਸਲ, ਇਹ ਦੁਨੀਆ ਭਰ ਵਿੱਚ ਸਭ ਤੋਂ ਵਧੀਆ POS ਸਿਸਟਮਾਂ ਵਿੱਚੋਂ ਇੱਕ ਹੈ।",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("ਸੰਪਾਦਿਤ ਕਰੋ"),
     "editPhone": MessageLookupByLibrary.simpleMessage("ਫੋਨ ਨੰਬਰ ਸੰਪਾਦਿਤ ਕਰੋ?"),

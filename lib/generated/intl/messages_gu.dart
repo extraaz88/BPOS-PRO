@@ -78,7 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "બધા બિઝનેસ સોલ્યુશન્સ",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill સ્ટોક, એકાઉન્ટ, વેચાણ, ખર્ચ અને નુકસાન/લાભ સાથે સંપૂર્ણ વ્યવસાય ઉકેલ છે.",
+      "PosPro સ્ટોક, એકાઉન્ટ, વેચાણ, ખર્ચ અને નુકસાન/લાભ સાથે સંપૂર્ણ વ્યવસાય ઉકેલ છે.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("બધા સમય"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("પહેલાથી ઉમેર્યું છે"),
@@ -134,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "તમારી સુવિધાઓ પસંદ કરો",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "સુવિધાઓ મહત્વપૂર્ણ ભાગ છે જે BharatBill ને પરંપરાગત ઉકેલોથી અલગ પાડે છે.",
+      "સુવિધાઓ મહત્વપૂર્ણ ભાગ છે જે POSpro ને પરંપરાગત ઉકેલોથી અલગ પાડે છે.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("ક્લેરેન્સ"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -243,7 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "વાપરવા માટે સરળ મોબાઈલ પોસ",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill એપ ફ્રી છે, વાપરવામાં સરળ છે. હકીકતમાં, તે વિશ્વભરમાં શ્રેષ્ઠ POS સિસ્ટમ્સમાંથી એક છે.",
+      "POSpro એપ ફ્રી છે, વાપરવામાં સરળ છે. હકીકતમાં, તે વિશ્વભરમાં શ્રેષ્ઠ POS સિસ્ટમ્સમાંથી એક છે.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("સંપાદિત કરો"),
     "editPhone": MessageLookupByLibrary.simpleMessage("ફોન નંબર સંપાદિત કરો?"),

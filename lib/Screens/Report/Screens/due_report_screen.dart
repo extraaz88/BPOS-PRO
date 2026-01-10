@@ -13,7 +13,10 @@ import '../../../currency.dart';
 import '../../../thermal priting invoices/model/print_transaction_model.dart';
 import '../../../thermal priting invoices/provider/print_thermal_invoice_provider.dart';
 import '../../Due Calculation/Providers/due_provider.dart';
+import '../../Due Calculation/Model/due_collection_model.dart';
 import '../../invoice_details/due_invoice_details.dart';
+import '../../Sales/add_sales.dart';
+import '../../Purchase/add_and_edit_purchase.dart';
 
 class DueReportScreen extends StatefulWidget {
   const DueReportScreen({Key? key}) : super(key: key);
@@ -28,6 +31,46 @@ class _DueReportScreenState extends State<DueReportScreen> {
   TextEditingController toDateTextEditingController = TextEditingController(text: DateFormat.yMMMd().format(DateTime.now()));
   DateTime fromDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
   DateTime toDate = DateTime.now();
+
+  void _navigateToOriginalTransaction(BuildContext context, DueCollection dueCollection) {
+    // Debug: Print party information
+    print('Party Type: ${dueCollection.party?.type}');
+    print('Party Name: ${dueCollection.party?.name}');
+    print('Due Amount: ${dueCollection.dueAmountAfterPay}');
+    
+    // Check if this is a sale or purchase transaction based on party type
+    if (dueCollection.party?.type == 'Customer') {
+      // Navigate to Sales screen for customers with due amount
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddSalesScreen(
+            customerModel: dueCollection.party,
+            dueAmount: dueCollection.dueAmountAfterPay?.toDouble() ?? 0.0,
+          ),
+        ),
+      );
+    } else if (dueCollection.party?.type == 'Supplier') {
+      // Navigate to Purchase screen for suppliers with due amount
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddAndUpdatePurchaseScreen(
+            supplierModel: dueCollection.party,
+            dueAmount: dueCollection.dueAmountAfterPay?.toDouble() ?? 0.0,
+          ),
+        ),
+      );
+    } else {
+      // Show error message if party type cannot be determined
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Unable to determine transaction type. Party type: ${dueCollection.party?.type ?? 'null'}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   List<String> timeLimit = [
     'ToDay',
@@ -65,6 +108,7 @@ class _DueReportScreenState extends State<DueReportScreen> {
     if (_isRefreshing) return; // Prevent duplicate refresh calls
     _isRefreshing = true;
 
+    // ignore: unused_result
     ref.refresh(dueCollectionListProvider);
 
     await Future.delayed(const Duration(seconds: 1)); // Optional delay
@@ -119,11 +163,13 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                     lastDate: DateTime(2101),
                                     context: context,
                                   );
-                                  setState(() {
-                                    fromDateTextEditingController.text = DateFormat.yMMMd().format(picked ?? DateTime.now());
-                                    fromDate = picked!;
-                                    dropdownValue = 'Custom';
-                                  });
+                                  if (picked != null) {
+                                    setState(() {
+                                      fromDateTextEditingController.text = DateFormat.yMMMd().format(picked);
+                                      fromDate = picked;
+                                      dropdownValue = 'Custom';
+                                    });
+                                  }
                                 },
                                 icon: const Icon(FeatherIcons.calendar),
                               ),
@@ -149,11 +195,13 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                     context: context,
                                   );
 
-                                  setState(() {
-                                    toDateTextEditingController.text = DateFormat.yMMMd().format(picked ?? DateTime.now());
-                                    picked!.isToday ? toDate = DateTime.now() : toDate = picked;
-                                    dropdownValue = 'Custom';
-                                  });
+                                  if (picked != null) {
+                                    setState(() {
+                                      toDateTextEditingController.text = DateFormat.yMMMd().format(picked);
+                                      picked.isToday ? toDate = DateTime.now() : toDate = picked;
+                                      dropdownValue = 'Custom';
+                                    });
+                                  }
                                 },
                                 icon: const Icon(FeatherIcons.calendar),
                               ),
@@ -166,12 +214,27 @@ class _DueReportScreenState extends State<DueReportScreen> {
                   providerData.when(data: (transaction) {
                     double totalReceiveDue = 0;
                     double totalPaidDue = 0;
-                    for (var element in transaction) {
-                      if ((fromDate.isBefore(DateTime.parse(element.paymentDate ?? '')) || DateTime.parse(element.paymentDate ?? '').isAtSameMomentAs(fromDate)) && (toDate.isAfter(DateTime.parse(element.paymentDate ?? '')) || DateTime.parse(element.paymentDate ?? '').isAtSameMomentAs(toDate))) {
-                        element.party?.type != 'Supplier' ? totalReceiveDue += element.payDueAmount ?? 0 : totalPaidDue += element.payDueAmount ?? 0;
+                    // Filter out walk-in customers and calculate totals
+                    final filteredTransactions = transaction.where((element) {
+                      // Skip walk-in customers (id == -1 or name == 'Walk-in Customer')
+                      final partyId = element.partyId ?? element.party?.id;
+                      final partyName = element.party?.name ?? '';
+                      return partyId != -1 && partyName != 'Walk-in Customer';
+                    }).toList();
+                    
+                    for (var element in filteredTransactions) {
+                      if (element.paymentDate != null && element.paymentDate!.isNotEmpty) {
+                        try {
+                          DateTime paymentDateTime = DateTime.parse(element.paymentDate!);
+                          if ((fromDate.isBefore(paymentDateTime) || paymentDateTime.isAtSameMomentAs(fromDate)) && (toDate.isAfter(paymentDateTime) || paymentDateTime.isAtSameMomentAs(toDate))) {
+                            element.party?.type != 'Supplier' ? totalReceiveDue += element.payDueAmount ?? 0 : totalPaidDue += element.payDueAmount ?? 0;
+                          }
+                        } catch (e) {
+                          // Skip invalid dates
+                        }
                       }
                     }
-                    return transaction.isNotEmpty
+                    return filteredTransactions.isNotEmpty
                         ? Column(
                             children: [
                               Padding(
@@ -303,16 +366,27 @@ class _DueReportScreenState extends State<DueReportScreen> {
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: transaction.length,
+                                itemCount: filteredTransactions.length,
                                 itemBuilder: (context, index) {
+                                  bool isVisible = false;
+                                  if (filteredTransactions[index].paymentDate != null && filteredTransactions[index].paymentDate!.isNotEmpty) {
+                                    try {
+                                      DateTime paymentDateTime = DateTime.parse(filteredTransactions[index].paymentDate!);
+                                      isVisible = (fromDate.isBefore(paymentDateTime) || paymentDateTime.isAtSameMomentAs(fromDate)) && (toDate.isAfter(paymentDateTime) || paymentDateTime.isAtSameMomentAs(toDate));
+                                    } catch (e) {
+                                      isVisible = false;
+                                    }
+                                  }
                                   return Visibility(
-                                    visible: (fromDate.isBefore(DateTime.parse(transaction[index].paymentDate ?? '')) || DateTime.parse(transaction[index].paymentDate ?? '').isAtSameMomentAs(fromDate)) && (toDate.isAfter(DateTime.parse(transaction[index].paymentDate ?? '')) || DateTime.parse(transaction[index].paymentDate ?? '').isAtSameMomentAs(toDate)),
+                                    visible: isVisible,
                                     child: GestureDetector(
                                       onTap: () {
-                                        DueInvoiceDetails(
-                                          dueCollection: transaction[index],
-                                          personalInformationModel: personalData.value!,
-                                        ).launch(context);
+                                        if (personalData.value != null) {
+                                          DueInvoiceDetails(
+                                            dueCollection: filteredTransactions[index],
+                                            personalInformationModel: personalData.value!,
+                                          ).launch(context);
+                                        }
                                       },
                                       child: Column(
                                         children: [
@@ -328,14 +402,14 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                                     Row(
                                                       children: [
                                                         Text(
-                                                          transaction[index].party?.name ?? '',
+                                                          filteredTransactions[index].party?.name ?? '',
                                                           style: const TextStyle(fontSize: 16),
                                                         ),
                                                         const SizedBox(
                                                           width: 10,
                                                         ),
                                                         Visibility(
-                                                          visible: transaction[index].party?.type == 'Supplier',
+                                                          visible: filteredTransactions[index].party?.type == 'Supplier',
                                                           child: const Text(
                                                             '[S]',
                                                             style: TextStyle(
@@ -345,7 +419,7 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                                         )
                                                       ],
                                                     ),
-                                                    Text('#${transaction[index].invoiceNumber}'),
+                                                    Text('#${filteredTransactions[index].invoiceNumber}'),
                                                   ],
                                                 ),
                                                 const SizedBox(height: 10),
@@ -354,35 +428,52 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                                   children: [
                                                     Container(
                                                       padding: const EdgeInsets.all(8),
-                                                      decoration: BoxDecoration(color: transaction[index].dueAmountAfterPay! <= 0 ? const Color(0xff0dbf7d).withOpacity(0.1) : const Color(0xFFED1A3B).withOpacity(0.1), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                                                      decoration: BoxDecoration(color: (filteredTransactions[index].dueAmountAfterPay ?? 0) <= 0 ? const Color(0xff0dbf7d).withOpacity(0.1) : const Color(0xFFED1A3B).withOpacity(0.1), borderRadius: const BorderRadius.all(Radius.circular(10))),
                                                       child: Text(
-                                                        transaction[index].dueAmountAfterPay! <= 0 ? lang.S.of(context).fullyPaid : lang.S.of(context).stillUnpaid,
-                                                        style: TextStyle(color: transaction[index].dueAmountAfterPay! <= 0 ? const Color(0xff0dbf7d) : const Color(0xFFED1A3B)),
+                                                        (filteredTransactions[index].dueAmountAfterPay ?? 0) <= 0 ? lang.S.of(context).fullyPaid : lang.S.of(context).stillUnpaid,
+                                                        style: TextStyle(color: (filteredTransactions[index].dueAmountAfterPay ?? 0) <= 0 ? const Color(0xff0dbf7d) : const Color(0xFFED1A3B)),
                                                       ),
                                                     ),
                                                     Text(
-                                                      DateFormat.yMMMd().format(DateTime.parse(transaction[index].paymentDate ?? '')),
+                                                      filteredTransactions[index].paymentDate != null && filteredTransactions[index].paymentDate!.isNotEmpty
+                                                          ? (() {
+                                                              try {
+                                                                return DateFormat.yMMMd().format(DateTime.parse(filteredTransactions[index].paymentDate!));
+                                                              } catch (e) {
+                                                                return 'Invalid Date';
+                                                              }
+                                                            })()
+                                                          : 'No Date',
                                                       style: const TextStyle(color: Colors.grey),
                                                     ),
                                                   ],
                                                 ),
                                                 const SizedBox(height: 10),
                                                 Text(
-                                                  '${lang.S.of(context).total} : $currency ${transaction[index].totalDue?.toStringAsFixed(2)}',
+                                                  '${lang.S.of(context).total} : $currency ${filteredTransactions[index].totalDue?.toStringAsFixed(2)}',
                                                   style: const TextStyle(color: Colors.grey),
                                                 ),
                                                 const SizedBox(height: 10),
                                                 Text(
-                                                  '${lang.S.of(context).paid} : $currency ${(transaction[index].totalDue!.toDouble() - transaction[index].dueAmountAfterPay!.toDouble()).toStringAsFixed(2)}',
+                                                  '${lang.S.of(context).paid} : $currency ${((filteredTransactions[index].totalDue ?? 0).toDouble() - (filteredTransactions[index].dueAmountAfterPay ?? 0).toDouble()).toStringAsFixed(2)}',
                                                   style: const TextStyle(color: Colors.grey),
                                                 ),
+                                                const SizedBox(height: 10),
+                                                Text(
+                                                  '${lang.S.of(context).due}: $currency ${filteredTransactions[index].dueAmountAfterPay?.toStringAsFixed(2)}',
+                                                  style: const TextStyle(fontSize: 16),
+                                                ).visible((filteredTransactions[index].dueAmountAfterPay ?? 0) > 0),
+                                                if (filteredTransactions[index].paymentType?.name != null)
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 10.0),
+                                                    child: Text(
+                                                      '${lang.S.of(context).paymentTypes}: ${filteredTransactions[index].paymentType?.name ?? 'N/A'}',
+                                                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                                    ),
+                                                  ),
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.end,
                                                   children: [
-                                                    Text(
-                                                      '${lang.S.of(context).due}: $currency ${transaction[index].dueAmountAfterPay?.toStringAsFixed(2)}',
-                                                      style: const TextStyle(fontSize: 16),
-                                                    ).visible((transaction[index].dueAmountAfterPay ?? 0) > 0),
                                                     personalData.when(data: (data) {
                                                       return Row(
                                                         children: [
@@ -393,7 +484,7 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                                                 if ((Theme.of(context).platform == TargetPlatform.android)) {
                                                                   ///________Print_______________________________________________________
 
-                                                                  PrintDueTransactionModel model = PrintDueTransactionModel(dueTransactionModel: transaction[index], personalInformationModel: data);
+                                                                  PrintDueTransactionModel model = PrintDueTransactionModel(dueTransactionModel: filteredTransactions[index], personalInformationModel: data);
                                                                   await printerData.printDueThermalInvoiceNow(transaction: model, context: context);
                                                                 }
                                                               },
@@ -402,13 +493,29 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                                                 color: Colors.grey,
                                                               )),
                                                           const SizedBox(width: 10),
+                                                          // Complete Due button
+                                                          Tooltip(
+                                                            message: 'Complete Due - Go to Sale/Purchase',
+                                                            child: IconButton(
+                                                              padding: EdgeInsets.zero,
+                                                              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                                                              onPressed: () {
+                                                                _navigateToOriginalTransaction(context, filteredTransactions[index]);
+                                                              },
+                                                              icon: const Icon(
+                                                                Icons.edit,
+                                                                color: Colors.green,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 10),
                                                           businessSettingData.when(data: (business) {
                                                             return Row(
                                                               children: [
                                                                 IconButton(
                                                                     padding: EdgeInsets.zero,
                                                                     visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                                                                    onPressed: () => DueInvoicePDF.generateDueDocument(transaction[index], data, context, business),
+                                                                    onPressed: () => DueInvoicePDF.generateDueDocument(filteredTransactions[index], data, context, business),
                                                                     icon: const Icon(
                                                                       Icons.picture_as_pdf,
                                                                       color: Colors.grey,
@@ -416,7 +523,7 @@ class _DueReportScreenState extends State<DueReportScreen> {
                                                                 IconButton(
                                                                     padding: EdgeInsets.zero,
                                                                     visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                                                                    onPressed: () => DueInvoicePDF.generateDueDocument(transaction[index], data, context, business, isShare: true),
+                                                                    onPressed: () => DueInvoicePDF.generateDueDocument(filteredTransactions[index], data, context, business, isShare: true),
                                                                     icon: const Icon(
                                                                       Icons.share,
                                                                       color: Colors.grey,

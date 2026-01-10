@@ -18,19 +18,65 @@ import '../Providers/due_provider.dart';
 
 class DueRepo {
   Future<List<DueCollection>> fetchDueCollectionList() async {
-    final uri = Uri.parse('${APIConfig.url}/dues');
-
+    final uri = Uri.parse('${APIConfig.url}/parties');
+//dues
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
       'Authorization': await getAuthToken(),
     });
 
+    print('===============================================');
+    print('Due Report API Response:');
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+    print('===============================================');
+
     if (response.statusCode == 200) {
       final parsedData = jsonDecode(response.body) as Map<String, dynamic>;
+      
+      print('Parsed Data: $parsedData');
+      print('Due List Length: ${(parsedData['data'] as List<dynamic>).length}');
 
-      final dueList = parsedData['data'] as List<dynamic>;
-      return dueList.map((due) => DueCollection.fromJson(due)).toList();
+      final partiesList = parsedData['data'] as List<dynamic>;
+      
+      // Print each party item
+      for (int i = 0; i < partiesList.length; i++) {
+        print('Party Item $i: ${partiesList[i]}');
+      }
+      
+      // Convert parties data to DueCollection format
+      List<DueCollection> dueCollections = [];
+      for (var party in partiesList) {
+        // Skip walk-in customers (id == -1 or name == 'Walk-in Customer')
+        final partyId = party['id'];
+        final partyName = party['name']?.toString() ?? '';
+        if (partyId == -1 || partyName == 'Walk-in Customer') {
+          continue; // Skip walk-in customers
+        }
+        
+        // Only add if party has due amount
+        if (party['due'] != null && party['due'] > 0) {
+          // Create a DueCollection object from party data
+          final dueData = {
+            'id': party['id'],
+            'party_id': party['id'],
+            'totalDue': party['due'],
+            'dueAmountAfterPay': party['due'],
+            'payDueAmount': 0,
+            'paymentDate': DateTime.now().toIso8601String().split('T')[0], // Current date
+            'invoiceNumber': 'N/A',
+            'party': party,
+          };
+          print('Converted Due Data: $dueData');
+          print('Party Type in Due Data: ${party['type']}');
+          dueCollections.add(DueCollection.fromJson(dueData));
+        }
+      }
+      
+      print('Total Due Collections: ${dueCollections.length}');
+      return dueCollections;
     } else {
+      print('Error Response: ${response.body}');
       throw Exception('Failed to fetch Due List');
     }
   }

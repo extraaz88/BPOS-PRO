@@ -86,7 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Todas las soluciones comerciales",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill es una solución comercial completa con inventario, cuentas, ventas, gastos y pérdidas/ganancias.",
+      "POSpro es una solución comercial completa con inventario, cuentas, ventas, gastos y pérdidas/ganancias.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Todo el tiempo"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Ya agregado"),
@@ -159,7 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Elige Tus Funciones",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Las funciones son la parte importante que hace que BharatBill sea diferente de las soluciones tradicionales.",
+      "Las funciones son la parte importante que hace que POSpro sea diferente de las soluciones tradicionales.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -277,7 +277,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Fácil de usar el punto de venta móvil",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "La aplicación BharatBill es gratuita y fácil de usar. De hecho, es uno de los mejores sistemas POS del mundo.",
+      "La aplicación POSpro es gratuita y fácil de usar. De hecho, es uno de los mejores sistemas POS del mundo.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Editar"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

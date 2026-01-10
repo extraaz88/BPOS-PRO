@@ -90,7 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Բոլոր բիզնես լուծումները",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill-ն ամբողջական բիզնես լուծում է, որը ներառում է պաշարներ, հաշիվներ, վաճառքներ, ծախսեր և կորուստ/շահույթ:",
+      "PosPro-ն ամբողջական բիզնես լուծում է, որը ներառում է պաշարներ, հաշիվներ, վաճառքներ, ծախսեր և կորուստ/շահույթ:",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Բոլոր ժամանակները"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage(
@@ -152,7 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ընտրեք ձեր հատկությունները",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Հատկությունները կարևոր մասն են, որը BharatBill-ն տարբերակում է ավանդական լուծումներից։",
+      "Հատկությունները կարևոր մասն են, որը POSpro-ն տարբերակում է ավանդական լուծումներից։",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Կլարենս"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -265,7 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Հեշտ օգտագործման POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill հավելվածը անվճար է և հեշտ օգտագործման։ Իրականում, դա աշխարհի լավագույն POS համակարգերից մեկն է։",
+      "POSpro հավելվածը անվճար է և հեշտ օգտագործման։ Իրականում, դա աշխարհի լավագույն POS համակարգերից մեկն է։",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Խմբագրել"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ყველა ბიზნეს გადაწყვეტილება",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill არის სრული ბიზნეს გადაწყვეტა საწყობით, ანგარიშებით, გაყიდვებით, ხარჯებით და ზარალით/მოგებით.",
+      "PosPro არის სრული ბიზნეს გადაწყვეტა საწყობით, ანგარიშებით, გაყიდვებით, ხარჯებით და ზარალით/მოგებით.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("ყველა დრო"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("უკვე დამატებულია"),
@@ -154,7 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "აირჩიეთ თქვენი მახასიათებლები",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "მახასიათებლები არის მნიშვნელოვანი ნაწილი, რაც BharatBill-ს განსხვავებულს ხდის ტრადიციული გადაწყვეტილებებისგან.",
+      "მახასიათებლები არის მნიშვნელოვანი ნაწილი, რაც POSpro-ს განსხვავებულს ხდის ტრადიციული გადაწყვეტილებებისგან.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("კლარენსი"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -275,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "მარტივი გამოსაყენებელი მობილური POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill აპლიკაცია არის უფასო, მარტივი გამოსაყენებელი. სინამდვილეში, ეს არის ერთ-ერთი საუკეთესო POS სისტემა მსოფლიოში.",
+      "POSpro აპლიკაცია არის უფასო, მარტივი გამოსაყენებელი. სინამდვილეში, ეს არის ერთ-ერთი საუკეთესო POS სისტემა მსოფლიოში.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("რედაქტირება"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

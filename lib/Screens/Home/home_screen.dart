@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_pos/Const/api_config.dart';
 import 'package:mobile_pos/Screens/DashBoard/dashboard.dart';
-import 'package:mobile_pos/Screens/Home/components/grid_items.dart';
 import 'package:mobile_pos/Screens/Profile%20Screen/profile_details.dart';
-import 'package:mobile_pos/core/theme/_app_colors.dart';
-import 'package:mobile_pos/currency.dart';
-import 'package:mobile_pos/generated/l10n.dart' as lang;
 import 'package:nb_utils/nb_utils.dart';
+import 'package:showcaseview/showcaseview.dart';
 
-import '../../GlobalComponents/go_to_subscription-package_page_popup_widget.dart';
+// Import required screens for navigation
+import '../Sales/add_sales.dart';
+import '../Purchase/add_and_edit_purchase.dart';
+import '../Customers/add_customer.dart';
+import '../Products/add_product.dart';
+import '../Products/low_stock_products_screen.dart';
+import '../Report/reports.dart';
+
+import '../../GlobalComponents/app_drawer.dart';
 import '../../Provider/profile_provider.dart';
+import '../../Provider/product_provider.dart';
 import '../../constant.dart';
-import '../../model/business_info_model.dart' as business;
 import '../Customers/Provider/customer_provider.dart';
-import '../Home/Model/banner_model.dart' as b;
-import '../subscription/package_screen.dart';
 import 'Provider/banner_provider.dart';
+import '../../services/permission_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../Repository/constant_functions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,17 +35,73 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController pageController = PageController(initialPage: 0);
 
   bool _isRefreshing = false;
+  bool _showcaseStarted = false;
+
+  // Showcase keys
+  final GlobalKey _addSaleKey = GlobalKey();
+  final GlobalKey _addPurchaseKey = GlobalKey();
+  final GlobalKey _addCustomerKey = GlobalKey();
+  final GlobalKey _addProductKey = GlobalKey();
+  final GlobalKey _dashboardKey = GlobalKey();
+  final GlobalKey _reportsKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // Start showcase after widget is built - wait for cards to load
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Check if showcase was already shown
+      final prefs = await SharedPreferences.getInstance();
+      final showcaseShown = prefs.getBool('home_showcase_shown') ?? false;
+
+      if (showcaseShown) {
+        print('📌 Home showcase already shown, skipping...');
+        return;
+      }
+
+      // Wait for async data and widgets to be built
+      await Future.delayed(const Duration(milliseconds: 2000));
+
+      if (mounted && !_showcaseStarted) {
+        print('🎯 Starting showcase...');
+        try {
+          // Start showcasing the important buttons
+          ShowCaseWidget.of(context).startShowCase([
+            _addSaleKey,
+            _addPurchaseKey,
+            _addCustomerKey,
+            _addProductKey,
+            _dashboardKey,
+            _reportsKey,
+          ]);
+          print('✅ Showcase started successfully');
+
+          // Mark showcase as shown
+          await prefs.setBool('home_showcase_shown', true);
+        } catch (e) {
+          print('❌ Showcase error: $e');
+        }
+        _showcaseStarted = true;
+      }
+    });
+  }
 
   Future<void> refreshAllProviders({required WidgetRef ref}) async {
     if (_isRefreshing) return; // Prevent multiple refresh calls
 
     _isRefreshing = true;
     try {
+      // ignore: unused_result
       ref.refresh(summaryInfoProvider);
+      // ignore: unused_result
       ref.refresh(bannerProvider);
+      // ignore: unused_result
       ref.refresh(businessInfoProvider);
+      // ignore: unused_result
       ref.refresh(businessSettingProvider);
+      // ignore: unused_result
       ref.refresh(partiesProvider);
+      // ignore: unused_result
       ref.refresh(getExpireDateProvider(ref));
       await Future.delayed(const Duration(seconds: 3));
     } finally {
@@ -54,46 +114,116 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
     return Consumer(builder: (_, ref, __) {
       final businessInfo = ref.watch(businessInfoProvider);
-      final summaryInfo = ref.watch(summaryInfoProvider);
-      final banner = ref.watch(bannerProvider);
       return businessInfo.when(data: (details) {
         return Scaffold(
             backgroundColor: kBackgroundColor,
+            drawer: AppDrawer(businessDetails: details),
             appBar: AppBar(
               backgroundColor: kWhite,
               titleSpacing: 5,
               surfaceTintColor: kWhite,
+              leading: Builder(
+                builder: (context) => IconButton(
+                  icon: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: kMainColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.menu,
+                      color: kMainColor,
+                      size: 20,
+                    ),
+                  ),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
+              ),
               actions: [
+                // Showcase trigger button
+                // IconButton(
+                //   icon: Container(
+                //     padding: EdgeInsets.all(8),
+                //     decoration: BoxDecoration(
+                //       color: Colors.green.withOpacity(0.1),
+                //       borderRadius: BorderRadius.circular(8),
+                //     ),
+                //     child: Icon(
+                //       Icons.play_circle_outline,
+                //       color: Colors.green,
+                //       size: 20,
+                //     ),
+                //   ),
+                //   onPressed: () {
+                //     // Reset showcase flag
+                //     _showcaseStarted = false;
+                //     // Start showcase manually
+                //     WidgetsBinding.instance.addPostFrameCallback((_) async {
+                //       await Future.delayed(const Duration(milliseconds: 500));
+                //       if (mounted) {
+                //         try {
+                //           ShowCaseWidget.of(context).startShowCase([
+                //             _addSaleKey,
+                //             _addPurchaseKey,
+                //             _addCustomerKey,
+                //             _addProductKey,
+                //             _dashboardKey,
+                //             _reportsKey,
+                //           ]);
+                //           print('✅ Showcase started manually via button');
+                //         } catch (e) {
+                //           print('❌ Showcase error: $e');
+                //         }
+                //       }
+                //     });
+                //   },
+                //   tooltip: 'Show Tour',
+                // ),
                 IconButton(
                     onPressed: () async => refreshAllProviders(ref: ref),
-                    icon: const Icon(Icons.refresh))
-              ],
-              leading: Padding(
-                padding: const EdgeInsets.all(10),
-                child: GestureDetector(
+                    icon: const Icon(Icons.refresh)),
+                GestureDetector(
                   onTap: () {
                     const ProfileDetails().launch(context);
                   },
                   child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: details.pictureUrl == null
-                        ? BoxDecoration(
-                            image: const DecorationImage(
-                                image: AssetImage('images/no_shop_image.png'),
-                                fit: BoxFit.cover),
-                            borderRadius: BorderRadius.circular(50),
-                          )
-                        : BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    '${APIConfig.domain}${details.pictureUrl}'),
-                                fit: BoxFit.cover),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
+                    margin: const EdgeInsets.all(8),
+                    height: 35,
+                    width: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(17.5),
+                      border: Border.all(color: kMainColor, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: kMainColor.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.5),
+                      child: details.pictureUrl == null
+                          ? Image.asset(
+                              'images/no_shop_image.png',
+                              fit: BoxFit.cover,
+                            )
+                          : Image.network(
+                              '${APIConfig.domain}${details.pictureUrl}',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.person,
+                                  color: kMainColor,
+                                  size: 20,
+                                );
+                              },
+                            ),
+                    ),
                   ),
                 ),
-              ),
+              ],
               title: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,586 +237,238 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  FutureBuilder<Map<String, String?>>(
+                    future: Future.wait([
+                      getOriginalApiCategoryName(),
+                      getShopCategory(),
+                    ]).then((results) => <String, String?>{
+                          'original': results[0],
+                          'mapped': results[1],
+                        }),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final displayCategory = snapshot.data!['original'] ??
+                            snapshot.data!['mapped'];
+                        if (displayCategory != null &&
+                            displayCategory != 'All Category' &&
+                            displayCategory.isNotEmpty) {
+                          return Text(
+                            displayCategory,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 12.0,
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w400,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        }
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ],
               ),
             ),
-            resizeToAvoidBottomInset: true,
-            body: RefreshIndicator.adaptive(
-              onRefresh: () async => refreshAllProviders(ref: ref),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Visibility(
-                        visible:
-                            details.user?.visibility?.dashboardPermission ??
-                                true,
-                        child: summaryInfo.when(data: (summary) {
-                          return Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: kMainColor),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        lang.S.of(context).todaySummary,
-                                        //'Today’s Summary',
-                                        style: theme.textTheme.titleLarge
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: kWhite,
-                                                fontSize: 18),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Expanded(
-                                      flex: 1,
-                                      child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const DashboardScreen()));
-                                          },
-                                          child: Text(
-                                            lang.S.of(context).sellAll,
-
-                                            //'Sell All >',
-                                            style: const TextStyle(
-                                                color: kWhite,
-                                                fontWeight: FontWeight.w500),
-                                            maxLines: 1,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          lang.S.of(context).sales,
-                                          //'Sales',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          '$currency${summary.data?.sales?.toStringAsFixed(2) ?? 0.00}',
-                                          style: theme.textTheme.titleSmall
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          summary.data!.income! >= 0
-                                              ? 'Profit'
-                                              : 'Loss',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          '$currency${summary.data?.income?.abs().toStringAsFixed(2) ?? 0.00}',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          lang.S.of(context).purchased,
-                                          // 'Purchased',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          '$currency${summary.data?.purchase?.toStringAsFixed(2) ?? 0.00}',
-                                          style: theme.textTheme.titleSmall
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          //'Expense',
-                                          lang.S.of(context).expense,
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          '$currency${summary.data?.expense?.toStringAsFixed(2) ?? 0.00}',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      width: 30,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                        }, error: (e, stack) {
-                          return Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: kMainColor),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      lang.S.of(context).todaySummary,
-                                      style: theme.textTheme.titleLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: kWhite,
-                                              fontSize: 18),
-                                    ),
-                                    const Spacer(),
-                                    GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const DashboardScreen()));
-                                        },
-                                        child: Text(
-                                          lang.S.of(context).sellAll,
-                                          style: const TextStyle(
-                                              color: kWhite,
-                                              fontWeight: FontWeight.w500),
-                                        )),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          lang.S.of(context).sales,
-                                          //'Sales',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).notFound,
-                                          // 'Not Found',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          lang.S.of(context).income,
-                                          // 'Income',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).notFound,
-                                          //'Not Found',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          lang.S.of(context).purchased,
-                                          // 'Purchased',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).notFound,
-                                          //'Not Found',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          lang.S.of(context).expense,
-                                          //'Expense',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).notFound,
-                                          //'Not Found',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      width: 30,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                        }, loading: () {
-                          return Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: kMainColor),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      lang.S.of(context).todaySummary,
-                                      // 'Today’s Summary',
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: kWhite,
-                                              fontSize: 18),
-                                    ),
-                                    const Spacer(),
-                                    GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const DashboardScreen()));
-                                        },
-                                        child: Text(
-                                          lang.S.of(context).sellAll,
-                                          //'Sell All >',
-                                          style: const TextStyle(
-                                              color: kWhite,
-                                              fontWeight: FontWeight.w500),
-                                        )),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          lang.S.of(context).sales,
-                                          // 'Sales',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).loading,
-                                          // 'Loading',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          lang.S.of(context).income,
-                                          //'Income',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).loading,
-                                          //'Loading',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          lang.S.of(context).purchased,
-                                          //'Purchased',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).loading,
-                                          //'Loading',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.w600),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          lang.S.of(context).expense,
-                                          //'Expense',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(color: kWhite),
-                                        ),
-                                        Text(
-                                          lang.S.of(context).loading,
-                                          //'Loading',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                  color: kWhite,
-                                                  fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      width: 30,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                        }),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Welcome Section
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [kMainColor, kMainColor.withOpacity(0.8)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-
-                      const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return goToPackagePagePopup(
-                                    context: context,
-                                    enrolledPlan: details.enrolledPlan);
-                              });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: kWhite,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: const Color(0xffC52127)
-                                        .withOpacity(0.04),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 10))
-                              ]),
-                          child: ListTile(
-                            visualDensity: const VisualDensity(
-                                horizontal: -4, vertical: -4),
-                            horizontalTitleGap: 20,
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 0),
-                            leading: SvgPicture.asset(
-                              'assets/plan.svg',
-                              height: 38,
-                              width: 38,
-                            ),
-                            title: RichText(
-                              text: TextSpan(
-                                text:
-                                    '${details.enrolledPlan?.plan?.subscriptionName ?? 'No Active'} ${lang.S.of(context).package} ',
-                                style: theme.textTheme.bodyLarge
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            subtitle: Text(getDayLeftInExpiring(
-                                expireDate: details.willExpire,
-                                shortMSG: false)),
-                            trailing: const Icon(
-                              Icons.arrow_forward_ios,
-                              color: kGreyTextColor,
-                              size: 20,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            getLocalizedPrintText('Welcome back!'),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        childAspectRatio: 3.0,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        crossAxisCount: 2,
-                        children: List.generate(
-                          getFreeIcons(context: context).length,
-                          (index) => HomeGridCards(
-                            gridItems: getFreeIcons(context: context)[index],
-                            visibility: businessInfo.value?.user?.visibility,
+                          SizedBox(height: 8),
+                          Text(
+                            details.user?.name ?? getLocalizedPrintText('User'),
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
+                          SizedBox(height: 8),
+                          Text(
+                            getLocalizedPrintText(
+                                'Manage your business efficiently'),
+                            style: TextStyle(
+                              color: Colors.white60,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        height: 1,
-                        width: double.infinity,
-                        color: Colors.grey.shade300,
-                      ),
-                      const SizedBox(height: 10),
+                    ),
 
-                      ///________________Banner_______________________________________
-                      banner.when(data: (imageData) {
-                        List<b.Banner> images = [];
-                        if (imageData.isNotEmpty) {
-                          images.addAll(imageData.where(
-                            (element) => element.status == 1,
-                          ));
-                        }
+                    SizedBox(height: 24),
 
-                        if (images.isNotEmpty) {
-                          return SizedBox(
-                            width: double.infinity,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  lang.S.of(context).whatNew,
-                                  textAlign: TextAlign.start,
-                                  style: theme.textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                    // Low Stock Alert Section
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final lowStockCount = ref.watch(lowStockCountProvider);
+                        return lowStockCount.when(
+                          data: (count) {
+                            if (count > 0) {
+                              return Container(
+                                margin: EdgeInsets.only(bottom: 24),
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                      color: Colors.red.withOpacity(0.3)),
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                child: Row(
                                   children: [
-                                    GestureDetector(
-                                      child:
-                                          const Icon(Icons.keyboard_arrow_left),
-                                      onTap: () {
-                                        pageController.previousPage(
-                                            duration: const Duration(
-                                                milliseconds: 300),
-                                            curve: Curves.linear);
-                                      },
-                                    ),
                                     Container(
-                                      padding: const EdgeInsets.all(10),
-                                      height: 150,
-                                      width: MediaQuery.of(context).size.width -
-                                          80,
-                                      child: PageView.builder(
-                                        pageSnapping: true,
-                                        itemCount: images.length,
-                                        controller: pageController,
-                                        itemBuilder: (_, index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              const PackageScreen()
-                                                  .launch(context);
-                                            },
-                                            child: Image(
-                                              image: NetworkImage(
-                                                "${APIConfig.domain}${images[index].imageUrl}",
-                                              ),
-                                              fit: BoxFit.cover,
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(
+                                        Icons.warning,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            getLocalizedPrintText(
+                                                'Low Stock Alert'),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red[800],
                                             ),
-                                          );
-                                        },
+                                          ),
+                                          Text(
+                                            '$count ${getLocalizedPrintText('products are running low on stock')}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.red[700],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     GestureDetector(
-                                      child: const Icon(
-                                          Icons.keyboard_arrow_right),
                                       onTap: () {
-                                        pageController.nextPage(
-                                            duration: const Duration(
-                                                milliseconds: 300),
-                                            curve: Curves.linear);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                LowStockProductsScreen(),
+                                          ),
+                                        );
                                       },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Text(
+                                          getLocalizedPrintText('View'),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 30),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return Center(
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              height: 150,
-                              width: 320,
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage('images/banner1.png'))),
-                            ),
-                          );
+                              );
+                            }
+                            return SizedBox.shrink();
+                          },
+                          loading: () => SizedBox.shrink(),
+                          error: (error, stack) => SizedBox.shrink(),
+                        );
+                      },
+                    ),
+
+                    // Quick Actions Grid
+                    Text(
+                      getLocalizedPrintText('Quick Actions'),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kTitleColor,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Build quick actions dynamically based on permissions
+                    FutureBuilder<List<Widget>>(
+                      future: _buildQuickActionCards(ref),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
                         }
-                      }, error: (e, stack) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            height: 150,
-                            width: 320,
-                            color: Colors.grey.shade200,
+
+                        final cards = snapshot.data!;
+                        if (cards.isEmpty) {
+                          return Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: Center(
                               child: Text(
-                                lang.S.of(context).noDataFound,
-                                //'No Data Found'
+                                getLocalizedPrintText(
+                                    'No actions available. Contact admin for access.'),
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
+                          );
+                        }
+
+                        return GridView.count(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          children: cards,
                         );
-                      }, loading: () {
-                        return const CircularProgressIndicator();
-                      }),
-                    ],
-                  ),
+                      },
+                    ),
+                  ],
                 ),
               ),
             ));
@@ -697,137 +479,351 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
-}
 
-class HomeGridCards extends StatefulWidget {
-  const HomeGridCards({
-    super.key,
-    required this.gridItems,
-    this.visibility,
-  });
+  // Build quick action cards based on user permissions and shop features
+  Future<List<Widget>> _buildQuickActionCards(WidgetRef ref) async {
+    final permissionService = PermissionService();
+    final role = await permissionService.getUserRole();
+    final visibility = await permissionService.getVisibilityPermissions();
 
-  final GridItems gridItems;
-  final business.Visibility? visibility;
+    // Get shop features
+    final prefs = await SharedPreferences.getInstance();
+    final shopFeatures = prefs.getStringList('shop_features') ?? [];
 
-  @override
-  State<HomeGridCards> createState() => _HomeGridCardsState();
-}
-
-class _HomeGridCardsState extends State<HomeGridCards> {
-  bool checkPermission({required String item}) {
-    if (item == 'Sales' && (widget.visibility?.salePermission ?? true)) {
-      return true;
-    } else if (item == 'Parties' &&
-        (widget.visibility?.partiesPermission ?? true)) {
-      return true;
-    } else if (item == 'Purchase' &&
-        (widget.visibility?.purchasePermission ?? true)) {
-      return true;
-    } else if (item == 'Products' &&
-        (widget.visibility?.productPermission ?? true)) {
-      return true;
-    } else if (item == 'Due List' &&
-        (widget.visibility?.dueListPermission ?? true)) {
-      return true;
-    } else if (item == 'Stock' &&
-        (widget.visibility?.stockPermission ?? true)) {
-      return true;
-    } else if (item == 'Reports' &&
-        (widget.visibility?.reportsPermission ?? true)) {
-      return true;
-    } else if (item == 'Sales List' &&
-        (widget.visibility?.salesListPermission ?? true)) {
-      return true;
-    } else if (item == 'Purchase List' &&
-        (widget.visibility?.purchaseListPermission ?? true)) {
-      return true;
-    } else if (item == 'Loss/Profit' &&
-        (widget.visibility?.lossProfitPermission ?? true)) {
-      return true;
-    } else if (item == 'Expense' &&
-        (widget.visibility?.addExpensePermission ?? true)) {
-      return true;
-    } else if (item == 'Income' &&
-        (widget.visibility?.addIncomePermission ?? true)) {
-      return true;
-    } else if (item == 'tax') {
-      return true;
-    } else if (item == 'customPrint') {
-      return true;
+    // If role is not 'staff', show all quick actions based on shop features
+    if (role != 'staff') {
+      return _getAllQuickActionCards(ref, shopFeatures);
     }
-    return false;
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, __) {
-      return GestureDetector(
+    // If no visibility data for staff, show all quick actions based on shop features
+    if (visibility == null) {
+      return _getAllQuickActionCards(ref, shopFeatures);
+    }
+
+    List<Widget> cards = [];
+
+    // Add Sale card if permission granted and feature enabled
+    if (visibility[PermissionService.SALE_PERMISSION] == true &&
+        shopFeatures.contains('sale')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.shopping_cart,
+        title: getLocalizedPrintText('New Sale'),
+        color: Colors.green,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddSalesScreen(customerModel: null)),
+          );
+        },
+        showcaseKey: _addSaleKey,
+        showcaseDescription:
+            getLocalizedPrintText('Create a new sale transaction here'),
+      ));
+    }
+
+    // Add Purchase card if permission granted and feature enabled
+    if (visibility[PermissionService.PURCHASE_PERMISSION] == true &&
+        shopFeatures.contains('purchase')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.shopping_bag,
+        title: getLocalizedPrintText('New Purchase'),
+        color: Colors.blue,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AddAndUpdatePurchaseScreen(supplierModel: null)),
+          );
+        },
+        showcaseKey: _addPurchaseKey,
+        showcaseDescription:
+            getLocalizedPrintText('Create a new purchase transaction here'),
+      ));
+    }
+
+    // Add Customer/Supplier card if permission granted and feature enabled
+    if (visibility[PermissionService.PARTIES_PERMISSION] == true &&
+        shopFeatures.contains('parties')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.people,
+        title: getLocalizedPrintText('Add Customer/Supplier'),
+        color: Colors.orange,
         onTap: () async {
-          if (checkPermission(item: widget.gridItems.route)) {
-            Navigator.of(context).pushNamed('/${widget.gridItems.route}');
-          } else {
-            EasyLoading.showError(
-              lang.S.of(context).permissionNotGranted,
-            );
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddParty()),
+          );
+          // If a customer/supplier was added, refresh data
+          if (result != null) {
+            refreshAllProviders(ref: ref);
           }
         },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: kWhite,
-              boxShadow: [
-                BoxShadow(
-                    color: const Color(0xff171717).withOpacity(0.07),
-                    offset: const Offset(0, 3),
-                    blurRadius: 50,
-                    spreadRadius: -4)
-              ]),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                widget.gridItems.icon.toString(),
-                height: 40,
-                width: 40,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Flexible(
-                  child: Text(
-                widget.gridItems.title.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: DAppColors.kNeutral700),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ))
-            ],
-          ),
+        showcaseKey: _addCustomerKey,
+        showcaseDescription:
+            getLocalizedPrintText('Add new customer or supplier here'),
+      ));
+    }
+
+    // Add Product card if permission granted and feature enabled
+    if (visibility[PermissionService.PRODUCT_PERMISSION] == true &&
+        shopFeatures.contains('product')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.inventory,
+        title: getLocalizedPrintText('Add Product'),
+        color: Colors.purple,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddProduct()),
+          );
+        },
+        showcaseKey: _addProductKey,
+        showcaseDescription:
+            getLocalizedPrintText('Add a new product to your inventory'),
+      ));
+    }
+
+    // Add Dashboard card if permission granted and feature enabled
+    if (visibility[PermissionService.DASHBOARD_PERMISSION] == true &&
+        shopFeatures.contains('dashboard')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.analytics,
+        title: getLocalizedPrintText('Dashboard'),
+        color: Colors.red,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
+          );
+        },
+        showcaseKey: _dashboardKey,
+        showcaseDescription:
+            getLocalizedPrintText('View your business dashboard and analytics'),
+      ));
+    }
+
+    // Add Reports card if permission granted and feature enabled
+    if (visibility[PermissionService.REPORTS_PERMISSION] == true &&
+        shopFeatures.contains('reports')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.assessment,
+        title: getLocalizedPrintText('Reports'),
+        color: Colors.teal,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Reports()),
+          );
+        },
+        showcaseKey: _reportsKey,
+        showcaseDescription:
+            getLocalizedPrintText('View detailed business reports'),
+      ));
+    }
+
+    return cards;
+  }
+
+  // Get all quick action cards (for admin/owner with full access) filtered by shop features
+  List<Widget> _getAllQuickActionCards(
+      WidgetRef ref, List<String> shopFeatures) {
+    List<Widget> cards = [];
+
+    // Add Sale card if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('sale')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.shopping_cart,
+        title: getLocalizedPrintText('New Sale'),
+        color: Colors.green,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddSalesScreen(customerModel: null)),
+          );
+        },
+        showcaseKey: _addSaleKey,
+        showcaseDescription:
+            getLocalizedPrintText('Create a new sale transaction here'),
+      ));
+    }
+
+    // Add Purchase card if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('purchase')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.shopping_bag,
+        title: getLocalizedPrintText('New Purchase'),
+        color: Colors.blue,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AddAndUpdatePurchaseScreen(supplierModel: null)),
+          );
+        },
+        showcaseKey: _addPurchaseKey,
+        showcaseDescription:
+            getLocalizedPrintText('Create a new purchase transaction here'),
+      ));
+    }
+
+    // Add Customer/Supplier card if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('parties')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.people,
+        title: getLocalizedPrintText('Add Customer/Supplier'),
+        color: Colors.orange,
+        onTap: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddParty()),
+          );
+          if (result != null) {
+            refreshAllProviders(ref: ref);
+          }
+        },
+        showcaseKey: _addCustomerKey,
+        showcaseDescription:
+            getLocalizedPrintText('Add new customer or supplier here'),
+      ));
+    }
+
+    // Add Product card if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('product')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.inventory,
+        title: getLocalizedPrintText('Add Product'),
+        color: Colors.purple,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddProduct()),
+          );
+        },
+        showcaseKey: _addProductKey,
+        showcaseDescription:
+            getLocalizedPrintText('Add a new product to your inventory'),
+      ));
+    }
+
+    // Add Dashboard card if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('dashboard')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.analytics,
+        title: getLocalizedPrintText('Dashboard'),
+        color: Colors.red,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
+          );
+        },
+        showcaseKey: _dashboardKey,
+        showcaseDescription:
+            getLocalizedPrintText('View your business dashboard and analytics'),
+      ));
+    }
+
+    // Add Reports card if feature enabled
+    if (shopFeatures.isEmpty || shopFeatures.contains('reports')) {
+      cards.add(_buildQuickActionCard(
+        icon: Icons.assessment,
+        title: getLocalizedPrintText('Reports'),
+        color: Colors.teal,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Reports()),
+          );
+        },
+        showcaseKey: _reportsKey,
+        showcaseDescription:
+            getLocalizedPrintText('View detailed business reports'),
+      ));
+    }
+
+    return cards;
+  }
+
+  Widget _buildQuickActionCard({
+    required IconData icon,
+    required String title,
+    required Color color,
+    required VoidCallback onTap,
+    GlobalKey? showcaseKey,
+    String? showcaseDescription,
+  }) {
+    Widget cardWidget = GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                size: 32,
+                color: color,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: kTitleColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    // Wrap with Showcase if key provided
+    if (showcaseKey != null && showcaseDescription != null) {
+      return Showcase(
+        key: showcaseKey,
+        description: showcaseDescription,
+        child: cardWidget,
       );
-    });
+    }
+    return cardWidget;
   }
 }
 
 String getDayLeftInExpiring(
     {required String? expireDate, required bool shortMSG}) {
   if (expireDate == null) {
-    return shortMSG ? 'N/A' : 'Subscribe Now';
-  }
-  DateTime expiringDay =
-      DateTime.parse(expireDate).add(const Duration(days: 1));
-  if (expiringDay.isBefore(DateTime.now())) {
-    return 'Expired';
-  }
-  if (expiringDay.difference(DateTime.now()).inDays < 1) {
     return shortMSG
-        ? '${expiringDay.difference(DateTime.now()).inHours}\nHours Left'
-        : '${expiringDay.difference(DateTime.now()).inHours} Hours Left';
-  } else {
-    return shortMSG
-        ? '${expiringDay.difference(DateTime.now()).inDays}\nDays Left'
-        : '${expiringDay.difference(DateTime.now()).inDays} Days Left';
+        ? getLocalizedPrintText('N/A')
+        : getLocalizedPrintText('Subscribe Now');
   }
+
+  final expiringDay = DateTime.parse(expireDate);
+  return shortMSG
+      ? '${expiringDay.difference(DateTime.now()).inDays}\n${getLocalizedPrintText('Days Left')}'
+      : '${expiringDay.difference(DateTime.now()).inDays} ${getLocalizedPrintText('Days Left')}';
 }

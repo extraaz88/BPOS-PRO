@@ -243,6 +243,39 @@ Widget salesTransactionWidget({
                   )
                 ],
               ),
+              ///_______Payment_Method_Below_Due_Amount_____________________
+              if (sale.paymentType != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${lang.S.of(context).paymentTypes}: ',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: 14,
+                          color: DAppColors.kSecondary,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: kMainColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: kMainColor.withOpacity(0.3)),
+                        ),
+                        child: Text(
+                          sale.paymentType?.name ?? 'N/A',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontSize: 14,
+                            color: kMainColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),

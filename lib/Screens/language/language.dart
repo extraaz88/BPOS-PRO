@@ -18,6 +18,8 @@ class SelectLanguage extends StatefulWidget {
 }
 
 class _SelectLanguageState extends State<SelectLanguage> {
+  String? selectedLanguage;
+
   Future<void> saveData(String data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lang', data);
@@ -29,6 +31,9 @@ class _SelectLanguageState extends State<SelectLanguage> {
     setState(() {
       selectedLanguage = savedLanguageCode;
     });
+
+    // Update the global selectedLanguage variable
+    updateSelectedLanguage(savedLanguageCode);
 
     // Update provider with the saved language code
     context.read<LanguageChangeProvider>().changeLocale(savedLanguageCode);
@@ -105,26 +110,40 @@ class _SelectLanguageState extends State<SelectLanguage> {
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ElevatedButton(
-              onPressed: () async {
-                // Update locale in the provider
-                if (selectedLanguage != null) {
-                  // Save the selected language
-                  await saveData(selectedLanguage!);
-
-                  // Update locale in the provider
-                  context.read<LanguageChangeProvider>().changeLocale(selectedLanguage!);
-
-                  // Navigate to Home
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                }
-              },
-              child: Text(lang.S.of(context).save)),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SafeArea(
+              child: ElevatedButton(
+                  onPressed: () async {
+                    // Update locale in the provider
+                    if (selectedLanguage != null) {
+                      // Save the selected language
+                      await saveData(selectedLanguage!);
+              
+                      // Update the global selectedLanguage variable in constant.dart
+                      // This ensures printing functions use the correct language
+                      updateSelectedLanguage(selectedLanguage!);
+              
+                      // Update locale in the provider - this will trigger MaterialApp rebuild
+                      context.read<LanguageChangeProvider>().changeLocale(selectedLanguage!);
+              
+                      // Wait a frame to ensure MaterialApp rebuilds with new locale
+                      await Future.delayed(const Duration(milliseconds: 50));
+              
+                      // Navigate to Home - the MaterialApp has already rebuilt with new locale
+                      if (mounted) {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Home()),
+                          (route) => false, // Remove all previous routes
+                        );
+                      }
+                    }
+                  },
+                  child: Text(lang.S.of(context).save)),
+            ),
+          ),
         ),
       ),
     );

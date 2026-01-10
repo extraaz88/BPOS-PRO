@@ -78,7 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Alle forretningsløsninger",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill er en komplett forretningsløsning med lager, regnskap, salg, utgifter og tap/fortjeneste.",
+      "PosPro er en komplett forretningsløsning med lager, regnskap, salg, utgifter og tap/fortjeneste.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Alltid"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Allerede lagt til"),
@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Velg dine funksjoner",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Funksjoner er den viktige delen som gjør BharatBill forskjellig fra tradisjonelle løsninger.",
+      "Funksjoner er den viktige delen som gjør POSpro forskjellig fra tradisjonelle løsninger.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -249,7 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Lett å bruke mobil-POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill-appen er gratis og enkel å bruke. Faktisk er det et av de beste POS-systemene i verden.",
+      "POSpro-appen er gratis og enkel å bruke. Faktisk er det et av de beste POS-systemene i verden.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Rediger"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Rediger telefonnummer?"),

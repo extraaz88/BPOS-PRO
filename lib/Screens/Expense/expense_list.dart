@@ -282,11 +282,13 @@ class _ExpenseListState extends State<ExpenseList> {
 
                 ///________button________________________________________________
                 businessInfoData.when(data: (details) {
-                  return ElevatedButton(
-                    onPressed: () async {
-                      const AddExpense().launch(context);
-                    },
-                    child: Text(lang.S.of(context).addExpense),
+                  return SafeArea(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        const AddExpense().launch(context);
+                      },
+                      child: Text(lang.S.of(context).addExpense),
+                    ),
                   );
                 }, error: (e, stack) {
                   return Text(e.toString());

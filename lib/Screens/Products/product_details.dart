@@ -46,7 +46,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       Text(
                         lang.S.of(context).edit,
                         // 'Edit',
-                        style: theme.textTheme.bodyMedium?.copyWith(color: kMainColor),
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(color: kMainColor),
                       )
                     ],
                   )),
@@ -58,7 +59,10 @@ class _ProductDetailsState extends State<ProductDetails> {
         ),
         body: Container(
           alignment: Alignment.topCenter,
-          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30))),
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30), topLeft: Radius.circular(30))),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -69,7 +73,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                   Container(
                     height: 290,
                     width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: const Color(0xffFEF0F1), image: const DecorationImage(fit: BoxFit.cover, image: NetworkImage('https://tinyurl.com/3tme92c2'))),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color(0xffFEF0F1),
+                        image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image:
+                                NetworkImage('https://tinyurl.com/3tme92c2'))),
                   ),
                   const SizedBox(
                     height: 20,
@@ -83,7 +93,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           Text(
                             lang.S.of(context).smartWatch,
                             //'Smart watch',
-                            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                            style: theme.textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           Text(
                             lang.S.of(context).appleWatch,
@@ -97,7 +108,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       const Spacer(),
                       Text(
                         '$currency 175.0',
-                        style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                        style: theme.textTheme.titleLarge
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       )
                     ],
                   ),
@@ -107,7 +119,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                   Text(
                     lang.S.of(context).details,
                     // 'Details',
-                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(
                     height: 10,
@@ -115,7 +128,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                   Text(
                     lang.S.of(context).loremIpsumDolor,
                     //'Lorem ipsum dolor sit amet, consectetur adi piscing elit. Accumsan vulputate tellus scele risque odio con sectetur tincidunt semper.',
-                    style: theme.textTheme.bodyMedium?.copyWith(color: kGreyTextColor),
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: kGreyTextColor),
                   ),
                   const SizedBox(
                     height: 20,
@@ -139,7 +153,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Text(
                                 '$currency ${180}',
-                                style: theme.textTheme.bodyLarge?.copyWith(color: kGreyTextColor),
+                                style: theme.textTheme.bodyLarge
+                                    ?.copyWith(color: kGreyTextColor),
                               ),
                               const SizedBox(
                                 height: 20,
@@ -151,7 +166,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Text(
                                 '$currency ${170}',
-                                style: theme.textTheme.bodyLarge?.copyWith(color: kGreyTextColor),
+                                style: theme.textTheme.bodyLarge
+                                    ?.copyWith(color: kGreyTextColor),
                               )
                             ],
                           ),
@@ -173,7 +189,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Text(
                                 '250',
-                                style: theme.textTheme.bodyLarge?.copyWith(color: kGreyTextColor),
+                                style: theme.textTheme.bodyLarge
+                                    ?.copyWith(color: kGreyTextColor),
                               ),
                               const SizedBox(
                                 height: 20,
@@ -181,11 +198,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Text(
                                 lang.S.of(context).dealerPrice,
                                 //'Dealer price',
-                                style: theme.textTheme.bodyLarge?.copyWith(color: kTitleColor, fontSize: 16),
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: kTitleColor, fontSize: 16),
                               ),
                               Text(
                                 '$currency ${175}',
-                                style: theme.textTheme.bodyLarge?.copyWith(color: kGreyTextColor),
+                                style: theme.textTheme.bodyLarge
+                                    ?.copyWith(color: kGreyTextColor),
                               )
                             ],
                           ),

@@ -101,22 +101,26 @@ class _UserRoleScreenState extends State<UserRoleScreen> {
               ),
             ),
           ),
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: GestureDetector(
-              onTap: () {
-                const AddUserRole().launch(context);
-              },
-              child: Container(
-                height: 50,
-                decoration: const BoxDecoration(
-                  color: kMainColor,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Center(
-                  child: Text(
-                    lang.S.of(context).addUserRole,
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
+          bottomNavigationBar: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  const AddUserRole().launch(context);
+                },
+                child: SafeArea(
+                  child: Container(
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: kMainColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        lang.S.of(context).addUserRole,
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
               ),

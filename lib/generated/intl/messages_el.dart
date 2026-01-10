@@ -84,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Όλες οι επιχειρηματικές λύσεις",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "Το BharatBill είναι μια ολοκληρωμένη επιχειρηματική λύση με αποθήκη, λογαριασμό, πωλήσεις, δαπάνες και απώλειες/κέρδη.",
+      "Το POSpro είναι μια ολοκληρωμένη επιχειρηματική λύση με αποθήκη, λογαριασμό, πωλήσεις, δαπάνες και απώλειες/κέρδη.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Όλα τα χρόνια"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Ήδη έχει προστεθεί"),
@@ -154,7 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Επιλέξτε τα χαρακτηριστικά σας",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Τα χαρακτηριστικά είναι το σημαντικό μέρος που κάνει το BharatBill διαφορετικό από τις παραδοσιακές λύσεις.",
+      "Τα χαρακτηριστικά είναι το σημαντικό μέρος που κάνει το POSpro διαφορετικό από τις παραδοσιακές λύσεις.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Κλαρενς"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -279,7 +279,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Εύκολη χρήση του κινητού σημείου πώλησης",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Η εφαρμογή BharatBill είναι δωρεάν και εύκολη στη χρήση. Πράγματι, είναι ένα από τα καλύτερα συστήματα POS σε όλο τον κόσμο.",
+      "Η εφαρμογή POSpro είναι δωρεάν και εύκολη στη χρήση. Πράγματι, είναι ένα από τα καλύτερα συστήματα POS σε όλο τον κόσμο.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Επεξεργασία"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

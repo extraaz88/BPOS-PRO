@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "all": MessageLookupByLibrary.simpleMessage("모두"),
     "allBusinessSolutions": MessageLookupByLibrary.simpleMessage("모든 비즈니스 솔루션"),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill는 재고, 계정, 판매, 지출 및 손익을 모두 다루는 완벽한 비즈니스 솔루션입니다.",
+      "PosPro는 재고, 계정, 판매, 지출 및 손익을 모두 다루는 완벽한 비즈니스 솔루션입니다.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("전체 기간"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("이미 추가됨"),
@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseSupplier": MessageLookupByLibrary.simpleMessage("공급업체 선택"),
     "choseYourFeature": MessageLookupByLibrary.simpleMessage("기능 선택"),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "기능은 BharatBill를 전통적인 솔루션과 다르게 만드는 중요한 요소입니다.",
+      "기능은 PosPro를 전통적인 솔루션과 다르게 만드는 중요한 요소입니다.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("클라렌스"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage("클릭하여 연결"),
@@ -195,7 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dueReport": MessageLookupByLibrary.simpleMessage("기한 보고서"),
     "easyToUseThePos": MessageLookupByLibrary.simpleMessage("쉬운 사용 모바일 포스"),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill 앱은 무료이며 사용하기 쉽습니다. 실제로 세계 최고의 POS 시스템 중 하나입니다.",
+      "PosPro 앱은 무료이며 사용하기 쉽습니다. 실제로 세계 최고의 POS 시스템 중 하나입니다.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("편집하다"),
     "editPhone": MessageLookupByLibrary.simpleMessage("전화번호 수정?"),

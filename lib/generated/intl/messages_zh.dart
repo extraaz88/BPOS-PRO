@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "all": MessageLookupByLibrary.simpleMessage("所有"),
     "allBusinessSolutions": MessageLookupByLibrary.simpleMessage("所有业务解决方案"),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill是一个完整的商业解决方案，包括库存、帐户、销售、支出和损益/利润。",
+      "PosPro是一个完整的商业解决方案，包括库存、帐户、销售、支出和损益/利润。",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("所有时间"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("已经加入"),
@@ -103,7 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseSupplier": MessageLookupByLibrary.simpleMessage("选择供应商"),
     "choseYourFeature": MessageLookupByLibrary.simpleMessage("选择您的功能"),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "功能是使BharatBill与传统解决方案不同的重要部分。",
+      "功能是使PosPro与传统解决方案不同的重要部分。",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("克拉伦斯"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage("点击连接"),
@@ -177,7 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dueReport": MessageLookupByLibrary.simpleMessage("到期报告"),
     "easyToUseThePos": MessageLookupByLibrary.simpleMessage("易于使用的移动 POS"),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill应用免费且易于使用。事实上，它是全球最好的POS系统之一。",
+      "PosPro应用免费且易于使用。事实上，它是全球最好的POS系统之一。",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("编辑"),
     "editPhone": MessageLookupByLibrary.simpleMessage("编辑电话号码？"),

@@ -56,8 +56,13 @@ class PhoneAuthRepo {
     };
 
     try {
+      print('📡 [Submit OTP API] URL: $url');
+      print('📡 [Submit OTP API] Headers: $headers');
+      print('📡 [Submit OTP API] Body: $body');
       final response = await http.post(url, headers: headers, body: body);
 
+      print('📩 [Submit OTP API] status: ${response.statusCode}');
+      print('📩 [Submit OTP API] raw response: ${response.body}');
       final data = jsonDecode(response.body);
       print(response.statusCode);
 

@@ -10,7 +10,7 @@ import 'package:mobile_pos/generated/l10n.dart' as lang;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../constant.dart';
-import '../Sign Up/sign_up_screen.dart';
+import '../RegisterFlow/register_phone_screen.dart';
 import '../forgot password/forgot_password.dart';
 import 'Repo/sign_in_repo.dart';
 import 'check_social_media_module.dart';
@@ -102,21 +102,19 @@ class _SignInState extends State<SignIn> {
                       const SizedBox(
                         height: 24,
                       ),
-                      const NameWithLogo(),
+                      const NameWithoutLogo(),
                       const SizedBox(
                         height: 24,
                       ),
                       Text(
                         // 'Welcome back!',f
                         lang.S.of(context).welcomeBack,
-                        style: textTheme.titleMedium?.copyWith(
-                            fontSize: 24.0, fontWeight: FontWeight.w600),
+                        style: textTheme.titleMedium?.copyWith(fontSize: 24.0, fontWeight: FontWeight.w600),
                       ),
                       Text(
                         lang.S.of(context).pleaseEnterYourDetails,
                         //'Please enter your details.',
-                        style: textTheme.bodyMedium
-                            ?.copyWith(color: kGreyTextColor, fontSize: 16),
+                        style: textTheme.bodyMedium?.copyWith(color: kGreyTextColor, fontSize: 16),
                       ),
                       const SizedBox(height: 24.0),
                       TextFormField(
@@ -157,9 +155,7 @@ class _SignInState extends State<SignIn> {
                               });
                             },
                             icon: Icon(
-                              showPassword
-                                  ? FeatherIcons.eyeOff
-                                  : FeatherIcons.eye,
+                              showPassword ? FeatherIcons.eyeOff : FeatherIcons.eye,
                               color: kGreyTextColor,
                               size: 18,
                             ),
@@ -171,9 +167,7 @@ class _SignInState extends State<SignIn> {
                             return lang.S.of(context).passwordCannotBeEmpty;
                           } else if (value.length < 6) {
                             //return 'Please enter a bigger password';
-                            return lang.S
-                                .of(context)
-                                .pleaseEnterABiggerPassword;
+                            return lang.S.of(context).pleaseEnterABiggerPassword;
                           }
                           return null;
                         },
@@ -182,15 +176,13 @@ class _SignInState extends State<SignIn> {
                       Row(
                         children: [
                           Checkbox(
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             checkColor: Colors.white,
                             activeColor: kMainColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(3.0),
                             ),
-                            fillColor: WidgetStateProperty.all(
-                                _isChecked ? kMainColor : Colors.transparent),
+                            fillColor: WidgetStateProperty.all(_isChecked ? kMainColor : Colors.transparent),
                             visualDensity: const VisualDensity(horizontal: -4),
                             side: const BorderSide(color: kGreyTextColor),
                             value: _isChecked,
@@ -204,8 +196,7 @@ class _SignInState extends State<SignIn> {
                           Text(
                             lang.S.of(context).rememberMe,
                             //'Remember me',
-                            style: textTheme.bodyMedium
-                                ?.copyWith(color: kGreyTextColor),
+                            style: textTheme.bodyMedium?.copyWith(color: kGreyTextColor),
                           ),
                           const Spacer(),
                           TextButton(
@@ -225,8 +216,7 @@ class _SignInState extends State<SignIn> {
                             child: Text(
                               lang.S.of(context).forgotPassword,
                               //'Forgot password?',
-                              style: textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.bold, fontSize: 14),
+                              style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                             ),
                           ),
                         ],
@@ -236,8 +226,7 @@ class _SignInState extends State<SignIn> {
                         style: OutlinedButton.styleFrom(
                           maximumSize: const Size(double.infinity, 48),
                           minimumSize: const Size(double.infinity, 48),
-                          disabledBackgroundColor: _theme.colorScheme.primary
-                              .withValues(alpha: 0.15),
+                          disabledBackgroundColor: _theme.colorScheme.primary.withValues(alpha: 0.15),
                         ),
                         onPressed: () async {
                           if (isClicked) {
@@ -247,10 +236,7 @@ class _SignInState extends State<SignIn> {
                             isClicked = true;
                             EasyLoading.show();
                             LogInRepo repo = LogInRepo();
-                            if (await repo.logIn(
-                                email: emailController.text,
-                                password: passwordController.text,
-                                context: context)) {
+                            if (await repo.logIn(email: emailController.text, password: passwordController.text, context: context)) {
                               _saveUserCredentials();
                               EasyLoading.showSuccess('Done');
                             } else {
@@ -279,26 +265,24 @@ class _SignInState extends State<SignIn> {
                             highlightColor: kMainColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(3.0),
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return const SignUpScreen();
-                                },
-                              ));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterPhoneScreen(),
+                                ),
+                              );
                             },
                             hoverColor: kMainColor.withValues(alpha: 0.1),
                             child: RichText(
                               text: TextSpan(
                                 text: lang.S.of(context).donNotHaveAnAccount,
                                 //'Don’t have an account? ',
-                                style: textTheme.bodyMedium
-                                    ?.copyWith(color: kGreyTextColor),
+                                style: textTheme.bodyMedium?.copyWith(color: kGreyTextColor),
                                 children: [
                                   TextSpan(
                                     text: lang.S.of(context).signUp,
                                     // text:'Sign Up',
-                                    style: textTheme.bodyMedium?.copyWith(
-                                        color: kMainColor,
-                                        fontWeight: FontWeight.bold),
+                                    style: textTheme.bodyMedium?.copyWith(color: kMainColor, fontWeight: FontWeight.bold),
                                   )
                                 ],
                               ),
@@ -340,36 +324,27 @@ class _SignInState extends State<SignIn> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => WebViewLogin(
-                                              loginUrl:
-                                                  "https://pospro.acnoo.com/login/x?platform=app",
+                                              loginUrl: "https://pospro.acnoo.com/login/x?platform=app",
                                             ),
                                           ),
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 8),
+                                        padding: EdgeInsets.symmetric(horizontal: 8),
                                         minimumSize: Size(double.infinity, 48),
                                         side: const BorderSide(color: kBorder),
-                                        foregroundColor: _theme
-                                            .colorScheme.onPrimaryContainer,
+                                        foregroundColor: _theme.colorScheme.onPrimaryContainer,
                                       ),
                                       label: Text(
                                         'Login X',
-                                        style: _theme.textTheme.titleMedium
-                                            ?.copyWith(
+                                        style: _theme.textTheme.titleMedium?.copyWith(
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                       icon: Container(
                                         height: 26,
                                         width: 26,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: AssetImage(
-                                                    'images/x.png'))),
+                                        decoration: BoxDecoration(shape: BoxShape.circle, image: DecorationImage(fit: BoxFit.cover, image: AssetImage('images/x.png'))),
                                       ),
                                     ),
                                   ),
@@ -382,8 +357,7 @@ class _SignInState extends State<SignIn> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => WebViewLogin(
-                                              loginUrl:
-                                                  "https://pospro.acnoo.com/login/google?platform=app",
+                                              loginUrl: "https://pospro.acnoo.com/login/google?platform=app",
                                             ),
                                           ),
                                         );
@@ -394,13 +368,11 @@ class _SignInState extends State<SignIn> {
                                         ),
                                         minimumSize: Size(double.infinity, 48),
                                         side: const BorderSide(color: kBorder),
-                                        foregroundColor: _theme
-                                            .colorScheme.onPrimaryContainer,
+                                        foregroundColor: _theme.colorScheme.onPrimaryContainer,
                                       ),
                                       label: Text(
                                         'Login Google',
-                                        style: _theme.textTheme.titleMedium
-                                            ?.copyWith(
+                                        style: _theme.textTheme.titleMedium?.copyWith(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
                                         ),

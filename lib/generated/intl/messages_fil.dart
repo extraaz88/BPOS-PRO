@@ -94,7 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Lahat ng solusyon sa negosyo",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "Ang BharatBill ay isang kumpletong solusyon sa negosyo na may stock, account, benta, gastos at pagkawala/tubo.",
+      "Ang PosPro ay isang kumpletong solusyon sa negosyo na may stock, account, benta, gastos at pagkawala/tubo.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Lahat ng Oras"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Nakaragdag na"),
@@ -168,7 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Piliin ang Iyong Mga Tampok",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Ang mga Tampok ay ang mahalagang bahagi na nagpaiba sa BharatBill mula sa tradisyunal na mga solusyon.",
+      "Ang mga Tampok ay ang mahalagang bahagi na nagpaiba sa POSpro mula sa tradisyunal na mga solusyon.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -305,7 +305,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Madaling gamitin ang mobile pos",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Ang BharatBill app ay libre, madaling gamitin. Sa katunayan, isa ito sa pinakamahusay na sistema ng POS sa buong mundo.",
+      "Ang POSpro app ay libre, madaling gamitin. Sa katunayan, isa ito sa pinakamahusay na sistema ng POS sa buong mundo.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("I-edit"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

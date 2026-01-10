@@ -84,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Allar viðskipta lausnir",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill er heildar viðskipta lausn með vörulistum, reikningum, sölu, kostnaði og hagnað/tapi.",
+      "PosPro er heildar viðskipta lausn með vörulistum, reikningum, sölu, kostnaði og hagnað/tapi.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Alltaf"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage(
@@ -150,7 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Veldu eiginleika þína",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Eiginleikar eru mikilvægi hluti sem gerir BharatBill öðruvísi en hefðbundnar lausnir.",
+      "Eiginleikar eru mikilvægi hluti sem gerir POSpro öðruvísi en hefðbundnar lausnir.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Auðvelt í notkun farsíma POS",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill app er ókeypis, auðvelt í notkun. Í raun er það eitt besta POS kerfið um allan heim.",
+      "POSpro app er ókeypis, auðvelt í notkun. Í raun er það eitt besta POS kerfið um allan heim.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Breyta"),
     "editPhone": MessageLookupByLibrary.simpleMessage("Breyta símanúmeri?"),

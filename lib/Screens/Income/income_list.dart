@@ -283,11 +283,13 @@ class _IncomeListState extends State<IncomeList> {
 
                 ///________button________________________________________________
                 businessInfoData.when(data: (details) {
-                  return ElevatedButton(
-                    onPressed: () async {
-                      const AddIncome().launch(context);
-                    },
-                    child: Text(lang.S.of(context).addIncome),
+                  return SafeArea(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        const AddIncome().launch(context);
+                      },
+                      child: Text(lang.S.of(context).addIncome),
+                    ),
                   );
                 }, error: (e, stack) {
                   return Text(e.toString());

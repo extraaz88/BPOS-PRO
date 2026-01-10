@@ -58,4 +58,13 @@ class Party {
     map['updated_at'] = updatedAt;
     return map;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Party && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

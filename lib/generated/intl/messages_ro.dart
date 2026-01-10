@@ -84,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Toate soluțiile pentru afaceri",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill este o soluție completă pentru afaceri, cu gestionarea stocului, contabilitate, vânzări, cheltuieli și pierderi/profit.",
+      "PosPro este o soluție completă pentru afaceri, cu gestionarea stocului, contabilitate, vânzări, cheltuieli și pierderi/profit.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Tot timpul"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Deja adaugat"),
@@ -152,7 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Alegeți-vă funcționalitățile",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Funcționalitățile sunt partea importantă care diferențiază BharatBill de soluțiile tradiționale.",
+      "Funcționalitățile sunt partea importantă care diferențiază PosPro de soluțiile tradiționale.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Clarence"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -275,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ușor de utilizat pentru punctul de vânzare mobil",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "Aplicația BharatBill este gratuită și ușor de utilizat. De fapt, este unul dintre cele mai bune sisteme POS din lume.",
+      "Aplicația PosPro este gratuită și ușor de utilizat. De fapt, este unul dintre cele mai bune sisteme POS din lume.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Editați | ×"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

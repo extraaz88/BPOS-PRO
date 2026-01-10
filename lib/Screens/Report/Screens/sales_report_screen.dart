@@ -8,6 +8,7 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../../../GlobalComponents/glonal_popup.dart';
 import '../../../GlobalComponents/sales_transaction_widget.dart';
+import '../../../PDF Invoice/sales_report_pdf.dart';
 import '../../../Provider/profile_provider.dart';
 import '../../../constant.dart';
 import '../../../currency.dart';
@@ -29,6 +30,35 @@ class SalesReportScreenState extends State<SalesReportScreen> {
 
   List<String> timeLimit = ['ToDay', 'This Week', 'This Month', 'This Year', 'All Time', 'Custom'];
   String? dropdownValue = 'This Month';
+
+  // Format large numbers to K, Lac, Cr
+  String formatCurrency(num value) {
+    if (value < 0) {
+      return '-${formatCurrency(value.abs())}';
+    }
+    
+    if (value < 1000) {
+      return value.toStringAsFixed(2);
+    } else if (value < 100000) {
+      double thousands = value / 1000;
+      if (thousands == thousands.roundToDouble()) {
+        return '${thousands.toStringAsFixed(0)}K';
+      }
+      return '${thousands.toStringAsFixed(2)}K';
+    } else if (value < 10000000) {
+      double lacs = value / 100000;
+      if (lacs == lacs.roundToDouble()) {
+        return '${lacs.toStringAsFixed(0)} Lac';
+      }
+      return '${lacs.toStringAsFixed(2)} Lac';
+    } else {
+      double crores = value / 10000000;
+      if (crores == crores.roundToDouble()) {
+        return '${crores.toStringAsFixed(0)} Cr';
+      }
+      return '${crores.toStringAsFixed(2)} Cr';
+    }
+  }
 
   Map<String, String> getTranslateTime(BuildContext context) {
     return {
@@ -83,6 +113,87 @@ class SalesReportScreenState extends State<SalesReportScreen> {
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0.0,
+          actions: [
+            Consumer(builder: (context, ref, __) {
+              final providerData = ref.watch(salesTransactionProvider);
+              final personalData = ref.watch(businessInfoProvider);
+              final businessSettingData = ref.watch(businessSettingProvider);
+              
+              return Row(
+                children: [
+                  // Export to PDF Button
+                  IconButton(
+                    icon: const Icon(Icons.picture_as_pdf, color: Colors.black),
+                    tooltip: 'Export to PDF',
+                    onPressed: () {
+                      providerData.when(
+                        data: (transactions) {
+                          personalData.when(
+                            data: (personalInfo) {
+                              businessSettingData.when(
+                                data: (businessSetting) {
+                                  SalesReportPdf.generateSalesReport(
+                                    transactions: transactions,
+                                    personalInformation: personalInfo,
+                                    context: context,
+                                    businessSetting: businessSetting,
+                                    fromDate: fromDate,
+                                    toDate: toDate,
+                                    isShare: false,
+                                  );
+                                },
+                                error: (e, stack) => toast(e.toString()),
+                                loading: () => toast(lang.S.of(context).loading),
+                              );
+                            },
+                            error: (e, stack) => toast(e.toString()),
+                            loading: () => toast(lang.S.of(context).loading),
+                          );
+                        },
+                        error: (e, stack) => toast(e.toString()),
+                        loading: () => toast(lang.S.of(context).loading),
+                      );
+                    },
+                  ),
+                  // Share PDF Button
+                  IconButton(
+                    icon: const Icon(Icons.share, color: Colors.black),
+                    tooltip: 'Share PDF',
+                    onPressed: () {
+                      providerData.when(
+                        data: (transactions) {
+                          personalData.when(
+                            data: (personalInfo) {
+                              businessSettingData.when(
+                                data: (businessSetting) {
+                                  SalesReportPdf.generateSalesReport(
+                                    transactions: transactions,
+                                    personalInformation: personalInfo,
+                                    context: context,
+                                    businessSetting: businessSetting,
+                                    fromDate: fromDate,
+                                    toDate: toDate,
+                                    isShare: true,
+                                  );
+                                },
+                                error: (e, stack) => toast(e.toString()),
+                                loading: () => toast(lang.S.of(context).loading),
+                              );
+                            },
+                            error: (e, stack) => toast(e.toString()),
+                            loading: () => toast(lang.S.of(context).loading),
+                          );
+                        },
+                        error: (e, stack) => toast(e.toString()),
+                        loading: () => toast(lang.S.of(context).loading),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              );
+            }),
+          ],
         ),
         body: Consumer(builder: (context, ref, __) {
           final providerData = ref.watch(salesTransactionProvider);
@@ -193,7 +304,7 @@ class SalesReportScreenState extends State<SalesReportScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "$currency ${totalSale.toStringAsFixed(2)}",
+                                            "$currency${formatCurrency(totalSale)}",
                                             style: const TextStyle(
                                               color: Colors.green,
                                               fontSize: 20,

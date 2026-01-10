@@ -40,6 +40,8 @@ class DueInvoicePDF {
         return arabicFont;
       } else if (selectedLanguage == 'hi') {
         return hindiFont;
+      } else if (selectedLanguage == 'mr') {
+        return hindiFont; // Marathi uses Devanagari script like Hindi
       } else if (selectedLanguage == 'fr') {
         return frenchFont;
       } else {
@@ -57,6 +59,8 @@ class DueInvoicePDF {
         return arabicFont;
       } else if (detectedLanguage == 'hi') {
         return hindiFont;
+      } else if (detectedLanguage == 'mr') {
+        return hindiFont; // Marathi uses Devanagari script like Hindi
       } else if (detectedLanguage == 'fr') {
         return frenchFont;
       } else {
@@ -361,7 +365,7 @@ class DueInvoicePDF {
             ),
             pw.Container(
               width: double.infinity,
-              color: const PdfColor.fromInt(0xffC52127),
+              color: const PdfColor.fromInt(0xff2196F3),
               padding: const pw.EdgeInsets.all(10.0),
               child: pw.Center(child: pw.Text('Powered by $companyName', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold))),
             ),
@@ -390,7 +394,7 @@ class DueInvoicePDF {
                         children: [
                           pw.Container(
                             decoration: const pw.BoxDecoration(
-                              color: PdfColor.fromInt(0xffC52127),
+                              color: PdfColor.fromInt(0xff2196F3),
                             ), // Red background
                             padding: const pw.EdgeInsets.all(8.0),
                             child: getLocalizedPdfText(
@@ -400,7 +404,7 @@ class DueInvoicePDF {
                             ),
                           ),
                           pw.Container(
-                            color: const PdfColor.fromInt(0xffC52127), // Red background
+                            color: const PdfColor.fromInt(0xff2196F3), // Red background
                             padding: const pw.EdgeInsets.all(8.0),
                             child: getLocalizedPdfText(
                               _lang.totalDue,

@@ -50,6 +50,11 @@ class _DueCalculationContactScreenState extends State<DueCalculationContactScree
               List<Party> dueCustomerList = [];
 
               for (var party in parties) {
+                // Skip walk-in customers (id == -1)
+                if (party.id == -1) {
+                  continue;
+                }
+                
                 if ((party.due ?? 0) > 0) {
                   dueCustomerList.add(party);
                 }

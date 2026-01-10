@@ -78,7 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "সকল ব্যৱসায় সমাধান",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill হৈছে এক পৰিপূৰ্ণ ব্যৱসায় সমাধান য’ত ষ্টক, একাউণ্ট, বিক্ৰী, খৰচ আৰু লোকচান/লাভ অন্তৰ্ভুক্ত।",
+      "PosPro হৈছে এক পৰিপূৰ্ণ ব্যৱসায় সমাধান য’ত ষ্টক, একাউণ্ট, বিক্ৰী, খৰচ আৰু লোকচান/লাভ অন্তৰ্ভুক্ত।",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("সকলো সময়"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage(
@@ -144,7 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "আপোনাৰ বৈশিষ্ট্য বাচনি কৰক",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "বৈশিষ্ট্যসমূহ হৈছে সেইবোৰ যি BharatBill ক পৰম্পৰাগত সমাধানৰ পৰা পৃথক কৰে।",
+      "বৈশিষ্ট্যসমূহ হৈছে সেইবোৰ যি POSpro ক পৰম্পৰাগত সমাধানৰ পৰা পৃথক কৰে।",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("ক্লাৰেঞ্চ"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -251,7 +251,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "POS ব্যৱস্থা ব্যৱহাৰ কৰাটো সহজ",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill এপ্লিকেচন মন্নাই কৰিব পৰা, ব্যৱহাৰ কৰিবলৈ সৰল। সঁচা কথা, এইটো বিশ্বৰ অন্যতম উত্তম POS ব্যৱস্থাসমূহৰ ভিতৰত এক।",
+      "POSpro এপ্লিকেচন মন্নাই কৰিব পৰা, ব্যৱহাৰ কৰিবলৈ সৰল। সঁচা কথা, এইটো বিশ্বৰ অন্যতম উত্তম POS ব্যৱস্থাসমূহৰ ভিতৰত এক।",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("সম্পাদনা কৰক"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

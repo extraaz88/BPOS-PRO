@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Барлык бизнес чишемнәре",
     ),
     "allBusinessolutionDescrip": MessageLookupByLibrary.simpleMessage(
-      "BharatBill - запас, хисап, сату, чыгым һәм югалту/файда белән тулы бизнес чишеме.",
+      "PosPro - запас, хисап, сату, чыгым һәм югалту/файда белән тулы бизнес чишеме.",
     ),
     "allTime": MessageLookupByLibrary.simpleMessage("Барлык вакыт"),
     "alreadyAdded": MessageLookupByLibrary.simpleMessage("Алдан өстәлгән"),
@@ -131,7 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Үз функцияләрегезне сайлагыз",
     ),
     "choseyourfeatureDesciption": MessageLookupByLibrary.simpleMessage(
-      "Функцияләр - BharatBillны традицион чишемнәрдән аерып торучы мөһим өлеш.",
+      "Функцияләр - POSproны традицион чишемнәрдән аерып торучы мөһим өлеш.",
     ),
     "clarence": MessageLookupByLibrary.simpleMessage("Кларенс"),
     "clickToConnect": MessageLookupByLibrary.simpleMessage(
@@ -237,7 +237,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Мобиль POSны куллану җиңел",
     ),
     "easytheusedesciption": MessageLookupByLibrary.simpleMessage(
-      "BharatBill кушымтасы бушлай, куллану җиңел. Чыннан да, ул дөньяда иң яхшы POS системаларының берсе.",
+      "POSpro кушымтасы бушлай, куллану җиңел. Чыннан да, ул дөньяда иң яхшы POS системаларының берсе.",
     ),
     "edit": MessageLookupByLibrary.simpleMessage("Үзгәртергә"),
     "editPhone": MessageLookupByLibrary.simpleMessage(

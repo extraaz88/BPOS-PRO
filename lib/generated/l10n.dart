@@ -1317,17 +1317,17 @@ class S {
   /// `Easy to use mobile pos`
   String get easyToUseThePos {
     return Intl.message(
-      'Smart Billing Made Simple',
+      'Easy to use mobile pos',
       name: 'easyToUseThePos',
       desc: '',
       args: [],
     );
   }
 
-  /// `BharatBill app is free, easy to use. In fact, it's one of the best  POS systems around the world.`
+  /// `POSpro app is free, easy to use. In fact, it's one of the best  POS systems around the world.`
   String get easytheusedesciption {
     return Intl.message(
-      'Say goodbye to messy registers. Manage sales, stock, and payments in just a few taps.',
+      'POSpro app is free, easy to use. In fact, it\'s one of the best  POS systems around the world.',
       name: 'easytheusedesciption',
       desc: '',
       args: [],
@@ -1337,17 +1337,17 @@ class S {
   /// `Chose Your Features`
   String get choseYourFeature {
     return Intl.message(
-      'Stay on Top of Your Business',
+      'Chose Your Features',
       name: 'choseYourFeature',
       desc: '',
       args: [],
     );
   }
 
-  /// `Features are the important part which makes BharatBill different from traditional solutions.`
+  /// `Features are the important part which makes POSpro different from traditional solutions.`
   String get choseyourfeatureDesciption {
     return Intl.message(
-      'From stock alerts to daily sales reports—get everything you need to grow your business, anytime, anywhere.',
+      'Features are the important part which makes POSpro different from traditional solutions.',
       name: 'choseyourfeatureDesciption',
       desc: '',
       args: [],
@@ -1357,17 +1357,17 @@ class S {
   /// `All business solutions`
   String get allBusinessSolutions {
     return Intl.message(
-      'Fast, Secure Payments',
+      'All business solutions',
       name: 'allBusinessSolutions',
       desc: '',
       args: [],
     );
   }
 
-  /// `BharatBill is a complete business solution with stock, account, sales, expense & loss/profit.`
+  /// `PosPro is a complete business solution with stock, account, sales, expense & loss/profit.`
   String get allBusinessolutionDescrip {
     return Intl.message(
-      'Accept UPI, card, and cash with ease. Keep your business trusted and customers happy.',
+      'PosPro is a complete business solution with stock, account, sales, expense & loss/profit.',
       name: 'allBusinessolutionDescrip',
       desc: '',
       args: [],
@@ -1649,6 +1649,46 @@ class S {
     );
   }
 
+  /// `Customers`
+  String get customers {
+    return Intl.message('Customers', name: 'customers', desc: '', args: []);
+  }
+
+  /// `Suppliers`
+  String get suppliers {
+    return Intl.message('Suppliers', name: 'suppliers', desc: '', args: []);
+  }
+
+  /// `Supplier Name`
+  String get supplierName {
+    return Intl.message(
+      'Supplier Name',
+      name: 'supplierName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supplier Phone Number`
+  String get supplierPhoneNumber {
+    return Intl.message(
+      'Supplier Phone Number',
+      name: 'supplierPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter supplier phone number`
+  String get enterSupplierPhoneNumber {
+    return Intl.message(
+      'Enter supplier phone number',
+      name: 'enterSupplierPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Contact`
   String get updateContact {
     return Intl.message(
@@ -1707,8 +1747,126 @@ class S {
   /// `Payment Type`
   String get paymentTypes {
     return Intl.message(
-      'Payment Type',
-      name: 'paymentTypes',
+      'Payment Method',
+      name: 'paymentMethod',
+      desc: '',
+      args: [],
+    );
+  }
+   String get gstfasaiNumber {
+    return Intl.message(
+      'GST & FASAI number',
+      name: 'paymentMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment Mode`
+  String get paymentMode {
+    return Intl.message(
+      'Payment Mode',
+      name: 'paymentMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Full Payment`
+  String get fullPayment {
+    return Intl.message(
+      'Full Payment',
+      name: 'fullPayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Installment`
+  String get installment {
+    return Intl.message(
+      'Installment',
+      name: 'installment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Down Payment`
+  String get downPayment {
+    return Intl.message(
+      'Down Payment',
+      name: 'downPayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duration (Months)`
+  String get durationMonths {
+    return Intl.message(
+      'Duration (Months)',
+      name: 'durationMonths',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interest Rate (%)`
+  String get interestRate {
+    return Intl.message(
+      'Interest Rate (%)',
+      name: 'interestRate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter down payment`
+  String get enterDownPayment {
+    return Intl.message(
+      'Enter down payment',
+      name: 'enterDownPayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter duration in months`
+  String get enterDurationInMonths {
+    return Intl.message(
+      'Enter duration in months',
+      name: 'enterDurationInMonths',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter interest rate`
+  String get enterInterestRate {
+    return Intl.message(
+      'Enter interest rate',
+      name: 'enterInterestRate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remaining Amount`
+  String get remainingAmount {
+    return Intl.message(
+      'Remaining Amount',
+      name: 'remainingAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Installment`
+  String get monthlyInstallment {
+    return Intl.message(
+      'Monthly Installment',
+      name: 'monthlyInstallment',
       desc: '',
       args: [],
     );
@@ -2147,16 +2305,6 @@ class S {
   /// `Inv No`
   String get inv {
     return Intl.message('Inv No', name: 'inv', desc: '', args: []);
-  }
-
-  /// `Supplier Name`
-  String get supplierName {
-    return Intl.message(
-      'Supplier Name',
-      name: 'supplierName',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Item Added`
@@ -4674,10 +4822,10 @@ class S {
     );
   }
 
-  /// `Received Amount`
+  /// `Partial Amount`
   String get receivedAmount {
     return Intl.message(
-      'Received Amount',
+      'Partial Amount',
       name: 'receivedAmount',
       desc: '',
       args: [],
